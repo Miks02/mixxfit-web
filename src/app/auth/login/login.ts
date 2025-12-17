@@ -23,6 +23,7 @@ export class Login {
 
     private readonly fb = inject(FormBuilder);
     private readonly authService = inject(AuthService)
+    private router = inject(Router)
 
     form = this.fb.group({
         email: ['', Validators.required],
@@ -43,7 +44,7 @@ export class Login {
         this.authService.login(this.form.value as LoginRequest).subscribe({
             next: res => {
                 console.log("Login successful")
-                console.log()
+                this.router.navigate(['/dashboard']);
             },
             error: err => {
                 console.log("Error happened during the login process\n" + err.message)

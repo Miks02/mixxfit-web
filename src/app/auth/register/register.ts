@@ -2,7 +2,9 @@ import { Component, inject } from '@angular/core';
 import { FormBuilder, FormGroup, ValidationErrors, Validators, ReactiveFormsModule, AbstractControl } from '@angular/forms';
 import {NgIcon, provideIcons} from '@ng-icons/core';
 import {faSolidEnvelope, faSolidLock, faSolidUser, faSolidUserTag} from '@ng-icons/font-awesome/solid';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
+import { AuthService } from '../../core/services/auth-service';
+import { RegisterRequest } from '../../core/models/RegisterRequest';
 
 @Component({
     selector: 'app-register',
@@ -14,6 +16,8 @@ import { RouterLink } from '@angular/router';
 export class Register {
 
     private fb = inject(FormBuilder)
+    private authService = inject(AuthService)
+    private router = inject(Router)
 
     form = this.fb.group({
         firstName: ['', [
@@ -54,7 +58,7 @@ export class Register {
         get password() {return this.form.get('password')}
         get confirmPassword() {return this.form.get('confirmPassword')}
 
-        passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
+        private passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
             const password = control.get('password');
             const confirmPassword = control.get('confirmPassword');
 
@@ -66,12 +70,21 @@ export class Register {
         }
 
         onSubmit() {
-            if(this.form.invalid)
-                {
+            if(this.form.invalid) {
                 this.form.markAllAsTouched();
                 return;
             }
-            console.log(this.form.value);
+
+            this.authService.register(this.form.value as RegisterRequest).subscribe({
+                next: res => {
+                    console.log("Registration successful! Response: \n")
+                    this.router.navigate(['/dashboard']);
+                },
+                error: err => {
+                    console.error("Error happened during the registration process. Details: \n" + err.message)
+                }
+            })
+
         }
 
     }
