@@ -27,8 +27,15 @@ export class Login {
         password: ['', Validators.required]
     });
 
+    get email() {return this.form.get('email')}
+    get password() {return this.form.get('password')}
+
     onSubmit() {
-        console.log("Form submitted");
+        if(this.form.invalid)
+        {
+            this.form.markAllAsTouched();
+            return;
+        }
     }
 
 }
