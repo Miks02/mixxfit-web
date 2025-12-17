@@ -1,0 +1,163 @@
+<div class="flex flex-col items-center gap-4">
+    <div class="flex flex-col justify-center items-center w-[80%]">
+        <h1 class="text-5xl font-semibold text-gray-800">Sign up</h1>
+        <p class="text-center text-sm text-gray-600 mt-4">Create your account and start tracking your fitness journey today.</p>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="mt-10 self-center w-[80%] flex flex-col justify-center gap-6">
+        <div class="flex flex-col md:flex-row gap-4">
+            <div class="flex flex-col w-full">
+                <div class="flex border-b-2 w-full bg-transparent p-1 px-2 transition-colors duration-200"
+                     [class.border-b-red-500]="firstName?.invalid && (firstName?.touched || firstName?.dirty)"
+                     [class.border-b-gray-700]="!firstName?.invalid || (!firstName?.touched && !firstName?.dirty)">
+                    <label for="firstName" class="flex w-full border-none outline-none bg-transparent gap-4 text-xl">
+                        <ng-icon class="self-center shrink-0 text-gray-600!" name="faSolidUser"></ng-icon>
+                        <input formControlName="firstName" type="text" id="firstName" name="firstName"
+                               class="w-full border-none outline-none bg-transparent" placeholder="First Name">
+                    </label>
+                </div>
+                @if(firstName?.invalid && (firstName?.touched || firstName?.dirty)) {
+                    <div class="text-red-600 text-sm mt-1 ml-10">
+                        @if(firstName?.hasError('required')) {
+                            <p>First name is required</p>
+                        }
+                        @if(firstName?.hasError('minlength')) {
+                            <p>Minimum 2 characters required</p>
+                        }
+                        @if(firstName?.hasError('maxlength')) {
+                            <p>Maximum 20 characters allowed</p>
+                        }
+                    </div>
+                }
+            </div>
+
+            <div class="flex flex-col w-full">
+                <div class="flex border-b-2 w-full bg-transparent p-1 px-2 transition-colors duration-200"
+                     [class.border-b-red-500]="lastName?.invalid && (lastName?.touched || lastName?.dirty)"
+                     [class.border-b-gray-700]="!lastName?.invalid || (!lastName?.touched && !lastName?.dirty)">
+                    <label for="lastName" class="flex w-full border-none outline-none bg-transparent gap-4 text-xl">
+                        <ng-icon class="self-center shrink-0 text-gray-600!" name="faSolidUser"></ng-icon>
+                        <input formControlName="lastName" type="text" id="lastName" name="lastName"
+                               class="w-full border-none outline-none bg-transparent" placeholder="Last Name">
+                    </label>
+                </div>
+                @if(lastName?.invalid && (lastName?.touched || lastName?.dirty)) {
+                    <div class="text-red-600 text-sm mt-1 ml-10">
+                        @if(lastName?.hasError('required')) {
+                            <p>Last name is required</p>
+                        }
+                        @if(lastName?.hasError('minlength')) {
+                            <p>Minimum 2 characters required</p>
+                        }
+                        @if(lastName?.hasError('maxlength')) {
+                            <p>Maximum 20 characters allowed</p>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div class="flex flex-col w-full">
+            <div class="flex border-b-2 w-full bg-transparent p-1 px-2 transition-colors duration-200"
+                 [class.border-b-red-500]="userName?.invalid && (userName?.touched || userName?.dirty)"
+                 [class.border-b-gray-700]="!userName?.invalid || (!userName?.touched && !userName?.dirty)">
+                <label for="username" class="flex w-full border-none outline-none bg-transparent gap-4 text-xl">
+                    <ng-icon class="self-center shrink-0 text-gray-600!" name="faSolidUserTag"></ng-icon>
+                    <input formControlName="userName" type="text" id="username" name="username"
+                           class="w-full border-none outline-none bg-transparent" placeholder="Username">
+                </label>
+            </div>
+            @if(userName?.invalid && (userName?.touched || userName?.dirty)) {
+                <div class="text-red-600 text-sm mt-1 ml-10">
+                    @if(userName?.hasError('required')) {
+                        <p>Username is required</p>
+                    }
+                    @if(userName?.hasError('minlength')) {
+                        <p>Minimum 4 characters required</p>
+                    }
+                    @if(userName?.hasError('maxlength')) {
+                        <p>Maximum 20 characters allowed</p>
+                    }
+                </div>
+            }
+        </div>
+
+        <div class="flex flex-col w-full">
+            <div class="flex border-b-2 w-full bg-transparent p-1 px-2 transition-colors duration-200"
+                 [class.border-b-red-500]="email?.invalid && (email?.touched || email?.dirty)"
+                 [class.border-b-gray-700]="!email?.invalid || (!email?.touched && !email?.dirty)">
+                <label for="email" class="flex w-full border-none outline-none bg-transparent gap-4 text-xl">
+                    <ng-icon class="self-center shrink-0 text-gray-600!" name="faSolidEnvelope"></ng-icon>
+                    <input formControlName="email" type="email" id="email" name="email"
+                           class="w-full border-none outline-none bg-transparent" placeholder="Email">
+                </label>
+            </div>
+            @if(email?.invalid && (email?.touched || email?.dirty)) {
+                <div class="text-red-600 text-sm mt-1 ml-10">
+                    @if(email?.hasError('required')) {
+                        <p>Email is required</p>
+                    }
+                    @if(email?.hasError('email')) {
+                        <p>Please enter a valid email address</p>
+                    }
+                </div>
+            }
+        </div>
+
+        <div class="flex flex-col lg:flex-row gap-4">
+            <div class="flex flex-col w-full">
+                <div class="flex border-b-2 w-full bg-transparent p-1 px-2 transition-colors duration-200"
+                     [class.border-b-red-500]="password?.invalid && (password?.touched || password?.dirty)"
+                     [class.border-b-gray-700]="!password?.invalid || (!password?.touched && !password?.dirty)">
+                    <label for="password" class="flex w-full border-none outline-none bg-transparent gap-4 text-xl">
+                        <ng-icon class="self-center shrink-0 text-gray-600!" name="faSolidLock"></ng-icon>
+                        <input formControlName="password" type="password" id="password" name="password"
+                               class="w-full border-none outline-none bg-transparent" placeholder="Password">
+                    </label>
+                </div>
+                @if(password?.invalid && (password?.touched || password?.dirty)) {
+                    <div class="text-red-600 text-sm mt-1 ml-10">
+                        @if(password?.hasError('required')) {
+                            <p>Password is required</p>
+                        }
+                        @if(password?.hasError('minlength')) {
+                            <p>Minimum 6 characters required</p>
+                        }
+                    </div>
+                }
+            </div>
+
+            <div class="flex flex-col w-full">
+                <div class="flex border-b-2 w-full bg-transparent p-1 px-2 transition-colors duration-200"
+                     [class.border-b-red-500]="(confirmPassword?.invalid && (confirmPassword?.touched || confirmPassword?.dirty)) || (form.hasError('passwordMismatch') && confirmPassword?.touched)"
+                     [class.border-b-gray-700]="(!confirmPassword?.invalid || (!confirmPassword?.touched && !confirmPassword?.dirty)) && (!form.hasError('passwordMismatch') || !confirmPassword?.touched)">
+                    <label for="confirmPassword" class="flex w-full border-none outline-none bg-transparent gap-4 text-xl">
+                        <ng-icon class="self-center shrink-0 text-gray-600!" name="faSolidLock"></ng-icon>
+                        <input formControlName="confirmPassword" type="password" id="confirmPassword" name="confirmPassword"
+                               class="w-full border-none outline-none bg-transparent" placeholder="Confirm Password">
+                    </label>
+                </div>
+                @if((confirmPassword?.touched || confirmPassword?.dirty) && confirmPassword?.value) {
+                    <div class="text-red-600 text-sm mt-1 ml-10">
+                        @if(confirmPassword?.hasError('required')) {
+                            <p>Please confirm your password</p>
+                        } @else if(form.hasError('passwordMismatch')) {
+                            <p>Passwords do not match</p>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div class="flex flex-col relative gap-2 items-center mt-4">
+            <button type="submit"
+                    class="transition-all duration-200 cursor-pointer bg-yellow-500 hover:opacity-70 text-gray-700 shadow-2xl font-bold py-3 px-6 rounded text-xl disabled:opacity-50 disabled:cursor-not-allowed"
+                    [disabled]="form.invalid">
+                Register
+            </button>
+            <p class="text-gray-600 mt-2">Already have an account?
+                <a routerLink="/auth/login" class="text-yellow-600 hover:text-yellow-700 transition-colors duration-200 underline">Sign in here</a>
+            </p>
+        </div>
+    </form>
+</div>
