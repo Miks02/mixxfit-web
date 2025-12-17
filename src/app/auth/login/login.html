@@ -1,0 +1,62 @@
+
+<div class="flex flex-col items-center gap-4">
+    <div class="flex flex-col items-center w-[80%]">
+        <h1 class="text-5xl font-semibold text-gray-800">Sign in</h1>
+        <p class="text-center text-sm text-gray-600 mt-4">Access your workout history, set new goals, and take your fitness journey to the next level.</p>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="mt-10 w-[80%] flex flex-col justify-center gap-6">
+
+        <div class="flex border-b-2 border-b-gray-700  w-full bg-transparent p-1 px-2">
+            <label for="email" class="flex w-full border-none outline-none bg-transparent gap-4 text-xl">
+                <ng-icon class="self-center shrink-0 text-gray-600!" name="faSolidEnvelope"></ng-icon>
+                <input formControlName="email" type="text" id="email" name="email" class="w-full border-none outline-none bg-transparent" placeholder="Email address">
+            </label>
+
+        </div>
+
+        <div class="flex border-b-2 border-b-gray-700  w-full bg-transparent p-1 px-2">
+            <label for="password" class="flex w-full border-none outline-none bg-transparent gap-4 text-xl">
+                <ng-icon class="self-center shrink-0 text-gray-600!" name="faSolidLock"></ng-icon>
+                <input formControlName="password" type="password" id="password" name="password" class="w-full border-none outline-none bg-transparent" placeholder="Password">
+            </label>
+
+        </div>
+
+        <div class="flex justify-between flex-wrap">
+            <div class="flex items-center">
+                <input type="checkbox" id="rememberMe" name="rememberMe" class="peer hidden">
+
+                <label for="rememberMe"
+                class="flex items-center justify-center w-5 h-5 border border-gray-400 rounded cursor-pointer transition-colors duration-200
+                peer-checked:bg-yellow-400 peer-checked:border-yellow-400 peer-checked:text-gray-800 bg-gray-400 mr-2
+                peer-checked:[&_ng-icon]:opacity-100">
+                <ng-icon name="faSolidCheck" class="opacity-0 transition-all duration-200 text-gray-800"></ng-icon>
+            </label>
+            <label
+            for="rememberMe"
+            class="text-gray-700 cursor-pointer select-none"
+            >
+            Remember me
+        </label>
+    </div>
+
+    <a routerLink="/auth/register" class="text-yellow-600 hover:text-yellow-700 transition-colors duration-200 underline">Forgot password?</a>
+
+</div>
+
+<div class="flex flex-col relative gap-2 items-center">
+    <button class="transition-all duration-200 cursor-pointer bg-yellow-500 hover:opacity-70 text-gray-700 shadow-2xl font-bold py-3 px-6 rounded text-xl">
+        Log In
+    </button>
+    <p class="text-gray-600 absolute top-20">Don't have an account? <a routerLink="/auth/register" class="text-yellow-600 hover:text-yellow-700 transition-colors duration-200 underline">Register here</a></p>
+</div>
+
+
+<div>
+
+</div>
+
+</form>
+
+</div>

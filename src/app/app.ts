@@ -4,7 +4,7 @@ import { AuthLayout } from "./auth/auth-layout/auth-layout";
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, AuthLayout],
+  imports: [AuthLayout],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
