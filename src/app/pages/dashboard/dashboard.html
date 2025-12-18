@@ -1,0 +1,113 @@
+<div class="flex w-full justify-between flex-wrap gap-8">
+    <div class="flex flex-col gap-8 mx-auto">
+        <div class="flex justify-start sm:justify-center gap-8 flex-wrap">
+
+            <div class="flex flex-col pl-5 justify-between bg-linear-to-br from-yellow-600 to to-yellow-500 rounded-2xl w-full lg:w-65  h-45 px-2 py-4 text-gray-100 font-semibold shadow-2xl ">
+                <div class="flex items-center gap-5">
+                    <ng-icon name="faSolidFireFlameCurved" class="text-5xl"></ng-icon>
+                    <h5 class="text-2xl">Daily calories</h5>
+                </div>
+                <p class="text-2xl text-left">2243</p>
+            </div>
+
+            <div class="flex flex-col pl-5 justify-between bg-linear-to-br from-cyan-600 to to-cyan-400 shadow-2xl  rounded-2xl w-full lg:w-65  h-45 px-2 py-4 text-gray-100 font-semibold">
+                <div class="flex items-center gap-5">
+                    <ng-icon name="faSolidGlassWater" class="text-5xl"></ng-icon>
+                    <h5 class="text-2xl">Water intake</h5>
+                </div>
+                <p class="text-2xl text-left">2.2 Liters</p>
+            </div>
+
+            <div class="flex flex-col pl-5 justify-between bg-linear-to-br from-emerald-600 to to-emerald-400 shadow-2xl  rounded-2xl w-full lg:w-65  h-45 px-2 py-4 text-gray-100 font-semibold">
+                <div class="flex items-center gap-5">
+                    <ng-icon name="faSolidMoon" class="text-5xl"></ng-icon>
+                    <h5 class="text-2xl">Sleep</h5>
+                </div>
+                <p class="text-2xl text-left">7 Hours</p>
+            </div>
+
+            <div class="flex flex-col pl-5 justify-between bg-linear-to-br from-slate-700 to to-slate-500 shadow-2xl rounded-2xl w-full lg:w-65  h-45 px-2 py-4 text-gray-100 font-semibold">
+                <div class="flex items-center gap-5">
+                    <ng-icon name="faSolidDumbbell" class="text-5xl"></ng-icon>
+                    <h5 class="text-2xl">Last workout</h5>
+                </div>
+                <p class="text-2xl not-[]:text-left">3 Days Ago</p>
+            </div>
+
+        </div>
+
+        <div class="flex flex-col h-110 bg-slate-200 rounded-2xl min-h-50 p-6 gap-5 shadow-2xl">
+            <div class="flex">
+                <h1 class="text-2xl font-semibold text-gray-900">Workouts per month</h1>
+            </div>
+            <div class="flex grow">
+                <app-workouts-chart class="flex-1 min-w-72.5 max-w-[99%] mx-auto"></app-workouts-chart>
+        </div>
+    </div>
+
+</div>
+
+<div class="flex flex-col gap-5 justify-between p-4 rounded-2xl mx-auto w-auto grow w-100 bg-slate-200 shadow-2xl items-center ">
+    <div class="flex flex-col bg-slate-300 w-[90%] mt-15 rounded-2xl shadow-lg p-6 ">
+        <div class="flex flex-col relative justify-center items-center font-semibold text-gray-900">
+            <div class="rounded-full -mt-16 w-25 h-25 bg-slate-700 flex justify-center items-center text-gray-100 text-2xl">
+                <h2>MN</h2>
+            </div>
+        </div>
+        <div class="flex flex-col justify-center items-center font-semibold text-gray-900 mt-10">
+            <h4 class="text-xl">Milan Nikolić</h4>
+            <p class="text-slate-600 text-lg">23</p>
+        </div>
+
+        <div class="flex gap-10 mt-10 justify-center">
+            <div class="flex flex-col items-center font-semibold">
+                <h5 class="text-orange-400">Weight</h5>
+                <p class="text-slate-700">85 KG</p>
+            </div>
+
+            <div class="flex flex-col items-center font-semibold">
+                <h5 class="text-orange-400">Height</h5>
+                <p class="text-slate-700">172 CM</p>
+            </div>
+
+            <div class="flex flex-col items-center font-semibold">
+                <h5 class="text-orange-400">Goal</h5>
+                <p class="text-slate-700">78 KG</p>
+            </div>
+
+        </div>
+    </div>
+
+    <div>
+        <h5 class="text-lg font-semibold text-slate-800">Previous workouts</h5>
+    </div>
+
+    <div class="flex flex-col items-center gap-5 w-full h-70 overflow-y-auto">
+        <div class="flex flex-col font-semibold text-slate-800 bg-slate-300 w-[90%] rounded-2xl shadow-lg p-6">
+            <h5 class="text-xl">Chest/Triceps</h5>
+            <div class="flex w-full justify-between">
+                <p>6 Exercises</p>
+                <p class="text-emerald-700">12.12.2025</p>
+            </div>
+        </div>
+
+        <div class="flex flex-col font-semibold text-slate-800 bg-slate-300 w-[90%] rounded-2xl shadow-lg p-6">
+            <h5 class="text-xl">Back/Biceps</h5>
+            <div class="flex w-full justify-between">
+                <p>7 Exercises</p>
+                <p class="text-emerald-700">13.12.2025</p>
+            </div>
+        </div>
+
+        <div class="flex flex-col font-semibold text-slate-800 bg-slate-300 w-[90%] rounded-2xl shadow-lg p-6">
+            <h5 class="text-xl">Shoulders</h5>
+            <div class="flex w-full justify-between">
+                <p>5 Exercises</p>
+                <p class="text-emerald-700">14.12.2025</p>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+</div>
