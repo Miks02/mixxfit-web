@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { provideIcons, NgIcon } from '@ng-icons/core';
 import {
   faSolidBars,
@@ -19,5 +19,10 @@ import { RouterLink } from "@angular/router";
 
 })
 export class BottomNav {
+    @Output()
+    public openSidebar = new EventEmitter<void>();
 
+    onSidebarOpen() {
+        this.openSidebar.emit();
+    }
 }

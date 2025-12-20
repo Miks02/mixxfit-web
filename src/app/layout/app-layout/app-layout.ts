@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Output } from '@angular/core';
 import { Sidebar } from '../utilities/sidebar/sidebar';
 import { Header } from '../utilities/header/header';
 import { RouterOutlet } from "@angular/router";
@@ -13,5 +13,13 @@ import { BottomNav } from "../utilities/bottom-nav/bottom-nav";
 
 })
 export class AppLayout {
+    isSidebarOpen: boolean = false;
 
+    closeSidebar() {
+        this.isSidebarOpen = false;
+    }
+
+    openSidebar() {
+        this.isSidebarOpen = true;
+    }
 }

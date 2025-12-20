@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { NgIcon, provideIcons } from "@ng-icons/core";
 import { faSolidUser, faSolidBookOpen, faSolidChartLine, faSolidGear, faSolidDumbbell, faSolidBowlRice, faSolidArrowUpRightDots, faSolidMoon, faSolidCircleChevronLeft, faSolidRightToBracket} from '@ng-icons/font-awesome/solid';
 
@@ -10,5 +10,14 @@ import { faSolidUser, faSolidBookOpen, faSolidChartLine, faSolidGear, faSolidDum
     providers: [provideIcons({faSolidUser, faSolidChartLine, faSolidGear, faSolidBookOpen, faSolidDumbbell, faSolidBowlRice, faSolidArrowUpRightDots, faSolidMoon, faSolidCircleChevronLeft, faSolidRightToBracket})]
 })
 export class Sidebar {
+    @Input()
+    isOpen: boolean = false;
+    
+    @Output()
+    close = new EventEmitter<void>();
+
+    onSidebarClose() {
+        this.close.emit();
+    }
 
 }
