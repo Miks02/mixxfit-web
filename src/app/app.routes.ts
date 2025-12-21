@@ -5,10 +5,13 @@ import { Register } from './auth/register/register';
 import { Dashboard } from './pages/dashboard/dashboard';
 import { AppLayout } from './layout/app-layout/app-layout';
 import { WorkoutList } from './pages/workout/workout-list/workout-list';
+import { authGuard } from './core/guards/auth-guard';
+import { guestGuard } from './core/guards/guest-guard';
 
 export const routes: Routes = [
     {
         path: "",
+        canActivate: [authGuard],
         component: AppLayout,
         children: [
             {
@@ -27,12 +30,14 @@ export const routes: Routes = [
         ]
     },
     {
-        path: "auth",
+        path: "",
+        canActivate: [guestGuard],
         component: AuthLayout,
         children: [
             {
                 path: "",
-                component: Login
+                redirectTo: "login",
+                pathMatch: "full"
             },
             {
                 path: "login",

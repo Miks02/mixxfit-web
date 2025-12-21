@@ -19,8 +19,11 @@ export class AuthService {
 
     private readonly http = inject(HttpClient)
 
+    get accessToken(): string | null {return this.accessTokenSubject.value}
+    set accessToken(accessToken: string) {this.accessTokenSubject.next(accessToken)}
+
     register(model: RegisterRequest): Observable<UserDto> {
-       return this.http.post<ApiResponse<AuthResponse>>(`${this.api}/auth/register`, model)
+        return this.http.post<ApiResponse<AuthResponse>>(`${this.api}/auth/register`, model)
         .pipe(
             tap(res => this.accessToken = res.data.accessToken),
             map(res => res.data.user)
@@ -35,8 +38,7 @@ export class AuthService {
         )
     }
 
-    get accessToken(): string | null {return this.accessTokenSubject.value}
-    set accessToken(accessToken: string) {this.accessTokenSubject.next(accessToken)}
+    isAuthenticated() {return true}
 
 
 
