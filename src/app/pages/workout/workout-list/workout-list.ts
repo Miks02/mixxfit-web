@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { LayoutState } from '../../../layout/services/layout-state';
 
 @Component({
   selector: 'app-workout-list',
@@ -7,5 +8,9 @@ import { Component } from '@angular/core';
   styleUrl: './workout-list.css',
 })
 export class WorkoutList {
+    layoutState = inject(LayoutState)
 
+    ngOnInit() {
+        this.layoutState.setTitle("Workouts")
+    }
 }
