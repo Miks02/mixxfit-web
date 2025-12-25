@@ -138,13 +138,9 @@ export class ExerciseForm {
         return this.form.get('tempWeight')
     }
 
-    get isRepsInvalid() {
-        return this.tempReps?.invalid && (this.tempReps?.touched || this.tempReps?.dirty)
-    }
-
-    get isWeightInvalid() {
-        return this.tempWeight?.invalid && (this.tempWeight?.touched || this.tempWeight?.dirty)
-
+    isControlInvalid(control: string): boolean | undefined {
+        const c = this.form.get(control);
+        return c?.invalid && (c?.touched || c.dirty)
     }
 
     createSetGroup(reps: number, weight: number): FormGroup {

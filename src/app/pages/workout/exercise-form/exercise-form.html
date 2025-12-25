@@ -18,7 +18,7 @@
                         <span class="leading-none mt-2 font-semibold text-lg text-red-600">*</span>
                         <label for="name" class="font-semibold">Exercise name</label>
                     </div>
-                    <div class="flex bg-slate-300 rounded shadow-lg ">
+                    <div [class.border-transparent]="!isControlInvalid('exerciseName')" [class.border-red-500]="isControlInvalid('exerciseName')"  class="flex bg-slate-300 rounded shadow-lg border-2 transition-colors duration-200">
                         <div class="p-2 flex items-center bg-slate-400 rounded-l">
                             <ng-icon class="self-center text-slate-800! text-xl" name="faSolidPencil"></ng-icon>
                         </div>
@@ -44,7 +44,7 @@
                         formControlName="exerciseType"
                         >
                         <option [ngValue]="1">Weights</option>
-                        <option [ngValue]="2">Bodyweight</option>
+                        <option [disabled]="true" [ngValue]="2">Bodyweight</option>
                         <option [ngValue]="3">Cardio</option>
                     </select>
                 </div>
@@ -62,7 +62,7 @@
                                 Weight (KG)
                             </label>
                         </div>
-                        <div [class.border-transparent]="!isWeightInvalid" [class.border-red-500]="isWeightInvalid" class="flex bg-slate-300 rounded shadow-lg border-2 transition-colors duration-200">
+                        <div [class.border-transparent]="!isControlInvalid('tempWeight')" [class.border-red-500]="isControlInvalid('tempWeight')" class="flex bg-slate-300 rounded shadow-lg border-2 transition-colors duration-200">
                             <div class="p-2 flex items-center bg-slate-400 rounded-l">
                                 <ng-icon class="self-center text-slate-800! text-xl" name="faSolidPencil"></ng-icon>
                             </div>
@@ -76,7 +76,7 @@
                             <span class="leading-none mt-2 font-semibold text-lg text-red-600">*</span>
                             <label for="name" class="font-semibold">Reps </label>
                         </div>
-                        <div [class.border-transparent]="!isRepsInvalid" [class.border-red-500]="isRepsInvalid" class="flex bg-slate-300 rounded shadow-lg border-2 border-transparent transition-colors duration-200">
+                        <div [class.border-transparent]="!isControlInvalid('tempReps')" [class.border-red-500]="isControlInvalid('tempReps')" class="flex bg-slate-300 rounded shadow-lg border-2 border-transparent transition-colors duration-200">
                             <div class="p-2 flex items-center bg-slate-400 rounded-l">
                                 <ng-icon class="self-center text-slate-800! text-xl" name="faSolidPencil"></ng-icon>
                             </div>
@@ -150,11 +150,6 @@
                 </div>
             }
         </div>
-
-        <!-- <div
-        class="absolute top-[50%] w-full left-[50%] text-center transform -translate-x-1/2 -translate-y-1/2 border-red-400 rounded p-4">
-        <span class="text-2xl font-semibold text-indigo-900">No Sets Added</span>
-    </div> -->
 </div>
 <div class="border-b-2 border-slate-800"></div>
 
@@ -225,7 +220,7 @@ class="absolute top-[50%] w-full left-[50%] text-center transform -translate-x-1
             </div>
 
             <div class="flex bg-slate-300 rounded shadow-lg overflow-hidden">
-                <div class="p-2 flex items-center bg-slate-400">
+                <div class="p-2 flex items-center bg-slate-400 ">
                     <ng-icon class="self-center text-slate-800! text-xl" name="faSolidCalendarDay"></ng-icon>
                 </div>
                 <select
@@ -251,7 +246,7 @@ class="absolute top-[50%] w-full left-[50%] text-center transform -translate-x-1
                     Duration (Minutes)
                 </label>
             </div>
-            <div class="flex bg-slate-300 rounded shadow-lg ">
+            <div [class.border-transparent]="!isControlInvalid('durationMinutes')" [class.border-red-500]="isControlInvalid('durationMinutes')" class="flex bg-slate-300 rounded shadow-lg border-2 transition-colors duration-200">
                 <div class="p-2 flex items-center bg-slate-400 rounded-l">
                     <ng-icon class="self-center text-slate-800! text-xl" name="faSolidPencil"></ng-icon>
                 </div>
@@ -265,7 +260,7 @@ class="absolute top-[50%] w-full left-[50%] text-center transform -translate-x-1
                 <span class="leading-none mt-2 font-semibold text-lg text-red-600">*</span>
                 <label for="name" class="font-semibold">Duration (Seconds)</label>
             </div>
-            <div class="flex bg-slate-300 rounded shadow-lg ">
+            <div [class.border-transparent]="!isControlInvalid('durationSeconds')" [class.border-red-500]="isControlInvalid('durationSeconds')" class="flex bg-slate-300 rounded shadow-lg border-2 transition-colors duration-200">
                 <div class="p-2 flex items-center bg-slate-400 rounded-l">
                     <ng-icon class="self-center text-slate-800! text-xl" name="faSolidPencil"></ng-icon>
                 </div>
@@ -285,7 +280,7 @@ class="absolute top-[50%] w-full left-[50%] text-center transform -translate-x-1
                     Pace (min/km)
                 </label>
             </div>
-            <div class="flex bg-slate-300 rounded shadow-lg ">
+            <div [class.border-transparent]="!isControlInvalid('pace')" [class.border-red-500]="isControlInvalid('pace')" class="flex bg-slate-300 rounded shadow-lg border-2 transition-colors duration-200">
                 <div class="p-2 flex items-center bg-slate-400 rounded-l">
                     <ng-icon class="self-center text-slate-800! text-xl" name="faSolidPencil"></ng-icon>
                 </div>
@@ -295,11 +290,11 @@ class="absolute top-[50%] w-full left-[50%] text-center transform -translate-x-1
         </div>
 
         <div class="flex flex-col gap-2 min-w-60">
-            <div class="flex items-center gap-1">
+            <div  class="flex items-center gap-1">
                 <span class="leading-none mt-2 font-semibold text-lg text-red-600">*</span>
                 <label for="name" class="font-semibold">Distance (km)</label>
             </div>
-            <div class="flex bg-slate-300 rounded shadow-lg ">
+            <div [class.border-transparent]="!isControlInvalid('distance')" [class.border-red-500]="isControlInvalid('distance')" class="flex bg-slate-300 rounded shadow-lg border-2 transition-colors duration-200">
                 <div class="p-2 flex items-center bg-slate-400 rounded-l">
                     <ng-icon class="self-center text-slate-800! text-xl" name="faSolidPencil"></ng-icon>
                 </div>
@@ -319,7 +314,7 @@ class="absolute top-[50%] w-full left-[50%] text-center transform -translate-x-1
                     Average heart rate
                 </label>
             </div>
-            <div class="flex bg-slate-300 rounded shadow-lg ">
+            <div [class.border-transparent]="!isControlInvalid('avgHeartRate')" [class.border-red-500]="isControlInvalid('avgHeartRate')" class="flex bg-slate-300 rounded shadow-lg ">
                 <div class="p-2 flex items-center bg-slate-400 rounded-l">
                     <ng-icon class="self-center text-slate-800! text-xl" name="faSolidPencil"></ng-icon>
                 </div>
@@ -333,7 +328,7 @@ class="absolute top-[50%] w-full left-[50%] text-center transform -translate-x-1
                 <span class="leading-none mt-2 font-semibold text-lg text-red-600 opacity-0">*</span>
                 <label for="name" class="font-semibold">Calories burned</label>
             </div>
-            <div class="flex bg-slate-300 rounded shadow-lg ">
+            <div [class.border-transparent]="!isControlInvalid('caloriesBurned')" [class.border-red-500]="isControlInvalid('caloriesBurned')" class="flex bg-slate-300 rounded shadow-lg border-2 transition-colors duration-200">
                 <div class="p-2 flex items-center bg-slate-400 rounded-l">
                     <ng-icon class="self-center text-slate-800! text-xl" name="faSolidPencil"></ng-icon>
                 </div>
@@ -353,7 +348,7 @@ class="absolute top-[50%] w-full left-[50%] text-center transform -translate-x-1
                     Work Interval (Seconds)
                 </label>
             </div>
-            <div class="flex bg-slate-300 rounded shadow-lg ">
+            <div [class.border-transparent]="!isControlInvalid('workInterval')" [class.border-red-500]="isControlInvalid('workInterval')" class="flex bg-slate-300 rounded shadow-lg border-2 transition-colors duration-200">
                 <div class="p-2 flex items-center bg-slate-400 rounded-l">
                     <ng-icon class="self-center text-slate-800! text-xl" name="faSolidPencil"></ng-icon>
                 </div>
@@ -367,7 +362,7 @@ class="absolute top-[50%] w-full left-[50%] text-center transform -translate-x-1
                 <span class="leading-none mt-2 font-semibold text-lg text-red-600">*</span>
                 <label for="name" class="font-semibold">Rest Interval (Seconds)</label>
             </div>
-            <div class="flex bg-slate-300 rounded shadow-lg ">
+            <div [class.border-transparent]="!isControlInvalid('restInterval')" [class.border-red-500]="isControlInvalid('restInterval')" class="flex bg-slate-300 rounded shadow-lg border-2 transition-colors duration-200">
                 <div class="p-2 flex items-center bg-slate-400 rounded-l">
                     <ng-icon class="self-center text-slate-800! text-xl" name="faSolidPencil"></ng-icon>
                 </div>
@@ -387,7 +382,7 @@ class="absolute top-[50%] w-full left-[50%] text-center transform -translate-x-1
                     Intervals Count
                 </label>
             </div>
-            <div class="flex bg-slate-300 rounded shadow-lg ">
+            <div [class.border-transparent]="!isControlInvalid('intervalsCount')" [class.border-red-500]="isControlInvalid('intervalsCount')" class="flex bg-slate-300 rounded shadow-lg border-2 transition-colors duration-200">
                 <div class="p-2 flex items-center bg-slate-400 rounded-l">
                     <ng-icon class="self-center text-slate-800! text-xl" name="faSolidPencil"></ng-icon>
                 </div>
@@ -401,7 +396,7 @@ class="absolute top-[50%] w-full left-[50%] text-center transform -translate-x-1
                 <span class="leading-none mt-2 font-semibold text-lg text-red-600 opacity-0">*</span>
                 <label for="name" class="font-semibold">Calories Burned</label>
             </div>
-            <div class="flex bg-slate-300 rounded shadow-lg ">
+            <div [class.border-transparent]="!isControlInvalid('caloriesBurned')" [class.border-red-500]="isControlInvalid('caloriesBurned')" class="flex bg-slate-300 rounded shadow-lg border-2 transition-colors duration-200">
                 <div class="p-2 flex items-center bg-slate-400 rounded-l">
                     <ng-icon class="self-center text-slate-800! text-xl" name="faSolidPencil"></ng-icon>
                 </div>
@@ -420,7 +415,7 @@ class="absolute top-[50%] w-full left-[50%] text-center transform -translate-x-1
                     Average Heart Rate
                 </label>
             </div>
-            <div class="flex bg-slate-300 rounded shadow-lg ">
+            <div [class.border-transparent]="!isControlInvalid('avgHeartRate')" [class.border-red-500]="isControlInvalid('avgHeartRate')" class="flex bg-slate-300 rounded shadow-lg border-2 transition-colors duration-200">
                 <div class="p-2 flex items-center bg-slate-400 rounded-l">
                     <ng-icon class="self-center text-slate-800! text-xl" name="faSolidPencil"></ng-icon>
                 </div>
@@ -434,7 +429,7 @@ class="absolute top-[50%] w-full left-[50%] text-center transform -translate-x-1
                 <span class="leading-none mt-2 font-semibold text-lg text-red-600 opacity-0">*</span>
                 <label for="name" class="font-semibold">Max Heart Rate</label>
             </div>
-            <div class="flex bg-slate-300 rounded shadow-lg ">
+            <div [class.border-transparent]="!isControlInvalid('maxHeartRate')" [class.border-red-500]="isControlInvalid('maxHeartRate')" class="flex bg-slate-300 rounded shadow-lg border-2 transition-colors duration-200">
                 <div class="p-2 flex items-center bg-slate-400 rounded-l">
                     <ng-icon class="self-center text-slate-800! text-xl" name="faSolidPencil"></ng-icon>
                 </div>
