@@ -19,6 +19,7 @@ import { ExerciseForm } from "../exercise-form/exercise-form";
 import { minArrayLength } from '../../../core/helpers/FormHelpers';
 import { ExerciseType } from '../models/ExerciseType';
 import { CardioType } from '../models/CardioType';
+import { createWorkoutForm } from '../../../core/helpers/Factories';
 
 @Component({
   selector: 'app-workout-form',
@@ -33,12 +34,7 @@ export class WorkoutForm {
     layoutState = inject(LayoutState)
     fb = inject(FormBuilder)
 
-    form = this.fb.group({
-        workoutName: ['', Validators.required],
-        date: ['', Validators.required],
-        exercises: this.fb.array([], [minArrayLength(1)]),
-        notes: ['']
-    })
+    form = createWorkoutForm(this.fb);
 
     get exercises(): FormArray {
         return this.form.get('exercises') as FormArray

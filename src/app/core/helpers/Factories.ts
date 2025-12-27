@@ -24,3 +24,12 @@ export function createExerciseForm(fb: FormBuilder): FormGroup {
         sets: fb.array([], [minArrayLength(1)])
     })
 }
+
+export function createWorkoutForm(fb: FormBuilder): FormGroup {
+    return fb.group({
+        workoutName: ['', Validators.required],
+        date: ['', Validators.required],
+        exercises: fb.array([], [minArrayLength(1)]),
+        notes: ['']
+    })
+}
