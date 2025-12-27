@@ -12,10 +12,10 @@ import {
     faSolidXmark,
     faSolidCircle,
 } from "@ng-icons/font-awesome/solid";
-import { FormBuilder, FormsModule, Validators, ReactiveFormsModule, FormArray, FormGroup } from "@angular/forms";
+import { FormBuilder, FormsModule, Validators, ReactiveFormsModule, FormArray, FormGroup, RequiredValidator } from "@angular/forms";
 import { ExerciseType } from '../models/ExerciseType';
 import { CardioType } from '../models/CardioType';
-import { clearValidators, onlyNumbersCheck, minArrayLength } from '../../../core/helpers/Validators';
+import { clearValidators, onlyNumbersCheck, minArrayLength, clearFormInputs, addValidators } from '../../../core/helpers/Validators';
 import { createExerciseForm } from '../../../core/helpers/Factories';
 import { Subject, takeUntil } from 'rxjs';
 
@@ -106,12 +106,7 @@ export class ExerciseForm {
         }
     }
 
-    private clearCardioValidators() {
-        const cardioFields: string[] =
-        ['cardioType', 'durationMinutes', 'durationSeconds', 'pace', 'distance', 'avgHeartRate', 'caloriesBurned', 'workInterval', 'restInterval', 'maxHeartRate', 'intervalsCount']
 
-        clearValidators(cardioFields, this.form);
-    }
 
     private handleExerciseTypeChange() {
         this.form.get('exerciseType')!.valueChanges
@@ -119,16 +114,17 @@ export class ExerciseForm {
         .subscribe(type => {
             if(type === ExerciseType.Cardio) {
                 this.sets.clear();
-                this.form.get('cardioType')?.addValidators(Validators.required)
                 this.form.get('cardioType')?.patchValue(CardioType.SteadyState)
                 clearValidators(['tempWeight', 'tempReps', 'sets'], this.form)
+                clearFormInputs(['tempWeight', 'tempReps'], this.form)
+                console.log("kurac")
                 return;
             }
             if(type === ExerciseType.Weights || type === ExerciseType.Bodyweight) {
-                this.form.get('tempWeight')?.addValidators([Validators.required, onlyNumbersCheck()])
-                this.form.get('tempReps')?.addValidators([Validators.required, onlyNumbersCheck()])
-                this.tempWeight?.updateValueAndValidity();
-                this.tempReps?.updateValueAndValidity();
+                addValidators(['tempWeight', 'tempReps'], this.form, [Validators.required, Validators.min(0), onlyNumbersCheck()])
+                this.sets.addValidators(minArrayLength(1))
+                this.sets.updateValueAndValidity();
+                this.clearCardioInputs();
                 this.clearCardioValidators();
                 return;
             }
@@ -139,26 +135,18 @@ export class ExerciseForm {
         this.form.get('cardioType')!.valueChanges
         .pipe(takeUntil(this.destroy$))
         .subscribe(type => {
-
+            this.clearCardioInputs();
             this.clearCardioValidators();
             if(type === CardioType.SteadyState) {
-                this.form.get('durationMinutes')!.addValidators([Validators.required, Validators.min(0)])
-                this.form.get('durationSeconds')!.addValidators([Validators.required, Validators.min(0)])
-                this.form.get('pace')!.addValidators([Validators.min(0)])
-                this.form.get('distance')!.addValidators([Validators.min(0)])
-                this.form.get('avgHeartRate')!.addValidators([Validators.min(0)])
-                this.form.get('caloriesBurned')!.addValidators([Validators.min(0)])
+                this.addSteadyStateCardioValidators();
                 return;
             }
             if(type === CardioType.Hiit) {
-                this.form.get('workInterval')!.addValidators([Validators.required, Validators.min(0)])
-                this.form.get('restInterval')!.addValidators([Validators.required, Validators.min(0)])
-                this.form.get('intervalsCount')!.addValidators([Validators.required, Validators.min(0)])
-                this.form.get('maxHeartRate')!.addValidators([Validators.min(0)])
-                this.form.get('avgHeartRate')!.addValidators([Validators.min(0)])
-                this.form.get('caloriesBurned')!.addValidators([Validators.min(0)])
+                this.addHiitCardioValidators();
                 return;
             }
+
+
 
         })
     }
@@ -191,5 +179,39 @@ export class ExerciseForm {
                 )
             )
         })
+    }
+
+    private clearCardioValidators() {
+        const cardioFields: string[] =
+        ['cardioType', 'durationMinutes', 'durationSeconds', 'pace', 'distance', 'avgHeartRate', 'caloriesBurned', 'workInterval', 'restInterval', 'maxHeartRate', 'intervalsCount']
+
+        clearValidators(cardioFields, this.form);
+    }
+
+    private clearCardioInputs() {
+        const cardioFields: string[] =
+        ['durationMinutes', 'durationSeconds', 'pace', 'distance', 'avgHeartRate', 'caloriesBurned', 'workInterval', 'restInterval', 'maxHeartRate', 'intervalsCount']
+
+        clearFormInputs(cardioFields, this.form);
+    }
+
+    private addSteadyStateCardioValidators() {
+        addValidators(
+            ['cardioType', 'durationMinutes', 'durationSeconds'],
+            this.form,
+            [Validators.required, Validators.min(0)]
+        )
+
+        addValidators(['pace', 'distance', 'avgHeartRate', 'caloriesBurned'], this.form, [Validators.min(0)])
+    }
+
+    private addHiitCardioValidators() {
+        addValidators(
+            ['cardioType', 'workInterval', 'restInterval', 'intervalsCount'],
+            this.form,
+            [Validators.required, Validators.min(0)]
+        )
+
+        addValidators(['maxHeartRate', 'avgHeartRate', 'caloriesBurned'], this.form, [Validators.min(0)])
     }
 }
