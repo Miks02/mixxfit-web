@@ -4,9 +4,9 @@ import { SetEntry } from "./SetEntry"
 
 
 export type ExerciseEntry = {
-    id: number,
+    id?: number,
     name: string,
-    workoutId: number,
+    workoutId?: number,
 
     exerciseType: ExerciseType,
     cardioType?: CardioType,

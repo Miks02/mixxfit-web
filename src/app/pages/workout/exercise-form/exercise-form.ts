@@ -117,7 +117,6 @@ export class ExerciseForm {
                 this.form.get('cardioType')?.patchValue(CardioType.SteadyState)
                 clearValidators(['tempWeight', 'tempReps', 'sets'], this.form)
                 clearFormInputs(['tempWeight', 'tempReps'], this.form)
-                console.log("kurac")
                 return;
             }
             if(type === ExerciseType.Weights || type === ExerciseType.Bodyweight) {
