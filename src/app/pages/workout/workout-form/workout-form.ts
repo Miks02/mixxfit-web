@@ -1,38 +1,43 @@
 import { Component, inject } from '@angular/core';
 import { NgIcon, provideIcons } from "@ng-icons/core";
 import {
-  faSolidCalendarDay,
-  faSolidTag,
-  faSolidDumbbell,
-  faSolidFireFlameCurved,
-  faSolidBookOpen,
-  faSolidBars,
-  faSolidPencil,
-  faSolidNoteSticky,
-  faSolidXmark,
-  faSolidCircle,
-  faSolidPersonRunning
+    faSolidCalendarDay,
+    faSolidTag,
+    faSolidDumbbell,
+    faSolidFireFlameCurved,
+    faSolidBookOpen,
+    faSolidBars,
+    faSolidPencil,
+    faSolidNoteSticky,
+    faSolidXmark,
+    faSolidCircle,
+    faSolidPersonRunning
 } from "@ng-icons/font-awesome/solid";
 import { LayoutState } from '../../../layout/services/layout-state';
-import { FormBuilder, FormsModule, Validators, ReactiveFormsModule, FormArray, AbstractControl,} from '@angular/forms';
+import { FormBuilder, FormsModule, ReactiveFormsModule, FormArray, AbstractControl,} from '@angular/forms';
 import { ExerciseForm } from "../exercise-form/exercise-form";
-import { minArrayLength } from '../../../core/helpers/FormHelpers';
 import { ExerciseType } from '../models/ExerciseType';
 import { CardioType } from '../models/CardioType';
-import { createWorkoutForm } from '../../../core/helpers/Factories';
+import { createWorkoutForm, createWorkoutObject } from '../../../core/helpers/Factories';
+import { WorkoutService } from '../services/workout-service';
+import { CreateWorkoutDto } from '../models/CreateWorkoutDto';
+import { ExerciseEntryFormValue } from '../models/ExerciseEntryFormValue';
+import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-workout-form',
-  imports: [NgIcon, FormsModule, ExerciseForm, ReactiveFormsModule],
-  templateUrl: './workout-form.html',
-  styleUrl: './workout-form.css',
-  providers: [provideIcons({faSolidTag, faSolidCalendarDay, faSolidDumbbell, faSolidFireFlameCurved, faSolidBookOpen, faSolidBars, faSolidPencil, faSolidNoteSticky, faSolidXmark, faSolidCircle, faSolidPersonRunning})]
+    selector: 'app-workout-form',
+    imports: [NgIcon, FormsModule, ExerciseForm, ReactiveFormsModule],
+    templateUrl: './workout-form.html',
+    styleUrl: './workout-form.css',
+    providers: [provideIcons({faSolidTag, faSolidCalendarDay, faSolidDumbbell, faSolidFireFlameCurved, faSolidBookOpen, faSolidBars, faSolidPencil, faSolidNoteSticky, faSolidXmark, faSolidCircle, faSolidPersonRunning})]
 })
 export class WorkoutForm {
     isModalFormOpen: boolean = false;
 
     layoutState = inject(LayoutState)
     fb = inject(FormBuilder)
+    workoutService = inject(WorkoutService)
+    router = inject(Router)
 
     form = createWorkoutForm(this.fb);
 
@@ -41,7 +46,6 @@ export class WorkoutForm {
     }
 
     getExerciseSets(exercise: AbstractControl): number {
-        console.log(this.exercises)
         return (exercise.get('sets') as Object as []).length;
     }
 
@@ -63,16 +67,26 @@ export class WorkoutForm {
 
     closeModalForm() {
         this.isModalFormOpen = false;
-        console.log(this.exercises.value)
     }
 
     onSubmit() {
-        console.log(this.form.value)
+        const workout = createWorkoutObject(this.form);
         if(this.form.invalid) {
             console.log("Invalid form");
             return;
         }
+
+        this.workoutService.addWorkout(workout).subscribe({
+            next: res => {
+                console.log("Workout created!\n " + res.name + '\n' + res.workoutDate + '\n' , res.ExerciseEntries)
+            },
+            error: err => {
+                console.log("Error occured while creating the workout\n" + err)
+            }
+        })
+
         console.log("Form sent successfully")
+        this.router.navigate(['/workouts'])
     }
 
 }
