@@ -12,11 +12,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
 
     if(token) {
-        const cloned = req.clone({
-            setHeaders: {
-                Authorization: `Bearer ${token}`
-            }
-        });
+        const cloned = req.clone(addTokenHeader(req, token));
         return next(cloned).pipe(
             tap(event => {
                 if(event.type === HttpEventType.Response) {
