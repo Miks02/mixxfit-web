@@ -19,6 +19,9 @@ export class AuthService {
     private accessTokenSubject = new BehaviorSubject<string | null>(null);
     public accessToken$ = this.accessTokenSubject.asObservable();
 
+    private userSubject = new BehaviorSubject<UserDto | null>(null);
+    public user$ = this.userSubject.asObservable();
+
     private readonly http = inject(HttpClient)
     private router = inject(Router);
 
@@ -28,7 +31,10 @@ export class AuthService {
     register(model: RegisterRequest): Observable<UserDto> {
         return this.http.post<ApiResponse<AuthResponse>>(`${this.api}/auth/register`, model)
         .pipe(
-            tap(res => this.accessToken = res.data.accessToken),
+            tap(res => {
+                this.accessTokenSubject.next(res.data.accessToken);
+                this.userSubject.next(res.data.user);
+            }),
             map(res => res.data.user)
         )
     }
@@ -36,7 +42,10 @@ export class AuthService {
     login(model: LoginRequest): Observable<UserDto> {
         return this.http.post<ApiResponse<AuthResponse>>(`${this.api}/auth/login`, model)
         .pipe(
-            tap(res => this.accessToken = res.data.accessToken),
+            tap(res => {
+                this.accessTokenSubject.next(res.data.accessToken);
+                this.userSubject.next(res.data.user);
+            }),
             map(res => res.data.user),
             tap(res => console.log(res))
         )
