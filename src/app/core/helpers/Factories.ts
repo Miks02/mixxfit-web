@@ -27,9 +27,10 @@ export function createExerciseForm(fb: FormBuilder): FormGroup {
 }
 
 export function createWorkoutForm(fb: FormBuilder): FormGroup {
+    const today = new Date().toISOString().substring(0, 10);
     return fb.group({
         workoutName: ['', Validators.required],
-        date: ['', Validators.required],
+        date: [today, Validators.required],
         exercises: fb.array([], [minArrayLength(1)]),
         notes: ['']
     })
