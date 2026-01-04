@@ -1,7 +1,7 @@
 import { HttpEvent, HttpHandlerFn, HttpInterceptorFn, HttpRequest } from '@angular/common/http';
 import { AuthService } from '../services/auth-service';
 import { inject } from '@angular/core';
-import { catchError, filter, map, Observable, switchMap, take, throwError } from 'rxjs';
+import { catchError, filter, Observable, switchMap, take, tap, throwError } from 'rxjs';
 
 let isRefreshing: boolean = false;
 
@@ -15,6 +15,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     }
 
     return next(addTokenHeader(req, token)).pipe(
+        tap(res => console.log("Response: ", res)),
         catchError((error: any) => {
             console.log("Error happened ", error.status)
             if(error.status == 401) {
@@ -37,16 +38,22 @@ function handle401Error(
                     isRefreshing = false;
                     const newToken = res.data;
                     authService.accessToken = newToken;
-
+                    console.log("Response from handle401error: ", res)
                     return next(addTokenHeader(req, newToken))
                 }),
                 catchError((err) => {
                     isRefreshing = false;
-                    return authService.logout().pipe(
-                        switchMap(() => {
-                            return throwError(() => err)
-                        })
-                    )
+                    console.log("Error from handle401error: ", err)
+                    if(err.status == 401) {
+                        return authService.logout().pipe(
+                            switchMap(() => {
+                                return throwError(() => err)
+                            })
+                        )
+                    }
+
+                    return throwError(() => err)
+
                 })
             )
 
