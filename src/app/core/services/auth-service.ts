@@ -1,6 +1,6 @@
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, catchError, throwError } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { inject } from '@angular/core';
 import { RegisterRequest } from '../models/RegisterRequest';
 import { AuthResponse } from '../models/AuthResponse';
@@ -15,7 +15,7 @@ import { Router } from '@angular/router';
 })
 export class AuthService {
     private readonly api: string = "https://localhost:7263/api";
-    private accessTokenSubject = new BehaviorSubject<string | null>(null);
+    private accessTokenSubject = new BehaviorSubject<string | null>(localStorage.getItem('token'));
     public accessToken$ = this.accessTokenSubject.asObservable();
 
     private userSubject = new BehaviorSubject<UserDto | null>(null);
@@ -25,25 +25,53 @@ export class AuthService {
     private router = inject(Router);
 
     get accessToken(): string | null {return this.accessTokenSubject.value}
-    set accessToken(accessToken: string | null) {this.accessTokenSubject.next(accessToken)}
+    set accessToken(accessToken: string | null) {
+        localStorage.setItem('token', accessToken as string)
+        this.accessTokenSubject.next(accessToken)
+    }
+
+    get userData(): UserDto {
+        const user: UserDto = {
+            firstName: localStorage.getItem('firstName') as string,
+            lastName: localStorage.getItem('lastName') as string,
+            userName: localStorage.getItem('userName') as string,
+            email: localStorage.getItem('email') as string
+        };
+
+        return user;
+    }
+    set userData(data: UserDto) {
+        localStorage.setItem('firstName', data.firstName);
+        localStorage.setItem('lastName', data.lastName);
+        localStorage.setItem('userName', data.userName);
+        localStorage.setItem('email', data.email);
+
+        this.userSubject.next(this.userData);
+    }
+
+    constructor() {
+        this.accessTokenSubject.next(this.accessToken)
+        this.userSubject.next(this.userData);
+    }
 
     register(model: RegisterRequest): Observable<UserDto> {
-        return this.http.post<ApiResponse<AuthResponse>>(`${this.api}/auth/register`, model)
+        return this.http.post<ApiResponse<AuthResponse>>(`${this.api}/auth/register`, model, {withCredentials: true})
         .pipe(
             tap(res => {
-                this.accessTokenSubject.next(res.data.accessToken);
-                this.userSubject.next(res.data.user);
+                this.accessToken = res.data.accessToken;
+                this.userData = res.data.user
+                this.router.navigate(['/dashboard']);
             }),
             map(res => res.data.user)
         )
     }
 
     login(model: LoginRequest): Observable<UserDto> {
-        return this.http.post<ApiResponse<AuthResponse>>(`${this.api}/auth/login`, model)
+        return this.http.post<ApiResponse<AuthResponse>>(`${this.api}/auth/login`, model , {withCredentials: true})
         .pipe(
             tap(res => {
-                this.accessTokenSubject.next(res.data.accessToken);
-                this.userSubject.next(res.data.user);
+                this.accessToken = res.data.accessToken;
+                this.userData = res.data.user;
                 this.router.navigate(['/dashboard']);
             }),
             map(res => res.data.user),
@@ -52,10 +80,10 @@ export class AuthService {
 
     logout(): Observable<ApiResponse<void>> {
 
-        return this.http.post<ApiResponse<void>>(`${this.api}/auth/logout`, {})
+        return this.http.post<ApiResponse<void>>(`${this.api}/auth/logout`,{}, {withCredentials: true})
         .pipe(
             tap(() => {
-                this.accessToken = null
+                this.clearAuthData();
                 this.router.navigate(['/login']);
             })
         )
@@ -74,8 +102,46 @@ export class AuthService {
     }
 
     isAuthenticated() {
-        if(this.accessToken) return true
+        if(this.accessToken) return true;
         return false;
+    }
+
+    clearAuthData() {
+        localStorage.removeItem('token');
+        localStorage.removeItem('firstName');
+        localStorage.removeItem('lastName');
+        localStorage.removeItem('userName');
+        localStorage.removeItem('email');
+
+        this.accessTokenSubject.next(null);
+        this.userSubject.next(null);
+    }
+
+    buildUserData(data: UserDto): UserDto {
+        localStorage.setItem('firstName', data.firstName);
+        localStorage.setItem('lastName', data.lastName);
+        localStorage.setItem('userName', data.userName);
+        localStorage.setItem('email', data.email);
+
+        const user: UserDto = {
+            firstName: localStorage.getItem('firstName') as string,
+            lastName: localStorage.getItem('lastName') as string,
+            userName: localStorage.getItem('userName') as string,
+            email: localStorage.getItem('email') as string
+        };
+
+        return user;
+    }
+
+    getUserData(): UserDto {
+        const user: UserDto = {
+            firstName: localStorage.getItem('firstName') as string,
+            lastName: localStorage.getItem('lastName') as string,
+            userName: localStorage.getItem('userName') as string,
+            email: localStorage.getItem('email') as string
+        };
+
+        return user;
     }
 
 }
