@@ -117,31 +117,4 @@ export class AuthService {
         this.userSubject.next(null);
     }
 
-    buildUserData(data: UserDto): UserDto {
-        localStorage.setItem('firstName', data.firstName);
-        localStorage.setItem('lastName', data.lastName);
-        localStorage.setItem('userName', data.userName);
-        localStorage.setItem('email', data.email);
-
-        const user: UserDto = {
-            firstName: localStorage.getItem('firstName') as string,
-            lastName: localStorage.getItem('lastName') as string,
-            userName: localStorage.getItem('userName') as string,
-            email: localStorage.getItem('email') as string
-        };
-
-        return user;
-    }
-
-    getUserData(): UserDto {
-        const user: UserDto = {
-            firstName: localStorage.getItem('firstName') as string,
-            lastName: localStorage.getItem('lastName') as string,
-            userName: localStorage.getItem('userName') as string,
-            email: localStorage.getItem('email') as string
-        };
-
-        return user;
-    }
-
 }
