@@ -5,6 +5,7 @@ import {faSolidEnvelope, faSolidLock, faSolidUser, faSolidUserTag} from '@ng-ico
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../core/services/auth-service';
 import { RegisterRequest } from '../../core/models/RegisterRequest';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
     selector: 'app-register',
@@ -17,7 +18,6 @@ export class Register {
 
     private fb = inject(FormBuilder)
     private authService = inject(AuthService)
-    private router = inject(Router)
 
     form = this.fb.group({
         firstName: ['', [
@@ -45,46 +45,53 @@ export class Register {
         ]],
         confirmPassword: ['', [
             Validators.required,
-               ]]
+        ]]
 
-        }, {
-            validators: [this.passwordMatchValidator]
+    }, {
+        validators: [this.passwordMatchValidator]
+    })
+
+    get firstName () {return this.form.get('firstName');}
+    get lastName() {return this.form.get('lastName')}
+    get userName() {return this.form.get('userName')}
+    get email() {return this.form.get('email')}
+    get password() {return this.form.get('password')}
+    get confirmPassword() {return this.form.get('confirmPassword')}
+
+    private passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
+        const password = control.get('password');
+        const confirmPassword = control.get('confirmPassword');
+
+        if (!password || !confirmPassword) {
+            return null;
+        }
+
+        return password.value === confirmPassword.value ? null : { passwordMismatch: true };
+    }
+
+    onSubmit() {
+        if(this.form.invalid) {
+            this.form.markAllAsTouched();
+            return;
+        }
+
+        this.authService.register(this.form.value as RegisterRequest).subscribe({
+            next: res => {
+                console.log("Registration successful!")
+            },
+            error: (err: HttpErrorResponse) => {
+                let errorCode = err.error.errorCode;
+                if(errorCode === "User.UsernameAlreadyExists") {
+                    this.userName?.setErrors({usernameTaken: true})
+                    return;
+                }
+                if(errorCode === "User.EmailAlreadyExists") {
+                    this.email?.setErrors({emailTaken: true})
+                    return;
+                }
+            }
         })
 
-        get firstName () {return this.form.get('firstName');}
-        get lastName() {return this.form.get('lastName')}
-        get userName() {return this.form.get('userName')}
-        get email() {return this.form.get('email')}
-        get password() {return this.form.get('password')}
-        get confirmPassword() {return this.form.get('confirmPassword')}
-
-        private passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
-            const password = control.get('password');
-            const confirmPassword = control.get('confirmPassword');
-
-            if (!password || !confirmPassword) {
-                return null;
-            }
-
-            return password.value === confirmPassword.value ? null : { passwordMismatch: true };
-        }
-
-        onSubmit() {
-            if(this.form.invalid) {
-                this.form.markAllAsTouched();
-                return;
-            }
-
-            this.authService.register(this.form.value as RegisterRequest).subscribe({
-                next: res => {
-                    console.log("Registration successful! Response: \n")
-                    this.router.navigate(['/dashboard']);
-                },
-                error: err => {
-                    console.error("Error happened during the registration process. Details: \n" + err.message)
-                }
-            })
-
-        }
-
     }
+
+}

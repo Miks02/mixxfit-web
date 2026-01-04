@@ -5,7 +5,6 @@ import { minArrayLength } from "./FormHelpers";
 import { ExerciseEntryFormValue } from "../../pages/workout/models/ExerciseEntryFormValue";
 import { CreateWorkoutDto } from "../../pages/workout/models/CreateWorkoutDto";
 
-
 export function createExerciseForm(fb: FormBuilder): FormGroup {
     return fb.group({
         exerciseName: ['', Validators.required],
@@ -37,25 +36,25 @@ export function createWorkoutForm(fb: FormBuilder): FormGroup {
 }
 
 export function  createWorkoutObject(form: FormGroup): CreateWorkoutDto {
-        return {
-            name: form.get('workoutName')?.value,
-            workoutDate: form.get('date')?.value,
-            notes: form.get('notes')?.value,
-            exerciseEntries: (form.get('exercises')?.value as ExerciseEntryFormValue[]).map(exercise => ({
-                name: exercise.exerciseName,
-                exerciseType: exercise.exerciseType,
-                cardioType: exercise.cardioType,
-                durationMinutes: exercise.durationMinutes,
-                durationSeconds: exercise.durationSeconds,
-                distanceKm: exercise.distance,
-                avgHeartRate: exercise.avgHeartRate,
-                maxHeartRate: exercise.maxHeartRate,
-                caloriesBurned: exercise.caloriesBurned,
-                paceMinPerKm: exercise.pace,
-                workIntervalSec: exercise.workInterval,
-                restIntervalSec: exercise.restInterval,
-                intervalsCount: exercise.intervalsCount,
-                sets: exercise.sets
-            }))
-        }
+    return {
+        name: form.get('workoutName')?.value,
+        workoutDate: form.get('date')?.value,
+        notes: form.get('notes')?.value,
+        exerciseEntries: (form.get('exercises')?.value as ExerciseEntryFormValue[]).map(exercise => ({
+            name: exercise.exerciseName,
+            exerciseType: exercise.exerciseType,
+            cardioType: exercise.cardioType,
+            durationMinutes: exercise.durationMinutes,
+            durationSeconds: exercise.durationSeconds,
+            distanceKm: exercise.distance,
+            avgHeartRate: exercise.avgHeartRate,
+            maxHeartRate: exercise.maxHeartRate,
+            caloriesBurned: exercise.caloriesBurned,
+            paceMinPerKm: exercise.pace,
+            workIntervalSec: exercise.workInterval,
+            restIntervalSec: exercise.restInterval,
+            intervalsCount: exercise.intervalsCount,
+            sets: exercise.sets
+        }))
     }
+}

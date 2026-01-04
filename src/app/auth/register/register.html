@@ -78,6 +78,9 @@
                     @if(userName?.hasError('maxlength')) {
                         <p>Maximum 20 characters allowed</p>
                     }
+                    @if(userName?.hasError('usernameTaken')) {
+                        <p>Username is already taken</p>
+                    }
                 </div>
             }
         </div>
@@ -99,6 +102,9 @@
                     }
                     @if(email?.hasError('email')) {
                         <p>Please enter a valid email address</p>
+                    }
+                    @if(email?.hasError('emailTaken')) {
+                        <p>Email address is already taken</p>
                     }
                 </div>
             }
