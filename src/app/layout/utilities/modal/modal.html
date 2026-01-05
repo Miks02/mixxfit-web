@@ -1,0 +1,62 @@
+<div (click)="onClose()" class="absolute w-screen h-screen bg-slate-700/40 backdrop-blur-2xl top-0 left-0 z-100"></div>
+
+
+<div class="absolute  text-center z-150 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-slate-200 w-screen h-screen overflow-y-auto lg:w-auto lg:h-auto lg:rounded-2xl shadow-2xl">
+
+    <div class="flex flex-col min-h-50 ">
+        <div class="flex justify-between items-center px-4 py-2 bg-linear-to-br from-yellow-500 to-yellow-400 lg:rounded-t-2xl leading-none">
+            <h1 class="text-lg font-bold text-slate-800 ">{{data?.title ?? "Title"}}</h1>
+
+            <button (click)="onClose()" class="cursor-pointer hover:text-red-600 active:opacity-70 active:text-red-600 text-red-800">
+                <ng-icon name="faSolidXmark" class="text-2xl"></ng-icon>
+            </button>
+        </div>
+
+        <div class="flex items-center justify-center flex-col mx-auto w-[80%] p-4 h-full grow gap-8">
+            @switch(data?.type) {
+                @case(0) {
+                    <ng-icon name='faSolidCircleInfo' class="text-7xl text-blue-500! shadow-xl rounded-full"></ng-icon>
+                }
+                @case(1) {
+                    <ng-icon name='faSolidCircleCheck' class="text-7xl text-emerald-500!"></ng-icon>
+                }
+                @case(2) {
+                    <ng-icon name='faSolidTriangleExclamation' class="text-7xl text-amber-500!"></ng-icon>
+                }
+                @case(3) {
+                    <ng-icon name='faSolidCircleExclamation' class="text-7xl text-red-700! rounded-full shadow-xl"></ng-icon>
+                }
+                @case(4) {
+                    <ng-icon name='faSolidCircleQuestion' class="text-7xl text-yellow-500! rounded-full shadow-xl"></ng-icon>
+                }
+            }
+
+            <p class="text-xl sm:text-2xl text-slate-800 font-semibold">Do you want to delete or edit this workout entry ?</p>
+
+
+            <div class="flex justify-center gap-6 flex-wrap w-full mt-auto">
+
+                @if(data?.primaryActionLabel) {
+                    <button
+                    (click)="data?.primaryAction()"
+                    class="transition-all flex justify-center items-center duration-200 cursor-pointer bg-emerald-500 hover:opacity-70  text-yellow-100 shadow-lg font-bold py-2 px-4 rounded text-lg disabled:opacity-70 disabled:pointer-events-none active:opacity-70 min-w-25">
+                    <p class="font-semibold self-center">{{data?.primaryActionLabel}}</p>
+                </button>
+            }
+
+            @if(data?.secondaryActionLabel) {
+                <button
+                (click)="data?.secondaryAction()"
+                class="transition-all flex justify-center items-center duration-200 cursor-pointer bg-red-500 hover:opacity-70  text-yellow-100 shadow-lg font-bold py-2 px-4 rounded text-lg disabled:opacity-70 disabled:pointer-events-none active:opacity-70 min-w-25">
+                <p class="font-semibold self-center">{{data?.secondaryActionLabel}}</p>
+            </button>
+        }
+
+
+    </div>
+
+
+</div>
+
+</div>
+</div>
