@@ -67,7 +67,7 @@ export class ExerciseForm {
     createSetGroup(reps: number, weight: number): FormGroup {
         return this.fb.group({
             reps: [reps, [Validators.required, Validators.min(1)]],
-            weight: [weight, [Validators.required, Validators.min(1)]]
+            weightKg: [weight, [Validators.required, Validators.min(1)]]
         })
     }
 
@@ -173,7 +173,7 @@ export class ExerciseForm {
                 this.sets.controls.map(set =>
                     this.fb.group({
                         reps: set.get('reps')?.value,
-                        weight: set.get('weight')?.value
+                        weightKg: set.get('weightKg')?.value
                     })
                 )
             )
