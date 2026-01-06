@@ -63,7 +63,7 @@
                         {{ workout.setCount }} sets
                     </span>
                     <span class="text-emerald-700">
-                        {{ workout.workoutDate | date: 'yyyy-M-d' }}
+                        {{workout.workoutDate | date}}
                     </span>
                 </div>
             </div>
@@ -134,7 +134,7 @@
                         Last workout
                     </p>
                     <p class="text-lg font-bold text-emerald-700">
-                        {{workoutSummary()?.lastWorkoutDate | date}}
+                        {{(workoutSummary()?.lastWorkoutDate | date) ?? 'N/A'}}
                     </p>
                 </div>
 
@@ -152,6 +152,9 @@
                             }
                             @case(3) {
                                 Cardio
+                            }
+                            @default {
+                                N/A
                             }
                         }
                     </p>

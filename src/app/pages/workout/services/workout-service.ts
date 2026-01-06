@@ -24,7 +24,7 @@ export class WorkoutService {
         }
     );
     private workoutSummarySubject = new BehaviorSubject<WorkoutSummaryDto | undefined>(undefined)
-    
+
     pagedWorkouts$ = this.pagedWorkoutsSubject.asObservable();
     workoutSummary$ = this.workoutSummarySubject.asObservable();
 
@@ -35,6 +35,7 @@ export class WorkoutService {
             tap(res => {
                 this.pagedWorkoutsSubject.next(res.pagedWorkouts)
                 this.workoutSummarySubject.next(res.workoutSummary)
+                console.log(res.workoutSummary)
             }),
             map(res => res)
         );
