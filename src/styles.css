@@ -8,6 +8,11 @@ body {
 body {
   margin: 0;
 }
+
+.shadow-all {
+  box-shadow: 0 0 5px #333;
+}
+
 .shadow-top {
   box-shadow: 0 -5px 5px -5px #333;
 }

@@ -1,12 +1,12 @@
-<main class="flex h-screen md:p-2 gap-5">
-    <app-sidebar (logout)="logout()" (close)="closeSidebar()" [isOpen]="isSidebarOpen" class="h-full fixed md:static flex z-150"></app-sidebar>
+<main class="flex h-screen md:p-2 gap-4">
+    <app-sidebar (logout)="logout()" (close)="closeSidebar()" [isOpen]="isSidebarOpen" class="h-full fixed md:static flex z-150 shadow-all rounded-2xl"></app-sidebar>
 
 
-    <div class="flex flex-col w-full md:gap-5 min-h-0">
+    <div class="flex flex-col w-full md:gap-5 min-h-0 ">
 
-        <app-header class="z-100 shadow-lg" [userFirstName]="userFirstName" [userLastName]="userLastName"></app-header>
+        <app-header class="z-100 shadow-all rounded-2xl" [userFirstName]="userFirstName" [userLastName]="userLastName"></app-header>
 
-        <div class="flex-1 overflow-y-auto min-h-0 p-2 sm:p-4">
+        <div class="flex-1 overflow-y-auto min-h-0 p-2 sm:p-4 md:shadow-2xl md:rounded-2xl md:bg-linear-to-br from-slate-400/30 to-slate-500/40 md:backdrop-blur-2xl">
             <div class="w-full mx-auto">
                 <router-outlet class="w-full"></router-outlet>
             </div>
