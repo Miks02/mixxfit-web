@@ -3,5 +3,8 @@ export type WorkoutListItemDto = {
     name: string,
     workoutDate: string,
     exerciseCount: number,
-    setCount: number
+    setCount: number,
+    hasCardio: boolean,
+    hasWeights: boolean,
+    hasBodyWeight: boolean
 }
