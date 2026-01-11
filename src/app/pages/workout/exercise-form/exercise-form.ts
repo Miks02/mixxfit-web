@@ -151,6 +151,7 @@ export class ExerciseForm {
     }
 
     private handleSetsChange() {
+        console.log("ljaljk")
         this.sets.valueChanges
         .pipe(takeUntil(this.destroy$))
         .subscribe(value => {
@@ -158,6 +159,12 @@ export class ExerciseForm {
                 this.tempReps?.reset();
                 this.tempWeight?.reset();
                 clearValidators(['tempWeight', 'tempReps'], this.form);
+            }
+            else {
+                this.tempReps?.addValidators([Validators.required, Validators.min(1), onlyNumbersCheck()]);
+                this.tempWeight?.addValidators([Validators.required, Validators.min(1), onlyNumbersCheck()]);
+                this.tempWeight?.updateValueAndValidity();
+                this.tempReps?.updateValueAndValidity();
             }
         })
     }
