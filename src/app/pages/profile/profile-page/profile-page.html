@@ -1,1 +1,445 @@
-<p>profile-page works!</p>
+
+<div class="flex flex-wrap gap-6">
+    <div class="flex flex-col gap-4 w-full 2xl:max-w-100">
+        <div class="flex flex-col bg-slate-200 w-auto rounded-2xl shadow-lg py-6 transition-all duration-200 hover:shadow-2xl">
+            <form [formGroup]="profilePictureForm" class="flex flex-col items-center">
+                <label class="w-55 h-55 bg-slate-700 text-white flex items-center justify-center text-2xl font-semibold rounded-md hover:opacity-50 transition-all duration-200 hover:shadow-2xl cursor-pointer overflow-hidden relative">
+                    <input #fileInput type="file" accept="image/*" (change)="onProfilePictureSelected($event)" hidden name="profile_image">
+                    <img [src]="getProfileImageSrc()" class="object-cover w-full h-full" alt="Profile">
+                    <div class="absolute right-2 bottom-2 bg-yellow-400 rounded-full p-1 shadow-md">
+                        <ng-icon name="faSolidPencil" class="text-slate-800"></ng-icon>
+                    </div>
+                </label>
+
+                @if(previewImage) {
+                    <div class="mt-3 flex gap-2">
+                        <button type="button" (click)="saveProfilePicture()" class="bg-green-500 text-white px-3 py-1 rounded cursor-pointer transition-all duration-200 hover:opacity-90">Save Changes</button>
+                        <button type="button" (click)="cancelProfilePicture()" class="bg-red-500 text-white px-3 py-1 rounded cursor-pointer transition-all duration-200 hover:opacity-90">Cancel</button>
+                    </div>
+                }
+
+                <h4 class="mt-4 text-xl font-semibold text-slate-800">{{userData.name}}</h4>
+            </form>
+        </div>
+
+        <div class="bg-slate-200 rounded-2xl shadow-xl grow hover:shadow-2xl transition-all duration-200">
+            <div class="flex bg-linear-to-br from-yellow-500 to-yellow-400 w-full rounded-t-2xl px-4 py-2">
+                <h1 class="font-bold text-xl text-slate-800">User information</h1>
+            </div>
+            <form [formGroup]="profileForm" class="flex flex-col gap-4 p-4">
+
+                <div class="bg-linear-to-b from-white to-slate-50 text-slate-800 rounded-lg p-4 shadow-sm transform transition hover:-translate-y-1 hover:shadow-lg">
+                    <div class="flex justify-between items-center">
+                        <div class="flex items-center gap-2">
+                            <ng-icon class="text-emerald-600! text-xl" name="faSolidVenusMars"></ng-icon>
+                            <span class="font-semibold">Gender</span>
+                        </div>
+
+                        @if (!isEditing('gender')) {
+                            <button type="button" (click)="startEditing('gender')" class="text-amber-600 hover:text-amber-800 cursor-pointer transition-all duration-200 hover:opacity-90 active:scale-95 active:opacity-80">
+                                <ng-icon name="faSolidPencil"></ng-icon>
+                            </button>
+                        }
+                    </div>
+
+                    @if (isEditing('gender')) {
+                        <div class="mt-2 animate-in fade-in duration-200">
+                            <select formControlName="gender" class="w-full p-2 rounded border border-slate-500 focus:outline-none focus:border-blue-500">
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
+                            </select>
+                            <div class="flex justify-end gap-2 mt-2">
+                                <button type="button" (click)="saveField('gender')" class="bg-green-500 text-white px-3 py-1 rounded cursor-pointer transition-all duration-200 hover:opacity-90 active:scale-95 active:opacity-80">
+                                    <ng-icon name="faSolidCheck"></ng-icon>
+                                </button>
+                                <button type="button" (click)="cancelEditing()" class="bg-red-500 text-white px-3 py-1 rounded cursor-pointer transition-all duration-200 hover:opacity-90 active:scale-95 active:opacity-80">
+                                    <ng-icon name="faSolidXmark"></ng-icon>
+                                </button>
+                            </div>
+                        </div>
+                    } @else {
+                        <p class="mt-1 text-slate-800">{{userData.gender}}</p>
+                    }
+                </div>
+
+                <div class="bg-linear-to-b from-white to-slate-50 text-slate-800 rounded-lg p-4 shadow-sm transform transition hover:-translate-y-1 hover:shadow-lg">
+                    <div class="flex justify-between items-center">
+                        <div class="flex items-center gap-2">
+                            <ng-icon class="text-emerald-600! text-xl" name="faSolidWeightScale"></ng-icon>
+                            <span class="font-semibold">Weight</span>
+                        </div>
+
+                        @if (!isEditing('weight')) {
+                            <button type="button" (click)="startEditing('weight')" class="text-amber-600 hover:text-amber-800 cursor-pointer transition-all duration-200 hover:opacity-90 active:scale-95 active:opacity-80">
+                                <ng-icon name="faSolidPencil"></ng-icon>
+                            </button>
+                        }
+                    </div>
+
+                    @if (isEditing('weight')) {
+                        <div class="mt-2 animate-in fade-in duration-200">
+                            <div class="flex items-center">
+                                <input formControlName="weight" class="w-full p-2 rounded-l border border-slate-500 focus:outline-none focus:border-blue-500" type="number">
+                                <span class="bg-slate-500 text-white p-2 rounded-r border border-slate-500">KG</span>
+                            </div>
+                            <div class="flex justify-end gap-2 mt-2">
+                                <button type="button" (click)="saveField('weight')" class="bg-green-500 text-white px-3 py-1 rounded cursor-pointer transition-all duration-200 hover:opacity-90 active:scale-95 active:opacity-80">
+                                    <ng-icon name="faSolidCheck"></ng-icon>
+                                </button>
+                                <button type="button" (click)="cancelEditing()" class="bg-red-500 text-white px-3 py-1 rounded cursor-pointer transition-all duration-200 hover:opacity-90 active:scale-95 active:opacity-80">
+                                    <ng-icon name="faSolidXmark"></ng-icon>
+                                </button>
+                            </div>
+                        </div>
+                    } @else {
+                        <p class="mt-1 text-slate-800">{{userData.weight}} KG</p>
+                    }
+                </div>
+
+                <div class="bg-linear-to-b from-white to-slate-50 text-slate-800 rounded-lg p-4 shadow-sm transform transition hover:-translate-y-1 hover:shadow-lg">
+                    <div class="flex justify-between items-center">
+                        <div class="flex items-center gap-2">
+                            <ng-icon class="text-emerald-600! text-xl" name="faSolidRulerVertical"></ng-icon>
+                            <span class="font-semibold">Height</span>
+                        </div>
+
+                        @if (!isEditing('height')) {
+                            <button type="button" (click)="startEditing('height')" class="text-amber-600 hover:text-amber-800 cursor-pointer transition-all duration-200 hover:opacity-90 active:scale-95 active:opacity-80">
+                                <ng-icon name="faSolidPencil"></ng-icon>
+                            </button>
+                        }
+                    </div>
+
+                    @if (isEditing('height')) {
+                        <div class="mt-2 animate-in fade-in duration-200">
+                            <div class="flex items-center">
+                                <input formControlName="height" class="w-full p-2 rounded-l border border-slate-500 focus:outline-none focus:border-blue-500" type="number">
+                                <span class="bg-slate-500 text-white p-2 rounded-r border border-slate-500">CM</span>
+                            </div>
+                            <div class="flex justify-end gap-2 mt-2">
+                                <button type="button" (click)="saveField('height')" class="bg-green-500 text-white px-3 py-1 rounded cursor-pointer transition-all duration-200 hover:opacity-90 active:scale-95 active:opacity-80">
+                                    <ng-icon name="faSolidCheck"></ng-icon>
+                                </button>
+                                <button type="button" (click)="cancelEditing()" class="bg-red-500 text-white px-3 py-1 rounded cursor-pointer transition-all duration-200 hover:opacity-90 active:scale-95 active:opacity-80">
+                                    <ng-icon name="faSolidXmark"></ng-icon>
+                                </button>
+                            </div>
+                        </div>
+                    } @else {
+                        <p class="mt-1 text-slate-800">{{userData.height}} CM</p>
+                    }
+                </div>
+
+                <div class="bg-linear-to-b from-white to-slate-50 text-slate-800 rounded-lg p-4 shadow-sm transform transition hover:-translate-y-1 hover:shadow-lg">
+                    <div class="flex justify-between items-center">
+                        <div class="flex items-center gap-2">
+                            <ng-icon class="text-emerald-600! text-xl" name="faSolidCalendarDay"></ng-icon>
+                            <span class="font-semibold">Date of Birth</span>
+                        </div>
+
+                        @if (!isEditing('dateOfBirth')) {
+                            <button type="button" (click)="startEditing('dateOfBirth')" class="text-amber-600 hover:text-amber-800 cursor-pointer">
+                                <ng-icon name="faSolidPencil"></ng-icon>
+                            </button>
+                        }
+                    </div>
+
+                    @if (isEditing('dateOfBirth')) {
+                        <div class="mt-2 animate-in fade-in duration-200">
+                            <input formControlName="dateOfBirth" class="w-full p-2 rounded border border-slate-500 focus:outline-none focus:border-blue-500" type="date">
+                            <div class="flex justify-end gap-2 mt-2">
+                                <button type="button" (click)="saveField('dateOfBirth')" class="bg-green-500 text-white px-3 py-1 rounded cursor-pointer transition-all duration-200 hover:opacity-90 active:scale-95 active:opacity-80">
+                                    <ng-icon name="faSolidCheck"></ng-icon>
+                                </button>
+                                <button type="button" (click)="cancelEditing()" class="bg-red-500 text-white px-3 py-1 rounded cursor-pointer transition-all duration-200 hover:opacity-90 active:scale-95 active:opacity-80">
+                                    <ng-icon name="faSolidXmark"></ng-icon>
+                                </button>
+                            </div>
+                        </div>
+                    } @else {
+                        <p class="mt-1 text-slate-800">{{userData.dateOfBirth | date:'mediumDate'}}</p>
+                    }
+                </div>
+
+                <div class="bg-linear-to-b from-white to-slate-50 text-slate-800 rounded-lg p-4 shadow-sm transform transition hover:-translate-y-1 hover:shadow-lg">
+                    <div class="flex justify-between items-center">
+                        <div class="flex items-center gap-2">
+                            <ng-icon class="text-emerald-600! text-xl" name="faSolidUser"></ng-icon>
+                            <span class="font-semibold">Name</span>
+                        </div>
+
+                        @if (!isEditing('name')) {
+                            <button type="button" (click)="startEditing('name')" class="text-amber-500 hover:text-amber-800 cursor-pointer transition-all duration-200 hover:opacity-90 active:scale-95 active:opacity-80">
+                                <ng-icon name="faSolidPencil"></ng-icon>
+                            </button>
+                        }
+                    </div>
+
+                    @if (isEditing('name')) {
+                        <div class="mt-2 animate-in fade-in duration-200">
+                            <input formControlName="name" class="w-full p-2 rounded border border-slate-500 focus:outline-none focus:border-blue-500" type="text">
+                            <div class="flex justify-end gap-2 mt-2">
+                                <button type="button" (click)="saveField('name')" class="bg-green-500 text-white px-3 py-1 rounded cursor-pointer transition-all duration-200 hover:opacity-90 active:scale-95 active:opacity-80">
+                                    <ng-icon name="faSolidCheck"></ng-icon>
+                                </button>
+                                <button type="button" (click)="cancelEditing()" class="bg-red-500 text-white px-3 py-1 rounded cursor-pointer transition-all duration-200 hover:opacity-90 active:scale-95 active:opacity-80">
+                                    <ng-icon name="faSolidXmark"></ng-icon>
+                                </button>
+                            </div>
+                        </div>
+                    } @else {
+                        <p class="mt-1 text-slate-800">{{userData.name}}</p>
+                    }
+                </div>
+
+                <div class="bg-linear-to-b from-white to-slate-50 text-slate-800 rounded-lg p-4 shadow-sm transform transition hover:-translate-y-1 hover:shadow-lg">
+                    <div class="flex justify-between items-center">
+                        <div class="flex items-center gap-2">
+                            <ng-icon class="text-emerald-600! text-xl" name="faSolidUser"></ng-icon>
+                            <span class="font-semibold">Username</span>
+                        </div>
+
+                        @if (!isEditing('username')) {
+                            <button type="button" (click)="startEditing('username')" class="text-amber-600 hover:text-amber-800 cursor-pointer transition-all duration-200 hover:opacity-90 active:scale-95 active:opacity-80">
+                                <ng-icon name="faSolidPencil"></ng-icon>
+                            </button>
+                        }
+                    </div>
+
+                    @if (isEditing('username')) {
+                        <div class="mt-2 animate-in fade-in duration-200">
+                            <input formControlName="username" class="w-full p-2 rounded border border-slate-500 focus:outline-none focus:border-blue-500" type="text">
+                            <div class="flex justify-end gap-2 mt-2">
+                                <button type="button" (click)="saveField('username')" class="bg-green-500 text-white px-3 py-1 rounded cursor-pointer transition-all duration-200 hover:opacity-90 active:scale-95 active:opacity-80">
+                                    <ng-icon name="faSolidCheck"></ng-icon>
+                                </button>
+                                <button type="button" (click)="cancelEditing()" class="bg-red-500 text-white px-3 py-1 rounded cursor-pointer transition-all duration-200 hover:opacity-90 active:scale-95 active:opacity-80">
+                                    <ng-icon name="faSolidXmark"></ng-icon>
+                                </button>
+                            </div>
+                        </div>
+                    } @else {
+                        <p class="mt-1 text-slate-800">{{userData.username}}</p>
+                    }
+                </div>
+
+                <div class="bg-linear-to-b from-white to-slate-50 text-slate-800 rounded-lg p-4 shadow-sm transform transition hover:-translate-y-1 hover:shadow-lg ">
+                    <div class="flex justify-between items-center">
+                        <div class="flex items-center gap-2">
+                            <ng-icon class="text-emerald-600! text-xl" name="faSolidEnvelope"></ng-icon>
+                            <span class="font-semibold">Email</span>
+                        </div>
+
+                        @if (!isEditing('email')) {
+                            <button type="button" (click)="startEditing('email')" class="text-amber-600 hover:text-amber-800 cursor-pointer transition-all duration-200 hover:opacity-90 active:scale-95 active:opacity-80">
+                                <ng-icon name="faSolidPencil"></ng-icon>
+                            </button>
+                        }
+                    </div>
+
+                    @if (isEditing('email')) {
+                        <div class="mt-2 animate-in fade-in duration-200">
+                            <input formControlName="email" class="w-full p-2 rounded border border-slate-500 focus:outline-none focus:border-blue-500" type="email">
+                            <div class="flex justify-end gap-2 mt-2">
+                                <button type="button" (click)="saveField('email')" class="bg-green-500 text-white px-3 py-1 rounded cursor-pointer transition-all duration-200 hover:opacity-90 active:scale-95 active:opacity-80">
+                                    <ng-icon name="faSolidCheck"></ng-icon>
+                                </button>
+                                <button type="button" (click)="cancelEditing()" class="bg-red-500 text-white px-3 py-1 rounded cursor-pointer transition-all duration-200 hover:opacity-90 active:scale-95 active:opacity-80">
+                                    <ng-icon name="faSolidXmark"></ng-icon>
+                                </button>
+                            </div>
+                        </div>
+                    } @else {
+                        <p class="mt-1 text-slate-800">{{userData.email}}</p>
+                    }
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+    <div class="flex flex-col gap-4 w-full max-w-150">
+        <div class="flex flex-col bg-linear-to-br from-amber-400 to-amber-500 w-auto rounded-2xl shadow-lg py-6 transition hover:shadow-2xl p-4 text-slate-800 gap-5">
+            <div class="flex sm:gap-10 items-center mx-auto flex-wrap flex-col sm:flex-row gap-5">
+                <ng-icon name="faSolidDumbbell" class="text-3xl md:text-5xl text-slate-100!"></ng-icon>
+                <h1 class="text-2xl md:text-4xl font-semibold text-center">Current Workout Streak</h1>
+            </div>
+            <p class="text-2xl md:text-3xl font-semibold mx-auto">4 Days</p>
+        </div>
+
+        <div class="bg-slate-200 rounded-2xl shadow-xl transition-all duration-200 hover:shadow-2xl">
+            <div class="flex bg-linear-to-br from-yellow-500 to-yellow-400 w-full rounded-t-2xl px-4 py-2">
+                <h1 class="font-bold text-xl text-slate-800">Workout tracking</h1>
+            </div>
+
+            <div class="flex flex-col gap-4">
+                <div  class="flex flex-col gap-4 p-4">
+                    <app-workouts-chart></app-workouts-chart>
+
+                </div>
+
+            </div>
+        </div>
+
+        <div class="bg-slate-200 rounded-2xl shadow-xl transition-all duration-200 hover:shadow-2xl">
+            <div class="flex bg-linear-to-br from-yellow-500 to-yellow-400 w-full rounded-t-2xl px-4 py-2">
+                <h1 class="font-bold text-xl text-slate-800">Weight tracking</h1>
+            </div>
+
+            <div class="flex flex-col gap-4">
+                <div class="flex flex-col gap-4 p-4">
+                    <app-weight-chart></app-weight-chart>
+
+
+                </div>
+
+
+            </div>
+        </div>
+
+        <div class="bg-slate-200 rounded-2xl shadow-xl transition-all duration-200 hover:shadow-2xl">
+            <div class="flex bg-linear-to-br from-yellow-500 to-yellow-400 w-full rounded-t-2xl px-4 py-2">
+                <h1 class="font-bold text-xl text-slate-800">Settings</h1>
+            </div>
+
+            <div class="p-4 space-y-4">
+                <div class="rounded-lg bg-linear-to-b from-white to-slate-50 p-3 shadow-sm">
+                    <div class="flex justify-between items-center">
+                        <div class="flex items-center gap-3">
+                            <ng-icon name="faSolidLock" class="text-emerald-600! text-xl"></ng-icon>
+                            <div>
+                                <div class="font-semibold">Security</div>
+                                <div class="text-sm text-slate-600">Manage 2FA and account security</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-3 grid grid-cols-1 gap-2 font-semibold text-slate-800">
+                        <button class="text-left w-full bg-linear-to-br from-yellow-400 to-yellow-500 cursor-pointer rounded px-3 py-2 hover:opacity-50 transition-all duration-200 flex items-center gap-2 justify-center text-lg sm:text-xl active:opacity-40">
+                            <ng-icon name="faSolidShieldHalved" class="self-center"></ng-icon>
+                            <span class="self-center">2FA</span>
+                        </button>
+                        <button class="text-left w-full bg-linear-to-br from-yellow-400 to-yellow-500 cursor-pointer rounded px-3 py-2 hover:opacity-50 transition-all duration-200 flex items-center gap-2 justify-center text-lg sm:text-xl active:opacity-40">
+                            <ng-icon name="faSolidKey" class="self-center"></ng-icon>
+                            <span class="self-center">Change Password</span>
+                        </button>
+                        <button class="text-left w-full bg-linear-to-br from-yellow-400 to-yellow-500 cursor-pointer rounded px-3 py-2 hover:opacity-50 transition-all duration-200 flex items-center gap-2 justify-center text-lg sm:text-xl active:opacity-40">
+                            <ng-icon name="faSolidEnvelope" class="self-center"></ng-icon>
+                            <span class="self-center">Change Email</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="rounded-lg bg-linear-to-b from-white to-slate-50 p-3 shadow-sm">
+                    <div class="flex items-center gap-3">
+                        <ng-icon name="faSolidAddressCard" class="text-emerald-600! text-xl"></ng-icon>
+                        <div>
+                            <div class="font-semibold">Account</div>
+                            <div class="text-sm text-slate-600">Account-level actions</div>
+                        </div>
+                    </div>
+                    <div class="mt-3 grid grid-cols-1 gap-2">
+                        <button class="text-left text-amber-100 font-semibold w-full bg-linear-to-br from-red-500 to-red-600 cursor-pointer rounded px-3 py-2 hover:opacity-50 transition-all duration-200 flex items-center gap-2 justify-center text-lg sm:text-xl active:opacity-40">
+                            <ng-icon name="faSolidTrash" class="self-center"></ng-icon>
+                            <span class="self-center">Delete account</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="flex flex-col gap-4 w-auto grow ">
+        <div class="bg-slate-200 rounded-2xl shadow-xl transition-all duration-200 hover:shadow-2xl">
+            <div class="flex bg-linear-to-br from-yellow-500 to-yellow-400 w-full rounded-t-2xl px-4 py-2">
+                <h1 class="font-bold text-xl text-slate-800">Last 10 workouts</h1>
+            </div>
+
+            <div class="h-100 overflow-y-auto">
+                <div class="p-4 flex flex-col gap-4">
+
+                    @for(workout of lastWorkouts; track $index) {
+                        <div class="bg-white rounded-xl p-4 text-slate-800 shadow-lg flex justify-between items-center transition hover:-translate-y-1 hover:bg-amber-200 cursor-pointer active:bg-amber-300">
+                            <div>
+                                <div class="font-semibold text-lg">{{workout.name}}</div>
+                                <div class="text-emerald-700 font-semibold">{{workout.date}}</div>
+                            </div>
+                            <div class="text-amber-600 font-semibold">{{workout.exercises}} exercises</div>
+                        </div>
+
+                    }
+
+
+                </div>
+            </div>
+
+        </div>
+
+        <div class="bg-slate-200 rounded-2xl shadow-xl transition-all duration-200 hover:shadow-2xl">
+            <div class="flex bg-linear-to-br from-yellow-500 to-yellow-400 w-full rounded-t-2xl px-4 py-2">
+                <h1 class="font-bold text-xl text-slate-800">Quick actions</h1>
+            </div>
+
+            <div class="p-4 bg-slate-200 space-y-3 rounded-b-2xl">
+                <div class="flex flex-col gap-2 font-semibold text-slate-800">
+                    <button class="text-left w-full bg-linear-to-br from-yellow-400 to-yellow-500 cursor-pointer rounded px-3 py-2 hover:opacity-50 transition-all duration-200 flex items-center gap-2 justify-center text-lg sm:text-xl active:opacity-40">
+                        <ng-icon name="faSolidDumbbell" class="self-center"></ng-icon>
+                        <span class="self-center">Add Workout</span>
+                    </button>
+                    <button class="text-left w-full bg-linear-to-br from-yellow-400 to-yellow-500 cursor-pointer rounded px-3 py-2 hover:opacity-50 transition-all duration-200 flex items-center gap-2 justify-center text-lg sm:text-xl active:opacity-40">
+                        <ng-icon name="faSolidScaleUnbalanced" class="self-center"></ng-icon>
+                        <span class="self-center">Log Weight</span>
+                    </button>
+                    <button class="text-left w-full bg-linear-to-br from-yellow-400 to-yellow-500 cursor-pointer rounded px-3 py-2 hover:opacity-50 transition-all duration-200 flex items-center gap-2 justify-center text-lg sm:text-xl active:opacity-40">
+                        <ng-icon name="faSolidUtensils" class="self-center"></ng-icon>
+                        <span class="self-center">Add Meal</span>
+                    </button>
+                    <button class="text-left w-full bg-linear-to-br from-yellow-400 to-yellow-500 cursor-pointer rounded px-3 py-2 hover:opacity-50 transition-all duration-200 flex items-center gap-2 justify-center text-lg sm:text-xl active:opacity-40">
+                        <ng-icon name="faSolidCalculator" class="self-center"></ng-icon>
+                        <span class="self-center">Calorie Calculator</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-slate-200 rounded-2xl shadow-xl transition-all duration-200 hover:shadow-2xl">
+            <div class="flex bg-linear-to-br from-yellow-500 to-yellow-400 w-full rounded-t-2xl px-4 py-2">
+                <h1 class="font-bold text-xl text-slate-800">Account information</h1>
+            </div>
+
+            <div class="flex flex-col gap-4 p-4">
+                <div class="bg-slate-200 rounded-b-2xl">
+                    <div class="bg-white rounded-xl p-4 text-slate-800 shadow-lg flex justify-between items-center">
+                        <div>
+                            <div class="font-semibold text-lg">Registered at:</div>
+
+                        </div>
+                        <div class="text-emerald-700 font-semibold">1.09.2026</div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-200 rounded-b-2xl">
+                    <div class="bg-white rounded-xl p-4 text-slate-800 shadow-lg flex justify-between items-center">
+                        <div>
+                            <div class="font-semibold text-lg">Status:</div>
+
+                        </div>
+                        <div class="text-emerald-700 font-semibold">Active</div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-200 rounded-b-2xl">
+                    <div class="bg-white rounded-xl p-4 text-slate-800 shadow-lg flex justify-between items-center">
+                        <div>
+                            <div class="font-semibold text-lg">Restrictions:</div>
+
+                        </div>
+                        <div class="text-emerald-700 font-semibold">None</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
