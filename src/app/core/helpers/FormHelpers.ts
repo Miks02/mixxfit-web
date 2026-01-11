@@ -1,4 +1,6 @@
+import { HttpErrorResponse } from "@angular/common/http";
 import { AbstractControl, FormArray, FormControl, FormGroup, ValidatorFn } from "@angular/forms";
+import { ValidationError } from "../models/ValidationError";
 
 export function addValidators(keys: string[], form: FormGroup, validators: ValidatorFn | ValidatorFn[]) {
     const validatorArray = Array.isArray(validators)
@@ -38,8 +40,26 @@ export function clearFormInputs(keys: string[], form: FormGroup) {
         c?.updateValueAndValidity({emitEvent: false, onlySelf: true})
 
     })
-form.updateValueAndValidity();
+    form.updateValueAndValidity();
 
+}
+
+export function handleValidationErrors(err: HttpErrorResponse, form: FormGroup) {
+    if(err.status === 400 && err.error.errors) {
+        const error: ValidationError = err.error;
+
+        Object.keys(error.errors).forEach(prop => {
+            const firstPropLetter = prop.charAt(0);
+
+            const transformedProp: string = prop.replace(firstPropLetter, firstPropLetter.toLowerCase())
+            const formControl = form.get(transformedProp);
+
+            if(formControl) {
+                formControl.setErrors({validationError: error.errors[prop][0]})
+            }
+        })
+    }
+    return;
 }
 
 export function minArrayLength(min: number): ValidatorFn {

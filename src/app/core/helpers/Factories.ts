@@ -29,17 +29,17 @@ export function createExerciseForm(fb: FormBuilder): FormGroup {
 export function createWorkoutForm(fb: FormBuilder): FormGroup {
     const today = new Date().toISOString().substring(0, 10);
     return fb.group({
-        workoutName: ['', Validators.required],
-        date: [today, Validators.required],
+        name: ['', Validators.required],
+        workoutDate: [today, Validators.required],
         exercises: fb.array([], [minArrayLength(1)]),
-        notes: ['']
+        notes: ['', [Validators.maxLength(50)]]
     })
 }
 
-export function  createWorkoutObject(form: FormGroup): CreateWorkoutDto {
+export function createWorkoutObject(form: FormGroup): CreateWorkoutDto {
     return {
-        name: form.get('workoutName')?.value,
-        workoutDate: form.get('date')?.value,
+        name: form.get('name')?.value,
+        workoutDate: form.get('workoutDate')?.value,
         notes: form.get('notes')?.value,
         exerciseEntries: (form.get('exercises')?.value as ExerciseEntryFormValue[]).map(exercise => ({
             name: exercise.exerciseName,
