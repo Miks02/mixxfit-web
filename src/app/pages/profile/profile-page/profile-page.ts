@@ -1,4 +1,4 @@
-import { Component, inject, signal, WritableSignal } from '@angular/core';
+import { Component, computed, inject, signal, WritableSignal } from '@angular/core';
 import { LayoutState } from '../../../layout/services/layout-state';
 import { FormBuilder, FormsModule, ReactiveFormsModule, FormGroup } from '@angular/forms';
 import { NgIcon, provideIcons } from "@ng-icons/core";
@@ -28,21 +28,17 @@ import {
 } from "@ng-icons/font-awesome/solid";
 import { WorkoutsChart } from "../../misc/workouts-chart/workouts-chart";
 import { WeightChart } from "../../misc/weight-chart/weight-chart";
-
-interface UserData {
-    name: string;
-    username: string;
-    email: string;
-    dateOfBirth: string;
-    gender: string;
-    weight: number;
-    height: number;
-    profileImage?: string;
-}
+import { ProfileService } from '../services/profile-service';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { UserDetailsDto } from '../../../core/models/UserDetailsDto';
+import { AccountStatus } from '../../../core/models/AccountStatus';
+import { tap } from 'rxjs';
+import { WorkoutListItemDto } from '../../workout/models/WorkoutListItemDto';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-profile-page',
-  imports: [NgIcon, FormsModule, ReactiveFormsModule, DatePipe, WorkoutsChart, WeightChart],
+  imports: [NgIcon, FormsModule, ReactiveFormsModule, DatePipe, WorkoutsChart, WeightChart, RouterLink],
   templateUrl: './profile-page.html',
   styleUrl: './profile-page.css',
   providers: [provideIcons({
@@ -70,6 +66,21 @@ interface UserData {
 export class ProfilePage {
     private layoutState = inject(LayoutState);
     private fb = inject(FormBuilder);
+    private profileService = inject(ProfileService);
+
+    userData: WritableSignal<UserDetailsDto | undefined> = signal(undefined);
+    recentWorkouts: WritableSignal<WorkoutListItemDto[]> = signal([]);
+    workoutStreak: WritableSignal<number | undefined> = signal(undefined);
+    dailyCalorieGoal: WritableSignal<number | undefined> = signal(undefined);
+
+    private profileDetails = toSignal(this.profileService.profilePage$.pipe(
+        tap(res => {
+            this.userData.set(res?.userDetails);
+            this.recentWorkouts.set(res?.recentWorkouts as WorkoutListItemDto[]);
+            this.workoutStreak.set(res?.workoutStreak);
+            this.dailyCalorieGoal.set(res?.dailyCalorieGoal);
+        })
+    ))
 
     profileForm: FormGroup = this.fb.group({}) as FormGroup;
     profilePictureForm: FormGroup = this.fb.group({}) as FormGroup;
@@ -77,36 +88,75 @@ export class ProfilePage {
     selectedProfileImageFile: WritableSignal<File | null> = signal(null);
     previewImage: WritableSignal<string> = signal("");
 
-    userData: UserData = {
-        name: 'Milan Nikolić',
-        username: 'mixx02',
-        email: 'milan@example.com',
-        dateOfBirth: '2002-11-03',
-        gender: 'Male',
-        weight: 85,
-        height: 172
-    };
+    genderLabel = computed(() => {
+        switch(this.userData()?.gender) {
+            case 1:
+                return "Male";
+            case 2:
+                return "Female";
+            case 3:
+                return "Other";
+            default:
+                return "Not specified";
+        }
+    })
+
+    weightLabel = computed(() => {
+        const weight = this.userData()?.weight;
+
+        if(!weight)
+            return "Not specified";
+        return `${weight} KG`
+    })
+
+    heightLabel = computed(() => {
+        const height = this.userData()?.height;
+
+        if(!height)
+            return "Not specified";
+        return `${height} CM`
+    })
+
+    accountStatusLabel = computed(() => {
+        const accountStatus = this.userData()?.accountStatus;
+
+        switch(accountStatus) {
+            case AccountStatus.Active:
+                return "Active";
+            case AccountStatus.Suspended:
+                return "Suspended";
+            case AccountStatus.Banned:
+                return "Banned";
+            default:
+                return "";
+        }
+    })
 
     ngOnInit() {
         this.layoutState.setTitle("My Profile");
         this.initForm();
         this.initSampleWorkouts();
+        this.profileService.getProfilePage().subscribe((res) => {
+            this.userData.set(res?.userDetails)
+        });
+
     }
 
     initForm() {
         this.profileForm = this.fb.group({
-            name: [this.userData.name],
-            username: [this.userData.username],
-            email: [this.userData.email],
-            dateOfBirth: [this.userData.dateOfBirth],
-            gender: [this.userData.gender],
-            weight: [this.userData.weight],
-            height: [this.userData.height]
+            name: [this.userData()?.fullName],
+            username: [this.userData()?.userName],
+            email: [this.userData()?.email],
+            dateOfBirth: [this.userData()?.gender],
+            gender: [this.userData()?.gender],
+            weight: [this.userData()?.weight],
+            height: [this.userData()?.height]
         });
     }
 
     startEditing(field: string) {
         this.editingField = field;
+        console.log(this.userData()?.fullName)
     }
 
     saveField(field: string) {
@@ -145,7 +195,7 @@ export class ProfilePage {
     getProfileImageSrc(): string {
         if (this.previewImage() !== "") return this.previewImage();
         if ((this.userData as any).profileImage) return (this.userData as any).profileImage;
-        return this.userData.gender === 'Male' ? 'user_male.png' : (this.userData.gender === 'Female' ? 'user_female.png' : 'user_other.png');
+        return this.userData()?.gender === 1 ? 'user_male.png' : (this.userData()?.gender === 2 ? 'user_female.png' : 'user_other.png');
     }
 
     onProfilePictureSelected(event: Event) {

@@ -6,7 +6,7 @@
                 <label class="w-55 h-55 bg-slate-700 text-white flex items-center justify-center text-2xl font-semibold rounded-md hover:opacity-50 transition-all duration-200 hover:shadow-2xl cursor-pointer overflow-hidden relative">
                     <input #fileInput type="file" accept="image/*" (change)="onProfilePictureSelected($event)" hidden name="profile_image">
                     <img [src]="getProfileImageSrc()" class="object-cover w-full h-full" alt="Profile">
-                    <div class="absolute right-2 bottom-2 bg-yellow-400 rounded-full p-1 w-11 h-11  shadow-md">
+                    <div class="absolute right-2 bottom-2 bg-yellow-400 rounded-full p-1 w-11 h-11">
                         <ng-icon name="faSolidPencil" class="text-slate-800 absolute top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2"></ng-icon>
                     </div>
                 </label>
@@ -18,11 +18,11 @@
                     </div>
                 }
 
-                <h4 class="mt-4 text-xl font-semibold text-slate-800">{{userData.name}}</h4>
+                <h4 class="mt-4 text-xl font-semibold text-slate-800">{{userData()?.fullName}}</h4>
             </form>
         </div>
 
-        <div class="bg-slate-200 rounded-2xl shadow-xl grow hover:shadow-2xl transition-all duration-200 max-h-190">
+        <div class="bg-slate-200 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-200">
             <div class="flex bg-linear-to-br from-yellow-500 to-yellow-400 w-full rounded-t-2xl px-4 py-2">
                 <h1 class="font-bold text-xl text-slate-800">User information</h1>
             </div>
@@ -45,9 +45,9 @@
                     @if (isEditing('gender')) {
                         <div class="mt-2 animate-in fade-in duration-200">
                             <select formControlName="gender" class="w-full p-2 rounded border border-slate-500 focus:outline-none focus:border-blue-500">
-                                <option value="Male">Male</option>
-                                <option value="Female">Female</option>
-                                <option value="Other">Other</option>
+                                <option [ngValue]="1">Male</option>
+                                <option [ngValue]="2">Female</option>
+                                <option [ngValue]="3">Other</option>
                             </select>
                             <div class="flex justify-end gap-2 mt-2">
                                 <button type="button" (click)="saveField('gender')" class="bg-green-500 text-white px-3 py-1 rounded cursor-pointer transition-all duration-200 hover:opacity-90 active:scale-95 active:opacity-80">
@@ -59,7 +59,7 @@
                             </div>
                         </div>
                     } @else {
-                        <p class="mt-1 text-slate-800">{{userData.gender}}</p>
+                        <p class="mt-1 text-slate-800">{{genderLabel()}}</p>
                     }
                 </div>
 
@@ -93,7 +93,7 @@
                             </div>
                         </div>
                     } @else {
-                        <p class="mt-1 text-slate-800">{{userData.weight}} KG</p>
+                        <p class="mt-1 text-slate-800">{{weightLabel()}}</p>
                     }
                 </div>
 
@@ -127,7 +127,7 @@
                             </div>
                         </div>
                     } @else {
-                        <p class="mt-1 text-slate-800">{{userData.height}} CM</p>
+                        <p class="mt-1 text-slate-800">{{heightLabel()}}</p>
                     }
                 </div>
 
@@ -158,7 +158,7 @@
                             </div>
                         </div>
                     } @else {
-                        <p class="mt-1 text-slate-800">{{userData.dateOfBirth | date:'mediumDate'}}</p>
+                        <p class="mt-1 text-slate-800">{{(userData()?.dateOfBirth | date:'mediumDate') ?? 'Not specified'}}</p>
                     }
                 </div>
 
@@ -166,7 +166,7 @@
                     <div class="flex justify-between items-center">
                         <div class="flex items-center gap-2">
                             <ng-icon class="text-emerald-600! text-xl" name="faSolidUser"></ng-icon>
-                            <span class="font-semibold">Name</span>
+                            <span class="font-semibold">Full name</span>
                         </div>
 
                         @if (!isEditing('name')) {
@@ -189,7 +189,7 @@
                             </div>
                         </div>
                     } @else {
-                        <p class="mt-1 text-slate-800">{{userData.name}}</p>
+                        <p class="mt-1 text-slate-800">{{userData()?.fullName ?? "N/A"}}</p>
                     }
                 </div>
 
@@ -220,7 +220,7 @@
                             </div>
                         </div>
                     } @else {
-                        <p class="mt-1 text-slate-800">{{userData.username}}</p>
+                        <p class="mt-1 text-slate-800">{{userData()?.userName ?? "N/A"}}</p>
                     }
                 </div>
 
@@ -251,7 +251,7 @@
                             </div>
                         </div>
                     } @else {
-                        <p class="mt-1 text-slate-800">{{userData.email}}</p>
+                        <p class="mt-1 text-slate-800">{{userData()?.email ?? "N/A"}}</p>
                     }
                 </div>
 
@@ -265,7 +265,7 @@
                 <ng-icon name="faSolidDumbbell" class="text-3xl md:text-5xl text-slate-100!"></ng-icon>
                 <h1 class="text-2xl md:text-4xl font-bold text-center">Current Workout Streak</h1>
             </div>
-            <p class="text-2xl md:text-3xl font-semibold mx-auto">4 Days</p>
+            <p class="text-2xl md:text-3xl font-semibold mx-auto">{{workoutStreak() || 'Not on a streak'}}</p>
         </div>
 
         <div class="bg-slate-200 rounded-2xl shadow-xl transition-all duration-200 hover:shadow-2xl">
@@ -324,10 +324,7 @@
                             <ng-icon name="faSolidKey" class="self-center"></ng-icon>
                             <span class="self-center">Change Password</span>
                         </button>
-                        <button class="text-left w-full bg-linear-to-br from-yellow-400 to-yellow-500 cursor-pointer rounded px-3 py-2 hover:opacity-50 transition-all duration-200 flex items-center gap-2 justify-center text-lg sm:text-xl active:opacity-40">
-                            <ng-icon name="faSolidEnvelope" class="self-center"></ng-icon>
-                            <span class="self-center">Change Email</span>
-                        </button>
+
                     </div>
                 </div>
 
@@ -357,26 +354,35 @@
                 <ng-icon name="faSolidFireFlameCurved" class="text-3xl md:text-5xl text-slate-100!"></ng-icon>
                 <h1 class="text-2xl md:text-4xl font-bold text-center">Daily Calorie Goal</h1>
             </div>
-            <p class="text-2xl md:text-3xl font-semibold mx-auto">2564 kCal</p>
+            <p class="text-2xl md:text-3xl font-semibold mx-auto">{{dailyCalorieGoal() ?? "N/A"}}</p>
         </div>
         <div class="bg-slate-200 rounded-2xl shadow-xl transition-all duration-200 hover:shadow-2xl">
             <div class="flex bg-linear-to-br from-yellow-500 to-yellow-400 w-full rounded-t-2xl px-4 py-2">
                 <h1 class="font-bold text-xl text-slate-800">Last 10 workouts</h1>
             </div>
 
-            <div class="h-100 overflow-y-auto">
+            <div class="max-h-90 overflow-y-auto">
                 <div class="p-4 flex flex-col gap-4">
-
-                    @for(workout of lastWorkouts; track $index) {
+                    @if(!recentWorkouts() || recentWorkouts().length === 0) {
+                        <div class="flex flex-col gap-2 justify-center items-center py-20">
+                            <ng-icon name="faSolidDumbbell" class="text-7xl text-slate-800!"></ng-icon>
+                            <h1 class="text-4xl text-slate-800 font-semibold">No workouts found</h1>
+                            <a routerLink="/workout-form" class="text-xl text-slate-700 font-semibold hover:text-slate-900 hover:opacity-80 hover:underline">Add your first workout</a>
+                        </div>
+                    }
+                    @else {
+                        @for(workout of recentWorkouts(); track $index) {
                         <div class="bg-white rounded-xl p-4 text-slate-800 shadow-lg flex justify-between items-center transition hover:-translate-y-1 hover:bg-amber-200 cursor-pointer active:bg-amber-300">
                             <div>
                                 <div class="font-semibold text-lg">{{workout.name}}</div>
-                                <div class="text-emerald-700 font-semibold">{{workout.date}}</div>
+                                <div class="text-emerald-700 font-semibold">{{workout.workoutDate | date}}</div>
                             </div>
-                            <div class="text-amber-600 font-semibold">{{workout.exercises}} exercises</div>
+                            <div class="text-amber-600 font-semibold">{{workout.exerciseCount}} exercises</div>
                         </div>
 
                     }
+                    }
+
 
 
                 </div>
@@ -391,10 +397,10 @@
 
             <div class="p-4 bg-slate-200 space-y-3 rounded-b-2xl">
                 <div class="flex flex-col gap-2 font-semibold text-slate-800">
-                    <button class="text-left w-full bg-linear-to-br from-yellow-400 to-yellow-500 cursor-pointer rounded px-3 py-2 hover:opacity-50 transition-all duration-200 flex items-center gap-2 justify-center text-lg sm:text-xl active:opacity-40">
+                    <a routerLink="/workout-form" class="text-left w-full bg-linear-to-br from-yellow-400 to-yellow-500 cursor-pointer rounded px-3 py-2 hover:opacity-50 transition-all duration-200 flex items-center gap-2 justify-center text-lg sm:text-xl active:opacity-40">
                         <ng-icon name="faSolidDumbbell" class="self-center"></ng-icon>
                         <span class="self-center">Add Workout</span>
-                    </button>
+                    </a>
                     <button class="text-left w-full bg-linear-to-br from-yellow-400 to-yellow-500 cursor-pointer rounded px-3 py-2 hover:opacity-50 transition-all duration-200 flex items-center gap-2 justify-center text-lg sm:text-xl active:opacity-40">
                         <ng-icon name="faSolidScaleUnbalanced" class="self-center"></ng-icon>
                         <span class="self-center">Log Weight</span>
@@ -423,7 +429,7 @@
                             <div class="font-semibold text-lg">Registered at:</div>
 
                         </div>
-                        <div class="text-emerald-700 font-semibold">1.09.2026</div>
+                        <div class="text-emerald-700 font-semibold">{{(userData()?.registeredAt | date) || "N/A"}}</div>
                     </div>
                 </div>
 
@@ -433,7 +439,11 @@
                             <div class="font-semibold text-lg">Status:</div>
 
                         </div>
-                        <div class="text-emerald-700 font-semibold">Active</div>
+                        <div
+                        [class.text-emerald-700]="userData()?.accountStatus === 1"
+                        [class.text-amber-700]="userData()?.accountStatus === 2"
+                        [class.text-red-700]="userData()?.accountStatus === 3"
+                        class="font-semibold">{{accountStatusLabel() || "N/A"}}</div>
                     </div>
                 </div>
             </div>
