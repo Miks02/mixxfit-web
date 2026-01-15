@@ -233,7 +233,7 @@
                     }
                 </div>
 
-                <div [class]="!isControlValid(usernameForm, 'username') && isEditing('username') ? 'border-2 border-red-500 rounded-lg' : 'bg-linear-to-b from-white to-slate-50 rounded-lg'" class="text-slate-800 p-4 shadow-sm transform transition hover:-translate-y-1 hover:shadow-lg">
+                <div [class]="!isControlValid(usernameForm, 'userName') && isEditing('username') ? 'border-2 border-red-500 rounded-lg' : 'bg-linear-to-b from-white to-slate-50 rounded-lg'" class="text-slate-800 p-4 shadow-sm transform transition hover:-translate-y-1 hover:shadow-lg">
                     <div class="flex justify-between items-center">
                         <div class="flex items-center gap-2">
                             <ng-icon class="text-emerald-600! text-xl" name="faSolidUser"></ng-icon>
@@ -249,18 +249,21 @@
 
                     @if (isEditing('username')) {
                         <form [formGroup]="usernameForm" (ngSubmit)="onSubmitUsername()" class="mt-2 animate-in fade-in duration-200">
-                            <input formControlName="username" class="w-full p-2 rounded border border-slate-500 focus:outline-none focus:border-blue-500" type="text">
-                            @if (usernameForm.get('username')?.hasError('required')) {
+                            <input formControlName="userName" class="w-full p-2 rounded border border-slate-500 focus:outline-none focus:border-blue-500" type="text">
+                            @if (usernameForm.get('userName')?.hasError('required')) {
                                 <p class="text-red-500 text-sm mt-1">Username is required</p>
                             }
-                            @if (usernameForm.get('username')?.hasError('minlength')) {
+                            @if (usernameForm.get('userName')?.hasError('minlength')) {
                                 <p class="text-red-500 text-sm mt-1">Minimum 4 characters required</p>
                             }
-                            @if (usernameForm.get('username')?.hasError('maxlength')) {
+                            @if (usernameForm.get('userName')?.hasError('maxlength')) {
                                 <p class="text-red-500 text-sm mt-1">Maximum 20 characters allowed</p>
                             }
+                            @if(usernameForm.get('userName')?.hasError("duplicateUserName")) {
+                                <p class="text-red-500 text-sm mt-1">Username is already taken</p>
+                            }
                             <div class="flex justify-end gap-2 mt-2">
-                                <button type="submit" [disabled]="usernameForm.invalid" class="bg-green-500 text-white px-3 py-1 rounded cursor-pointer transition-all duration-200 hover:opacity-90 active:scale-95 active:opacity-80 disabled:opacity-50">
+                                <button type="submit" [disabled]="usernameForm.invalid" class="bg-green-500 text-white px-3 py-1 rounded cursor-pointer transition-all duration-200 hover:opacity-90 active:scale-95 active:opacity-80 disabled:opacity-50 disabled:pointer-events-none">
                                     <ng-icon name="faSolidCheck"></ng-icon>
                                 </button>
                                 <button type="button" (click)="cancelEditing()" class="bg-red-500 text-white px-3 py-1 rounded cursor-pointer transition-all duration-200 hover:opacity-90 active:scale-95 active:opacity-80">
@@ -295,6 +298,9 @@
                             }
                             @if (emailForm.get('email')?.hasError('email')) {
                                 <p class="text-red-500 text-sm mt-1">Please enter a valid email address</p>
+                            }
+                             @if(emailForm.get('email')?.hasError("emailTaken")) {
+                                <p class="text-red-500 text-sm mt-1">Email address is already taken</p>
                             }
                             <div class="flex justify-end gap-2 mt-2">
                                 <button type="submit" [disabled]="emailForm.invalid" class="bg-green-500 text-white px-3 py-1 rounded cursor-pointer transition-all duration-200 hover:opacity-90 active:scale-95 active:opacity-80 disabled:opacity-50">

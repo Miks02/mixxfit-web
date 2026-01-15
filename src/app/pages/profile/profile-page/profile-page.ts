@@ -45,6 +45,8 @@ import {
     createProfilePictureForm
 } from '../../../core/helpers/Factories';
 import { UserService } from '../../../core/services/user-service';
+import { NotificationService } from '../../../core/services/notification-service';
+import { handleValidationErrors } from '../../../core/helpers/FormHelpers';
 
 @Component({
     selector: 'app-profile-page',
@@ -78,6 +80,7 @@ export class ProfilePage {
     private fb = inject(FormBuilder);
     private profileService = inject(ProfileService);
     private userService = inject(UserService);
+    private notificationService = inject(NotificationService)
 
 
     userData = toSignal(this.userService.userDetails$, {initialValue: null});
@@ -113,6 +116,7 @@ export class ProfilePage {
             console.log(this.profileDetails()?.recentWorkouts)
         });
     }
+
 
     genderLabel = computed(() => {
         switch(this.userData()?.gender) {
@@ -169,7 +173,7 @@ export class ProfilePage {
 
         this.fullNameForm.patchValue({ firstName, lastName });
         this.dateOfBirthForm.patchValue({ dateOfBirth: user.dateOfBirth || '' });
-        this.usernameForm.patchValue({ username: user.userName || '' });
+        this.usernameForm.patchValue({ userName: user.userName || '' });
         this.emailForm.patchValue({ email: user.email || '' });
         this.genderForm.patchValue({ gender: user.gender ?? null });
         this.weightForm.patchValue({ weight: user.weight ?? null });
@@ -183,6 +187,14 @@ export class ProfilePage {
     cancelEditing() {
         this.editingField = null;
         this.initForms();
+    }
+
+    private cancelIfUnchangedValue(newValue: any, currentValue: any): boolean {
+        if (newValue === currentValue) {
+            this.editingField = null;
+            return true;
+        }
+        return false;
     }
 
     isEditing(field: string): boolean {
@@ -203,14 +215,22 @@ export class ProfilePage {
         if (form.valid) {
             const firstName = form.get('firstName')?.value;
             const lastName = form.get('lastName')?.value;
-            if (this.userData()) {
-                (this.userData as any).fullName = `${firstName} ${lastName}`;
-            }
-            this.editingField = null;
+            const fullName = `${firstName} ${lastName}`.trim();
+
+            if (this.cancelIfUnchangedValue(fullName, this.userData()?.fullName ?? ''))
+                return;
 
             this.userService.updateFullName({firstName: firstName, lastName: lastName})
             .pipe(take(1))
-            .subscribe();
+            .subscribe({
+                next: () => {
+                    this.editingField = null;
+                    this.notificationService.showSuccess("Profile updated successfully")
+                },
+                error: (err) => {
+                    handleValidationErrors(err, form);
+                }
+            });
         }
     }
 
@@ -219,35 +239,77 @@ export class ProfilePage {
         if (form.valid) {
             const dateOfBirth = form.get('dateOfBirth')?.value;
 
-            this.editingField = null;
+            if (this.cancelIfUnchangedValue(dateOfBirth, this.userData()?.dateOfBirth ?? ''))
+                return;
 
             this.userService.updateDateOfBirth({dateOfBirth: dateOfBirth})
             .pipe(take(1))
-            .subscribe();
+            .subscribe({
+                next: () => {
+                    this.editingField = null;
+                    this.notificationService.showSuccess("Profile updated successfully")
+                },
+                error: (err) => {
+                    handleValidationErrors(err, form);
+                }
+            });
         }
     }
 
     onSubmitUsername() {
         const form = this.usernameForm;
-        if (form.valid) {
-            const username = form.get('username')?.value;
-            this.editingField = null;
+        const username = form.get('userName');
 
-            this.userService.updateUserName({userName: username})
+        if (this.cancelIfUnchangedValue(username?.value, this.userData()?.userName))
+            return;
+
+        if (form.valid) {
+
+            this.userService.updateUserName({userName: username?.value})
             .pipe(take(1))
-            .subscribe();
+            .subscribe({
+                next: () => {
+                    this.editingField = null;
+                    this.notificationService.showSuccess("Profile updated successfully")
+                },
+                error: (err) => {
+                    handleValidationErrors(err, form);
+                    if(err.error.status === 409 && err.error.errorCode) {
+                        if(err.error.errorCode === "DuplicateUserName") {
+                            username?.setErrors({duplicateUserName: true})
+                            form.updateValueAndValidity();
+                        }
+                    }
+                }
+            });
         }
     }
 
     onSubmitEmail() {
         const form = this.emailForm;
         if (form.valid) {
-            const email = form.get('email')?.value;
-            this.editingField = null;
+            const email = form.get('email');
 
-            this.userService.updateEmail({email: email})
+            if (this.cancelIfUnchangedValue(email?.value, this.userData()?.email))
+                return;
+
+            this.userService.updateEmail({email: email?.value})
             .pipe(take(1))
-            .subscribe();
+            .subscribe({
+                next: () => {
+                    this.editingField = null;
+                    this.notificationService.showSuccess("Profile updated successfully")
+                },
+                error: (err) => {
+                    handleValidationErrors(err, form);
+                    if(err.error.status === 409 && err.error.errorCode) {
+                        if(err.error.errorCode === "User.EmailAlreadyExists") {
+                            email?.setErrors({emailTaken: true})
+                            form.updateValueAndValidity();
+                        }
+                    }
+                }
+            });
         }
     }
 
@@ -255,11 +317,20 @@ export class ProfilePage {
         const form = this.genderForm;
         if (form.valid) {
             const gender = form.get('gender')?.value;
-            this.editingField = null;
+            if (this.cancelIfUnchangedValue(Number(gender), Number(this.userData()?.gender ?? null)))
+                return;
 
             this.userService.updateGender({gender: gender})
             .pipe(take(1))
-            .subscribe();
+            .subscribe({
+                next: () => {
+                    this.editingField = null;
+                    this.notificationService.showSuccess("Profile updated successfully")
+                },
+                error: (err) => {
+                    handleValidationErrors(err, form);
+                }
+            });
         }
     }
 
@@ -267,11 +338,20 @@ export class ProfilePage {
         const form = this.weightForm;
         if (form.valid) {
             const weight = form.get('weight')?.value;
-            this.editingField = null;
+            if (this.cancelIfUnchangedValue(Number(weight), Number(this.userData()?.weight ?? null)))
+                return;
 
             this.userService.updateWeight({weight: weight})
             .pipe(take(1))
-            .subscribe();
+            .subscribe({
+                next: () => {
+                    this.editingField = null;
+                    this.notificationService.showSuccess("Profile updated successfully")
+                },
+                error: (err) => {
+                    handleValidationErrors(err, form);
+                }
+            });
 
         }
     }
@@ -280,11 +360,17 @@ export class ProfilePage {
         const form = this.heightForm;
         if (form.valid) {
             const height = form.get('height')?.value;
-            this.editingField = null;
+            if (this.cancelIfUnchangedValue(Number(height), Number(this.userData()?.height ?? null)))
+                return;
 
             this.userService.updateHeight({height: height})
             .pipe(take(1))
-            .subscribe();
+            .subscribe({
+                next: () => {},
+                error: (err) => {
+                    handleValidationErrors(err, form);
+                }
+            });
         }
     }
 
