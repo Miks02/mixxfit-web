@@ -53,9 +53,9 @@ export function handleValidationErrors(err: HttpErrorResponse, form: FormGroup) 
 
             const transformedProp: string = prop.replace(firstPropLetter, firstPropLetter.toLowerCase())
             const formControl = form.get(transformedProp);
-
             if(formControl) {
                 formControl.setErrors({validationError: error.errors[prop][0]})
+                form.updateValueAndValidity();
             }
         })
     }

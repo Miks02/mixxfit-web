@@ -75,7 +75,7 @@ export function createDateOfBirthForm(fb: FormBuilder, dateOfBirth: string = '')
 
 export function createUsernameForm(fb: FormBuilder, username: string = ''): FormGroup {
     return fb.group({
-        username: [username, [Validators.required, Validators.minLength(4), Validators.maxLength(20)]]
+        userName: [username, [Validators.required, Validators.minLength(4), Validators.maxLength(20)]]
     });
 }
 
