@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { BehaviorSubject,  tap } from 'rxjs';
+import { BehaviorSubject,  map,  Observable,  of,  switchMap,  switchMapTo,  tap } from 'rxjs';
 import { UserDetailsDto } from '../models/UserDetailsDto';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment.development';
@@ -18,13 +18,18 @@ import { Gender } from '../models/Gender';
 })
 export class UserService {
     private api = environment.apiUrl;
-    private userDetailsSubject = new BehaviorSubject<UserDetailsDto | undefined>(undefined);
+    private userDetailsSubject = new BehaviorSubject<UserDetailsDto | null>(null);
     public userDetails$ = this.userDetailsSubject.asObservable();
 
     private http = inject(HttpClient);
 
-    set userDetails(userDetails: UserDetailsDto) {
-        this.userDetailsSubject.next(userDetails);
+    set userDetails(userDetails: Partial<UserDetailsDto>) {
+        const currentUser = this.userDetailsSubject.getValue() as UserDetailsDto
+        this.userDetailsSubject.next({...currentUser,...userDetails});
+    }
+
+    get isUserLoaded() {
+        return this.userDetailsSubject.getValue() !== null;
     }
 
     private mergeUserDetails<T extends Partial<UserDetailsDto>>(patch: T): UserDetailsDto {
@@ -33,80 +38,105 @@ export class UserService {
         return next;
     }
 
-    updateFullName(fullName: UpdateFullNameDto) {
-        return this.http.patch<ApiResponse<UpdateFullNameDto>>(`${this.api}/user/fullname`, fullName )
+    resetCurrentUser() {
+        this.userDetailsSubject.next(null);
+    }
+
+    getMe(): Observable<UserDetailsDto> {
+
+        if(!this.isUserLoaded) {
+            return this.http.get<ApiResponse<UserDetailsDto>>(`${this.api}/user/me`)
             .pipe(
                 tap((res) => {
-                    const next = this.mergeUserDetails({fullName: res.data.firstName + ' ' + res.data.lastName});
-                    this.userDetailsSubject.next(next)
+                    this.userDetails = res.data;
+                    console.log("User fetched successfully")
+                    console.log("USER: ", res.data);
                 }),
-                tap((res) => { console.log(res) })
+                map((res) => {
+                    return res.data;
+                })
             )
+
+        }
+        console.log("User is already loaded");
+        return  of(this.userDetailsSubject.getValue() as UserDetailsDto);
+
+    }
+
+    updateFullName(fullName: UpdateFullNameDto) {
+        return this.http.patch<ApiResponse<UpdateFullNameDto>>(`${this.api}/user/fullname`, fullName )
+        .pipe(
+            tap((res) => {
+                const next = this.mergeUserDetails({fullName: res.data.firstName + ' ' + res.data.lastName});
+                this.userDetailsSubject.next(next)
+            }),
+            tap((res) => { console.log(res) })
+        )
     }
 
     updateWeight(weight: UpdateWeightDto) {
         return this.http.patch<ApiResponse<number>>(`${this.api}/user/weight`, weight)
-            .pipe(
-                tap((res) => {
-                    const next = this.mergeUserDetails({weight: res.data});
-                    this.userDetailsSubject.next(next)
-                }),
-            )
+        .pipe(
+            tap((res) => {
+                const next = this.mergeUserDetails({weight: res.data});
+                this.userDetailsSubject.next(next)
+            }),
+        )
     }
 
     updateUserName(username: UpdateUserNameDto) {
         return this.http.patch<ApiResponse<string>>(`${this.api}/user/username`, username)
-            .pipe(
-                tap(res => {
-                    const next = this.mergeUserDetails({ userName: res.data });
-                    this.userDetailsSubject.next(next);
-                }),
-                tap(res => { console.log(res); })
-            );
+        .pipe(
+            tap(res => {
+                const next = this.mergeUserDetails({ userName: res.data });
+                this.userDetailsSubject.next(next);
+            }),
+            tap(res => { console.log(res); })
+        );
     }
 
     updateEmail(email: UpdateEmailDto) {
         return this.http.patch<ApiResponse<string>>(`${this.api}/user/email`, email)
-            .pipe(
-                tap(res => {
-                    const next = this.mergeUserDetails({ email: res.data });
-                    this.userDetailsSubject.next(next);
-                }),
-                tap(res => { console.log(res); })
-            );
+        .pipe(
+            tap(res => {
+                const next = this.mergeUserDetails({ email: res.data });
+                this.userDetailsSubject.next(next);
+            }),
+            tap(res => { console.log(res); })
+        );
     }
 
     updateDateOfBirth(dob: UpdateDateOfBirthDto) {
         return this.http.patch<ApiResponse<string>>(`${this.api}/user/date-of-birth`, dob)
-            .pipe(
-                tap(res => {
-                    const next = this.mergeUserDetails({ dateOfBirth: res.data });
-                    this.userDetailsSubject.next(next);
-                }),
-                tap(res => { console.log(res); })
-            );
+        .pipe(
+            tap(res => {
+                const next = this.mergeUserDetails({ dateOfBirth: res.data });
+                this.userDetailsSubject.next(next);
+            }),
+            tap(res => { console.log(res); })
+        );
     }
 
     updateGender(gender: UpdateGenderDto) {
         return this.http.patch<ApiResponse<Gender>>(`${this.api}/user/gender`, gender)
-            .pipe(
-                tap(res => {
-                    const next = this.mergeUserDetails({ gender: res.data });
-                    this.userDetailsSubject.next(next);
-                }),
-                tap(res => { console.log(res); })
-            );
+        .pipe(
+            tap(res => {
+                const next = this.mergeUserDetails({ gender: res.data });
+                this.userDetailsSubject.next(next);
+            }),
+            tap(res => { console.log(res); })
+        );
     }
 
     updateHeight(height: UpdateHeightDto) {
         return this.http.patch<ApiResponse<number>>(`${this.api}/user/height`, height)
-            .pipe(
-                tap(res => {
-                    const next = this.mergeUserDetails({ height: res.data });
-                    this.userDetailsSubject.next(next);
-                }),
-                tap(res => { console.log(res); })
-            );
+        .pipe(
+            tap(res => {
+                const next = this.mergeUserDetails({ height: res.data });
+                this.userDetailsSubject.next(next);
+            }),
+            tap(res => { console.log(res); })
+        );
     }
 
 
