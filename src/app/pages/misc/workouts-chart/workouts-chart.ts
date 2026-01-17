@@ -29,7 +29,7 @@ export class WorkoutsChart {
                 borderRadius: 6,
                 barPercentage: 1,
                 categoryPercentage: 0.8,
-                backgroundColor: 'rgba(234, 179, 8, 0.8)'
+                backgroundColor: 'rgba(235, 170, 11, 1)'
             }
         ]
     };

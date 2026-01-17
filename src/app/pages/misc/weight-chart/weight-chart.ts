@@ -26,8 +26,8 @@ export class WeightChart {
             {
                 label: 'Weight (kg)',
                 data: [82, 81.5, 81, 80.8, 80, 79.5, 79, 78.7, 78.5, 78, 77.5, 77],
-                borderColor: 'rgba(234, 179, 8, 1)',
-                backgroundColor: 'rgba(234, 179, 8, 0.15)',
+                borderColor: 'rgba(139, 92, 246, 1)',
+                backgroundColor: 'rgba(139, 92, 246, 0.2)',
                 fill: true,
                 tension: 0.35,
                 pointRadius: 3,
