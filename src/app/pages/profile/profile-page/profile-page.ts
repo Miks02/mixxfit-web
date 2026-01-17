@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal, WritableSignal } from '@angular/core';
+import { Component, computed, inject, Signal, signal, WritableSignal } from '@angular/core';
 import { LayoutState } from '../../../layout/services/layout-state';
 import { FormBuilder, FormsModule, ReactiveFormsModule, FormGroup } from '@angular/forms';
 import { NgIcon, provideIcons } from "@ng-icons/core";
@@ -19,7 +19,9 @@ import {
     faSolidShieldHalved,
     faSolidAddressCard,
     faSolidCalculator,
-    faSolidFireFlameCurved
+    faSolidFireFlameCurved,
+    faSolidScaleBalanced,
+    faSolidTrophy
 } from "@ng-icons/font-awesome/solid";
 import {
     faSolidLock,
@@ -31,8 +33,7 @@ import { WeightChart } from "../../misc/weight-chart/weight-chart";
 import { ProfileService } from '../services/profile-service';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { AccountStatus } from '../../../core/models/AccountStatus';
-import { take, tap } from 'rxjs';
-import { WorkoutListItemDto } from '../../workout/models/WorkoutListItemDto';
+import { take } from 'rxjs';
 import { RouterLink } from '@angular/router';
 import {
     createFullNameForm,
@@ -72,7 +73,9 @@ import { handleValidationErrors } from '../../../core/helpers/FormHelpers';
         faSolidShieldHalved,
         faSolidKey,
         faSolidAddressCard,
-        faSolidFireFlameCurved
+        faSolidFireFlameCurved,
+        faSolidScaleBalanced,
+        faSolidTrophy
     })]
 })
 export class ProfilePage {
@@ -80,21 +83,15 @@ export class ProfilePage {
     private fb = inject(FormBuilder);
     private profileService = inject(ProfileService);
     private userService = inject(UserService);
-    private notificationService = inject(NotificationService)
-
+    private notificationService = inject(NotificationService);
 
     userData = toSignal(this.userService.userDetails$, {initialValue: null});
 
-    recentWorkouts: WritableSignal<WorkoutListItemDto[]> = signal([]);
-    workoutStreak: WritableSignal<number | undefined> = signal(undefined);
-    dailyCalorieGoal: WritableSignal<number | undefined> = signal(undefined);
-    profileDetails = toSignal(this.profileService.profilePage$.pipe(
-        tap(res => {
-            this.recentWorkouts.set(res?.recentWorkouts as WorkoutListItemDto[]);
-            this.workoutStreak.set(res?.workoutStreak);
-            this.dailyCalorieGoal.set(res?.dailyCalorieGoal);
-        })
-    ), {initialValue: null})
+    recentWorkouts = computed(() => this.profileDetails()?.recentWorkouts ?? []);
+    workoutStreak = computed(() => this.profileDetails()?.workoutStreak);
+    dailyCalorieGoal = computed(() => this.profileDetails()?.dailyCalorieGoal);
+
+    profileDetails = toSignal(this.profileService.profilePage$, {initialValue: null})
 
     fullNameForm: FormGroup = createFullNameForm(this.fb);
     dateOfBirthForm: FormGroup = createDateOfBirthForm(this.fb);
