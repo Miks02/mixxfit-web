@@ -18,7 +18,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
         tap(res => console.log("Response: ", res)),
         catchError((error: any) => {
             console.log("Error happened ", error.status)
-            if(error.status == 401) {
+            if(error.status === 401) {
                 return handle401Error(req, next, authService);
             }
             return throwError(() => error);
@@ -48,7 +48,13 @@ function handle401Error(
                         return authService.logout().pipe(
                             switchMap(() => {
                                 return throwError(() => err)
+                            }),
+                            catchError((err) => {
+                                console.error("Error occurred while trying to refresh the token", err)
+                                authService.clearAuthData();
+                                return throwError(() => err)
                             })
+
                         )
                     }
 
