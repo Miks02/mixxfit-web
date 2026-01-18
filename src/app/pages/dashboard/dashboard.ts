@@ -1,13 +1,12 @@
 import { Component, inject } from '@angular/core';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import { faSolidDumbbell, faSolidFireFlameCurved, faSolidGlassWater, faSolidMoon, faSolidScaleUnbalanced, faSolidUtensils, faSolidCalculator } from '@ng-icons/font-awesome/solid';
+import { faSolidDumbbell, faSolidFireFlameCurved, faSolidGlassWater, faSolidMoon, faSolidScaleUnbalanced, faSolidUtensils, faSolidCalculator, faSolidGhost, faSolidMagnifyingGlassMinus } from '@ng-icons/font-awesome/solid';
 import {
     Chart, registerables
 } from 'chart.js';
 import { WorkoutsChart } from "../misc/workouts-chart/workouts-chart";
 import { LayoutState } from '../../layout/services/layout-state';
-import { AuthService } from '../../core/services/auth-service';
-import { Subject, take, takeUntil } from 'rxjs';
+import { take } from 'rxjs';
 import { WeightChart } from "../misc/weight-chart/weight-chart";
 import { RouterLink } from "@angular/router";
 import { DashboardState } from './services/dashboard-state';
@@ -21,12 +20,12 @@ Chart.register(...registerables)
     imports: [NgIcon, WorkoutsChart, WeightChart, RouterLink, DatePipe],
     templateUrl: './dashboard.html',
     styleUrl: './dashboard.css',
-    providers: [provideIcons({faSolidDumbbell, faSolidFireFlameCurved, faSolidGlassWater, faSolidMoon, faSolidScaleUnbalanced, faSolidUtensils, faSolidCalculator})]
+    providers: [provideIcons({faSolidDumbbell, faSolidFireFlameCurved, faSolidGlassWater, faSolidMoon, faSolidScaleUnbalanced, faSolidUtensils, faSolidCalculator, faSolidGhost})]
 })
 export class Dashboard {
-    layoutState = inject(LayoutState);
-    dashboardState = inject(DashboardState);
-    userService = inject(UserService);
+    private layoutState = inject(LayoutState);
+    private dashboardState = inject(DashboardState);
+    private userService = inject(UserService);
 
     dashboard$ = toSignal(this.dashboardState.dashboard$, {initialValue: null})
     user$ = toSignal(this.userService.userDetails$, {initialValue: null})
