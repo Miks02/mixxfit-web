@@ -16,3 +16,16 @@ body {
 .shadow-top {
   box-shadow: 0 -5px 5px -5px #333;
 }
+
+@theme {
+  @keyframes typewriter {
+    from {
+      width: 0;
+    }
+    to {
+      width: 12ch;
+    }
+  }
+
+  --animate-typewriter: typewriter 2s linear forwards;
+}
