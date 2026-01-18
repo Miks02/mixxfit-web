@@ -1,11 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, catchError, throwError } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { inject } from '@angular/core';
 import { RegisterRequest } from '../models/RegisterRequest';
 import { AuthResponse } from '../models/AuthResponse';
 import { Observable, map, tap } from 'rxjs';
-import { ApiResponse } from '../models/ApiResponse';
 import { UserDto } from '../models/UserDto';
 import { LoginRequest } from '../models/LoginRequest';
 import { Router } from '@angular/router';
@@ -34,45 +33,42 @@ export class AuthService {
     }
 
     register(model: RegisterRequest): Observable<UserDto> {
-        return this.http.post<ApiResponse<AuthResponse>>(`${this.api}/auth/register`, model, {withCredentials: true})
+        return this.http.post<AuthResponse>(`${this.api}/auth/register`, model, {withCredentials: true})
         .pipe(
             tap(res => {
-                this.accessToken = res.data.accessToken;
-                this.userService.userDetails = res.data.user;
+                this.accessToken = res.accessToken;
+                this.userService.userDetails = res.user;
                 this.router.navigate(['/dashboard']);
             }),
-            map(res => res.data.user)
+            map(res => res.user)
         )
     }
 
     login(model: LoginRequest): Observable<UserDto> {
-        return this.http.post<ApiResponse<AuthResponse>>(`${this.api}/auth/login`, model , {withCredentials: true})
+        return this.http.post<AuthResponse>(`${this.api}/auth/login`, model , {withCredentials: true})
         .pipe(
             tap(res => {
-                this.accessToken = res.data.accessToken;
-                this.userService.userDetails = res.data.user;
+                this.accessToken = res.accessToken;
+                this.userService.userDetails = res.user;
                 this.router.navigate(['/dashboard']);
             }),
-            map(res => res.data.user),
+            map(res => res.user),
         )
     }
 
-    logout(): Observable<ApiResponse<void>> {
+    logout(): Observable<void> {
 
-        return this.http.post<ApiResponse<void>>(`${this.api}/auth/logout`,{}, {withCredentials: true})
+        return this.http.post<void>(`${this.api}/auth/logout`,{}, {withCredentials: true})
         .pipe(
             tap(() => {
                 this.clearAuthData();
                 this.router.navigate(['/login']);
-            }), catchError((err) => {
-                this.router.navigate(['/login']);
-                return throwError(() => err)
             })
         )
     }
 
-    rotateAuthTokens(): Observable<ApiResponse<string>> {
-        return this.http.post<ApiResponse<string>>(`${this.api}/auth/refresh-token`, {}, {
+    rotateAuthTokens(): Observable<string> {
+        return this.http.post<string>(`${this.api}/auth/refresh-token`, {}, {
             withCredentials: true
         });
     }
@@ -90,6 +86,7 @@ export class AuthService {
 
     clearAuthData() {
         this.userService.resetCurrentUser();
+        localStorage.removeItem('token');
         this.accessTokenSubject.next(null);
     }
 

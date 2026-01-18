@@ -5,7 +5,6 @@ import { PagedResult } from '../../../core/models/PagedResult';
 import { WorkoutDetailsDto } from '../models/WorkoutDetailsDto';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { WorkoutListItemDto } from '../models/WorkoutListItemDto';
-import { ApiResponse } from '../../../core/models/ApiResponse';
 import { WorkoutPageDto } from '../models/WorkoutPageDto';
 import { WorkoutSummaryDto } from '../models/WorkoutSummaryDto';
 import { QueryParams } from '../../../core/models/QueryParams';
@@ -34,24 +33,24 @@ export class WorkoutService {
     getUserWorkoutsPage(): Observable<WorkoutPageDto> {
         const params = this.getHttpQueryParams();
 
-        return this.http.get<ApiResponse<WorkoutPageDto>>(`${this.api}/workout/overview`, {params}).pipe(
+        return this.http.get<WorkoutPageDto>(`${this.api}/workout/overview`, {params}).pipe(
             tap(res => {
-                this.pagedWorkoutsSubject.next(res.data.pagedWorkouts)
-                this.workoutSummarySubject.next(res.data.workoutSummary)
+                this.pagedWorkoutsSubject.next(res.pagedWorkouts)
+                this.workoutSummarySubject.next(res.workoutSummary)
             }),
-            map(res => res.data)
+            map(res => res)
         );
     }
 
     getUserWorkoutsByQuery(): Observable<PagedResult<WorkoutListItemDto>> {
         const params = this.getHttpQueryParams();
 
-        return this.http.get<ApiResponse<PagedResult<WorkoutListItemDto>>>(`${this.api}/workout`, {params})
+        return this.http.get<PagedResult<WorkoutListItemDto>>(`${this.api}/workout`, {params})
             .pipe(
                 tap(res => {
-                     this.pagedWorkoutsSubject.next(res.data)
+                     this.pagedWorkoutsSubject.next(res)
                 }),
-                 map(res => res.data)
+                 map(res => res)
             )
     }
 
@@ -62,8 +61,8 @@ export class WorkoutService {
 
     }
 
-    deleteWorkout(id: number): Observable<ApiResponse<void>> {
-        return this.http.delete<ApiResponse<void>>(`${this.api}/workout/delete/${id}`).pipe(
+    deleteWorkout(id: number): Observable<void> {
+        return this.http.delete<void>(`${this.api}/workout/delete/${id}`).pipe(
             tap(res => console.log("Delete response: ", res))
         )
     }

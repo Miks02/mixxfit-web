@@ -36,7 +36,7 @@ function handle401Error(
             return authService.rotateAuthTokens().pipe(
                 switchMap((res): Observable<HttpEvent<any>> => {
                     isRefreshing = false;
-                    const newToken = res.data;
+                    const newToken = res;
                     authService.accessToken = newToken;
                     console.log("Response from handle401error: ", res)
                     return next(addTokenHeader(req, newToken))
@@ -57,7 +57,6 @@ function handle401Error(
 
                         )
                     }
-
                     return throwError(() => err)
 
                 })
