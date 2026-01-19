@@ -7,5 +7,5 @@ export type WorkoutDetailsDto = {
     notes?: string,
     workoutDate: string,
     createdAt: string,
-    exerciseEntries: ExerciseEntry[]
+    exercises: ExerciseEntry[]
 }
