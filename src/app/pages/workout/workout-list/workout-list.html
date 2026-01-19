@@ -51,7 +51,7 @@
 
                 @for (workout of workouts(); track workout.id) {
                     <div
-                    (click)="isModalOpen.set(true)"
+                    (click)="getWorkoutDetails(workout.id)"
                     (click)="selectedWorkout = workout"
                     [class]="getWorkoutCardClass()"
                     class="flex items-center bg-slate-300 rounded-xl px-4 py-3 hover:bg-slate-400 hover:scale-[1.01] transition cursor-pointer group shadow-md">
@@ -86,7 +86,7 @@
                             }
 
                         </div>
-                   
+
                     <div class="min-w-20 flex flex-col gap-2 items-center">
 
                         <span class="text-emerald-700 self-end">
@@ -232,8 +232,3 @@
     </div>
 </div>
 </div>
-
-@if(isModalOpen()) {
-    <app-modal (close)="closeModal()" [data]="buildModal()"></app-modal>
-
-}

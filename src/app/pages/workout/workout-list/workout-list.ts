@@ -1,5 +1,5 @@
 import { Component, computed, inject, signal, WritableSignal } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 import { debounceTime, distinctUntilChanged, map, Subject, take, takeUntil, tap } from 'rxjs';
@@ -40,8 +40,7 @@ export class WorkoutList {
     layoutState = inject(LayoutState);
     workoutService = inject(WorkoutService);
     notificationService = inject(NotificationService);
-
-    isModalOpen: WritableSignal<boolean> = signal(false);
+    router = inject(Router);
 
     private destroy$ = new Subject<void>();
     private search$ = new Subject<string>();
@@ -137,42 +136,8 @@ export class WorkoutList {
         this.loadWorkoutsByQuery();
     }
 
-    deleteWorkout(id: number) {
-        this.workoutService
-            .deleteWorkout(id)
-            .pipe(take(1))
-            .subscribe(() => {
-                this.notificationService.showSuccess(
-                    'Workout has been deleted successfully.'
-                );
-                this.closeModal();
-                this.loadWorkouts();
-            });
-    }
-
-    editWorkout(id: number) {}
-
-    closeModal() {
-        this.isModalOpen.set(false);
-    }
-
-    buildModal(): ModalData {
-        const workoutDate = new Date(this.selectedWorkout?.workoutDate as string);
-        const formattedDate = new Intl.DateTimeFormat(navigator.language, {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-        }).format(workoutDate);
-
-        return {
-            title: `${this.selectedWorkout?.name} | ${formattedDate}`,
-            subtitle: 'Do you want to edit or delete this entry',
-            type: ModalType.Question,
-            primaryActionLabel: 'Edit',
-            secondaryActionLabel: 'Delete',
-            primaryAction: () => this.editWorkout(this.selectedWorkout!.id),
-            secondaryAction: () => this.deleteWorkout(this.selectedWorkout!.id)
-        };
+    getWorkoutDetails(id: number) {
+        this.router.navigate(['/workouts', id])
     }
 
     getWorkoutCardClass() {
@@ -180,5 +145,5 @@ export class WorkoutList {
             ? 'w-full'
             : 'w-full md:w-[calc(50%-0.375rem)]';
     }
-    
+
 }
