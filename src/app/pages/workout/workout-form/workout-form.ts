@@ -24,11 +24,11 @@ import { WorkoutService } from '../services/workout-service';
 import { Router } from '@angular/router';
 import { NotificationService } from '../../../core/services/notification-service';
 import { handleValidationErrors } from '../../../core/helpers/FormHelpers';
-import { take } from 'rxjs';
+import { DatePipe } from '@angular/common';
 
 @Component({
     selector: 'app-workout-form',
-    imports: [NgIcon, FormsModule, ExerciseForm, ReactiveFormsModule],
+    imports: [NgIcon, FormsModule, ExerciseForm, ReactiveFormsModule, DatePipe],
     templateUrl: './workout-form.html',
     styleUrl: './workout-form.css',
     providers: [provideIcons({faSolidTag, faSolidCalendarDay, faSolidDumbbell, faSolidFireFlameCurved, faSolidBookOpen, faSolidBars, faSolidNoteSticky, faSolidXmark, faSolidCircle, faSolidPersonRunning, faSolidChildReaching})]

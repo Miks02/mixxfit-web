@@ -52,7 +52,7 @@ export class AppLayout {
 
     private loadUser() {
         return this.userService.getMe()
-        .pipe(take(1))
+        .pipe(takeUntil(this.destroy$))
         .subscribe();
     }
 
