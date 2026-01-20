@@ -8,7 +8,7 @@ import { WorkoutsChart } from "../misc/workouts-chart/workouts-chart";
 import { LayoutState } from '../../layout/services/layout-state';
 import { take } from 'rxjs';
 import { WeightChart } from "../misc/weight-chart/weight-chart";
-import { RouterLink } from "@angular/router";
+import { Router, RouterLink } from "@angular/router";
 import { DashboardState } from './services/dashboard-state';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { UserService } from '../../core/services/user-service';
@@ -29,6 +29,7 @@ export class Dashboard {
     private dashboardState = inject(DashboardState);
     private userService = inject(UserService);
     private workoutService = inject(WorkoutService);
+    private router = inject(Router)
 
     dashboardSource = toSignal(this.dashboardState.dashboard$, {initialValue: null})
     userSource = toSignal(this.userService.userDetails$, {initialValue: null})
@@ -53,6 +54,10 @@ export class Dashboard {
         return this.workoutService.getUserWorkoutCountsByMonth(year)
         .pipe(take(1))
         .subscribe();
+    }
+
+    getToWorkout(id: number) {
+        this.router.navigate(['/workouts/', id])
     }
 
     getUserWeight() {
