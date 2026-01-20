@@ -27,8 +27,8 @@ export class Dashboard {
     private dashboardState = inject(DashboardState);
     private userService = inject(UserService);
 
-    dashboard$ = toSignal(this.dashboardState.dashboard$, {initialValue: null})
-    user$ = toSignal(this.userService.userDetails$, {initialValue: null})
+    dashboardSource = toSignal(this.dashboardState.dashboard$, {initialValue: null})
+    userSource = toSignal(this.userService.userDetails$, {initialValue: null})
 
     ngOnInit() {
         this.layoutState.setTitle("Dashboard")

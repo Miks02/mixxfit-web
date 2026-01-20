@@ -87,11 +87,11 @@ export class ProfilePage {
 
     userData = toSignal(this.userService.userDetails$, {initialValue: null});
 
-    recentWorkouts = computed(() => this.profileDetails()?.recentWorkouts ?? []);
-    workoutStreak = computed(() => this.profileDetails()?.workoutStreak);
-    dailyCalorieGoal = computed(() => this.profileDetails()?.dailyCalorieGoal);
+    recentWorkouts = computed(() => this.profileDetailsSource()?.recentWorkouts ?? []);
+    workoutStreak = computed(() => this.profileDetailsSource()?.workoutStreak);
+    dailyCalorieGoal = computed(() => this.profileDetailsSource()?.dailyCalorieGoal);
 
-    profileDetails = toSignal(this.profileService.profilePage$, {initialValue: null})
+    profileDetailsSource = toSignal(this.profileService.profilePage$, {initialValue: null})
 
     fullNameForm: FormGroup = createFullNameForm(this.fb);
     dateOfBirthForm: FormGroup = createDateOfBirthForm(this.fb);
@@ -110,7 +110,7 @@ export class ProfilePage {
         this.layoutState.setTitle("My Profile");
         this.profileService.getProfilePage().pipe(take(1)).subscribe((res) => {
             this.initForms();
-            console.log(this.profileDetails()?.recentWorkouts)
+            console.log(this.profileDetailsSource()?.recentWorkouts)
         });
     }
 

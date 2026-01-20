@@ -121,8 +121,6 @@ export class ExerciseForm {
         }
     }
 
-
-
     private handleExerciseTypeChange() {
         this.form.get('exerciseType')!.valueChanges
         .pipe(takeUntil(this.destroy$))
@@ -182,6 +180,7 @@ export class ExerciseForm {
             }
         })
     }
+    
     private createExerciseGroup(): FormGroup {
 
         const formValue = {...this.form.value}

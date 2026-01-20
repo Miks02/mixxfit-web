@@ -12,18 +12,14 @@ import {
     faSolidDumbbell,
     faSolidPersonRunning
 } from '@ng-icons/font-awesome/solid';
-
 import { LayoutState } from '../../../layout/services/layout-state';
 import { WorkoutService } from '../services/workout-service';
 import { WorkoutListItemDto } from '../models/WorkoutListItemDto';
-import { Modal } from '../../../layout/utilities/modal/modal';
-import { ModalData } from '../../../core/models/ModalData';
-import { ModalType } from '../../../core/models/ModalType';
 import { NotificationService } from '../../../core/services/notification-service';
 
 @Component({
     selector: 'app-workout-list',
-    imports: [RouterLink, DatePipe, Modal, FormsModule, NgIcon],
+    imports: [RouterLink, DatePipe, FormsModule, NgIcon],
     templateUrl: './workout-list.html',
     styleUrl: './workout-list.css',
     providers: [
@@ -55,7 +51,7 @@ export class WorkoutList {
 
     selectedWorkout: WorkoutListItemDto | null = null;
 
-    workouts = toSignal(
+    workoutsSource = toSignal(
         this.workoutService.pagedWorkouts$.pipe(
             tap(res => {
                 this.page = res.page;
@@ -67,7 +63,7 @@ export class WorkoutList {
         { initialValue: [] as WorkoutListItemDto[] }
     );
 
-    workoutSummary = toSignal(this.workoutService.workoutSummary$);
+    workoutSummarySource = toSignal(this.workoutService.workoutSummary$);
 
     totalPages = computed(() => {
         if (!this.totalCount() || !this.pageSize())
@@ -141,7 +137,7 @@ export class WorkoutList {
     }
 
     getWorkoutCardClass() {
-        return this.workouts().length < 2
+        return this.workoutsSource().length < 2
             ? 'w-full'
             : 'w-full md:w-[calc(50%-0.375rem)]';
     }

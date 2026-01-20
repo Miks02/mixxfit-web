@@ -37,7 +37,7 @@
                 />
             </div>
         </div>
-        @if(workouts().length === 0) {
+        @if(workoutsSource().length === 0) {
             <div class="flex flex-col gap-2 justify-center items-center py-20">
                 <ng-icon name="faSolidDumbbell" class="text-7xl text-slate-800!"></ng-icon>
                 <h1 class="text-4xl text-slate-800 font-semibold">No workouts found</h1>
@@ -49,7 +49,7 @@
 
             <div class="flex flex-wrap gap-3">
 
-                @for (workout of workouts(); track workout.id) {
+                @for (workout of workoutsSource(); track workout.id) {
                     <div
                     (click)="getWorkoutDetails(workout.id)"
                     (click)="selectedWorkout = workout"
@@ -123,7 +123,7 @@
     </div>
 
 </div>
-@if(workouts().length > 0) {
+@if(workoutsSource().length > 0) {
     <div class="border-b-2 border-yellow-500 my-4 w-[80%] mx-auto mt-auto"></div>
 
     <div class="bg-slate-300/60 rounded-xl shadow-md mx-4 my-3 px-6 py-3">
@@ -158,7 +158,7 @@
 
 <div class="hidden md:flex items-center">
     <span class="font-semibold text-slate-800 bg-yellow-500 px-3 py-1.5 rounded-lg shadow-sm transition-colors">
-        Workouts: {{workouts().length}} of {{totalCount()}}
+        Workouts: {{workoutsSource().length}} of {{totalCount()}}
     </span>
 </div>
 </div>
@@ -180,7 +180,7 @@
                         Total workouts
                     </p>
                     <p class="text-2xl font-bold text-slate-900">
-                        {{workoutSummary()?.workoutCount ?? 0}}
+                        {{workoutSummarySource()?.workoutCount ?? 0}}
                     </p>
                 </div>
 
@@ -189,7 +189,7 @@
                         Total exercises
                     </p>
                     <p class="text-2xl font-bold text-slate-900">
-                        {{workoutSummary()?.exerciseCount ?? 0}}
+                        {{workoutSummarySource()?.exerciseCount ?? 0}}
                     </p>
                 </div>
 
@@ -198,7 +198,7 @@
                         Last workout
                     </p>
                     <p class="text-lg font-bold text-emerald-700">
-                        {{(workoutSummary()?.lastWorkoutDate | date) ?? 'N/A'}}
+                        {{(workoutSummarySource()?.lastWorkoutDate | date) ?? 'N/A'}}
                     </p>
                 </div>
 
@@ -207,7 +207,7 @@
                         Favorite exercise type
                     </p>
                     <p class="text-2xl font-bold text-slate-900">
-                        @switch(workoutSummary()?.favoriteExerciseType) {
+                        @switch(workoutSummarySource()?.favoriteExerciseType) {
                             @case(1) {
                                 Weights
                             }

@@ -20,12 +20,11 @@ export class AppLayout {
     userService = inject(UserService);
     router = inject(Router);
 
-    user$ = toSignal(this.userService.userDetails$, {initialValue: null});
-
     private destroy$ = new Subject<void>();
 
     isSidebarOpen: boolean = false;
-    fullName: Signal<string> = computed(() => this.user$()?.fullName ?? "");
+    userSource = toSignal(this.userService.userDetails$, {initialValue: null});
+    fullName: Signal<string> = computed(() => this.userSource()?.fullName ?? "");
 
     ngOnInit() {
         this.loadUser();
