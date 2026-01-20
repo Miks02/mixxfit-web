@@ -1,11 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, computed, Input, signal, Signal, WritableSignal } from '@angular/core';
 import { BaseChartDirective } from 'ng2-charts';
 import {
     ChartConfiguration,
     ChartOptions,
-    ChartType,
     Chart, registerables
 } from 'chart.js';
+import { WorkoutsPerMonthDto } from '../../workout/models/WorkoutsPerMonthDto';
 Chart.register(...registerables)
 
 @Component({
@@ -17,22 +17,39 @@ Chart.register(...registerables)
 export class WorkoutsChart {
     public barChartType: 'bar' = "bar";
 
-    public barChartData: ChartConfiguration<'bar'>['data'] = {
-        labels: [
-            'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-            'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
-        ],
-        datasets: [
-            {
-                label: 'Workouts',
-                data: [15, 14, 18, 9, 14, 16, 22, 17, 12, 14, 16, 20],
-                borderRadius: 6,
-                barPercentage: 1,
-                categoryPercentage: 0.8,
-                backgroundColor: 'rgba(235, 170, 11, 1)'
-            }
-        ]
-    };
+    @Input()
+    workoutCountsSource: Signal<WorkoutsPerMonthDto | null> = signal(null)
+
+    public barChartData = computed<ChartConfiguration<'bar'>['data']>(() => {
+        const data = this.workoutCountsSource();
+
+        return {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            datasets: [
+                {
+                    label: 'Workouts',
+                    data: [
+                        data?.januaryWorkouts ?? 0,
+                        data?.februaryWorkouts ?? 0,
+                        data?.marchWorkouts ?? 0,
+                        data?.aprilWorkouts ?? 0,
+                        data?.mayWorkouts ?? 0,
+                        data?.juneWorkouts ?? 0,
+                        data?.julyWorkouts ?? 0,
+                        data?.augustWorkouts ?? 0,
+                        data?.septemberWorkouts ?? 0,
+                        data?.octoberWorkouts ?? 0,
+                        data?.novemberWorkouts ?? 0,
+                        data?.decemberWorkouts ?? 0
+                    ],
+                    borderRadius: 6,
+                    barPercentage: 1,
+                    categoryPercentage: 0.8,
+                    backgroundColor: 'rgba(235, 170, 11, 1)'
+                }
+            ]
+        };
+    });
 
     public barChartOptions: ChartOptions<'bar'> = {
         responsive: true,
