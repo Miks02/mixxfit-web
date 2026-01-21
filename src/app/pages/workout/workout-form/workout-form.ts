@@ -7,7 +7,6 @@ import {
     faSolidFireFlameCurved,
     faSolidBookOpen,
     faSolidBars,
-    faSolidPencil,
     faSolidNoteSticky,
     faSolidXmark,
     faSolidCircle,
@@ -128,6 +127,10 @@ export class WorkoutForm {
                 this.router.navigate(['/workouts'])
             },
             error: err  => {
+                if(err.error.errorCode === "General.LimitReached") {
+                    this.notificationService.showWarning("Slow down! You've logged 5 workouts today. Rest is just as important as the grind. Try again tomorrow!");
+                    return;
+                }
                 handleValidationErrors(err, this.form);
             }
         })
