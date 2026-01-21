@@ -10,7 +10,8 @@ import {
   faSolidArrowUpRightDots,
   faSolidMoon,
   faSolidCircleChevronLeft,
-  faSolidRightToBracket
+  faSolidRightToBracket,
+  faSolidScaleUnbalanced
 } from "@ng-icons/font-awesome/solid";
 import { RouterLink } from "@angular/router";
 
@@ -19,7 +20,7 @@ import { RouterLink } from "@angular/router";
     imports: [NgIcon, RouterLink],
     templateUrl: './sidebar.html',
     styleUrl: './sidebar.css',
-    providers: [provideIcons({faSolidUser, faSolidChartLine, faSolidGear, faSolidBookOpen, faSolidDumbbell, faSolidBowlRice, faSolidArrowUpRightDots, faSolidMoon, faSolidCircleChevronLeft, faSolidRightToBracket})]
+    providers: [provideIcons({faSolidUser, faSolidChartLine, faSolidGear, faSolidBookOpen, faSolidDumbbell, faSolidBowlRice, faSolidScaleUnbalanced, faSolidMoon, faSolidCircleChevronLeft, faSolidRightToBracket})]
 })
 export class Sidebar {
     @Input()
