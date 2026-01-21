@@ -7,6 +7,7 @@ import { AuthService } from '../../core/services/auth-service';
 import { Subject, take, takeUntil, tap } from 'rxjs';
 import { UserService } from '../../core/services/user-service';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { Gender } from '../../core/models/Gender';
 
 @Component({
     selector: 'app-app-layout',
@@ -25,6 +26,8 @@ export class AppLayout {
     isSidebarOpen: boolean = false;
     userSource = toSignal(this.userService.userDetails$, {initialValue: null});
     fullName: Signal<string> = computed(() => this.userSource()?.fullName ?? "");
+    userImage: Signal<string> = computed(() => this.userSource()?.imagePath ?? "")
+    userGender: Signal<Gender> = computed(() => this.userSource()?.gender ?? Gender.Other)
 
     ngOnInit() {
         this.loadUser();

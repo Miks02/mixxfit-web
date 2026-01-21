@@ -4,12 +4,15 @@
         <p class="hidden md:block">{{subtitle}}</p>
     </div>
 
-    <div class="flex gap-4 self-center">
-        <a routerLink="/profile" class="flex items-center rounded-xl py-2 px-4 gap-3 hover:bg-opacity-50 hover:bg-amber-400 transition-all duration-200 cursor-pointer">
-            <div class="rounded-full w-11 h-11 bg-slate-700 relative ">
-                <span class="absolute top-[50%] left-[50%] z-50 text-white transform -translate-x-1/2 -translate-y-1/2">{{fullName()!.at(0)}}</span>
-            </div>
-            <p class="hidden lg:block">{{fullName()}}</p>
+    <div class="flex gap-4 self-center hover:shadow-xl transition duration-200">
+        <a routerLink="/profile" class="flex items-center rounded-xl py-2 px-4 gap-3 hover:bg-opacity-50 hover:bg-amber-400 transition-all duration-200 cursor-pointer offset-shadow">
+            <img src="{{getProfileImageSrc()}}" class="rounded-full w-11 h-11 opacity-90">
+
+            <p
+            [class.text-blue-100]="userGender() === 1"
+            [class.text-rose-100]="userGender() === 2"
+            [class.text-slate-100]="userGender() === 3"
+            class="hidden lg:block">{{fullName()}}</p>
         </a>
     </div>
 

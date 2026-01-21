@@ -15,6 +15,7 @@ import { UserService } from '../../core/services/user-service';
 import { DatePipe } from '@angular/common';
 import { WorkoutService } from '../workout/services/workout-service';
 import { FormsModule } from '@angular/forms';
+import { Gender } from '../../core/models/Gender';
 Chart.register(...registerables)
 
 @Component({
@@ -80,6 +81,12 @@ export class Dashboard {
         if(age)
             return age
         return "N/A"
+    }
+
+    getProfileImageSrc(): string {
+        if ((this.userSource as any).profileImage)
+            return (this.userSource as any).profileImage;
+        return this.userSource()?.gender === Gender.Male ? 'user_male.png' : (this.userSource()?.gender === Gender.Female ? 'user_female.png' : 'user_other.png');
     }
 
 }
