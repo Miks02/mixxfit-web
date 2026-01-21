@@ -10,6 +10,7 @@ import { guestGuard } from './core/guards/guest-guard';
 import { WorkoutForm } from './pages/workout/workout-form/workout-form';
 import { ProfilePage } from './pages/profile/profile-page/profile-page';
 import { WorkoutDetails } from './pages/workout/workout-details/workout-details';
+import { WeightPage } from './pages/weight/weight-page/weight-page';
 
 export const routes: Routes = [
     {
@@ -37,6 +38,10 @@ export const routes: Routes = [
             {
                 path: "workout-form",
                 component: WorkoutForm
+            },
+            {
+                path: "weight",
+                component: WeightPage
             },
             {
                 path: "profile",
