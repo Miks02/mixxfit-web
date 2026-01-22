@@ -1,8 +1,7 @@
 # VitalOps
 
 VitalOps is a web application for tracking fitness workouts and weight, currently under development with Angular 21. Work in progress — core workout and weight-tracking features are implemented and being expanded.
-I am trying to make a fitness tracking web application that is intended to be as simple as possible for the user while providing all the neccessary functionalities that a person who works out would want.
-
+I am trying to make a fitness tracking web application that is intended to be as simple as possible for the user while providing all the neccessary functionalities that a person who is into fitness would want
 
 ## Current features
 - Add, delete and view workout details
@@ -16,10 +15,11 @@ I am trying to make a fitness tracking web application that is intended to be as
 
 ## Tech stack
 - Angular 21
-- TypeScript, HTML, CSS
+- TypeScript, Tailwind 4.1
 
 ## Backend
 - .NET 10 Web API
+- Repo: https://github.com/Miks02/vitalops-api
 
 ## Status
 Work in progress — expect improvements and new pages over time.
