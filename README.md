@@ -26,10 +26,9 @@ Work in progress — expect improvements and new pages over time.
 
 ## Screenshots
 Dashboard  
-<img alt="vitalops 3" src="https://github.com/user-attachments/assets/a2d9e4dc-06e6-47f4-b28e-cc548512d545" />
+<img alt="vital ops 1" src="https://github.com/user-attachments/assets/a8c06007-f227-4315-97a8-a8115b13f2d6" />
 
 Workout details  
-![Workout details](image2)
 <img alt="vitalops 2" src="https://github.com/user-attachments/assets/36854078-3c4d-45d6-a890-eed2f312d22a" />
 
 Weight tracking  
