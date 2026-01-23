@@ -1,59 +1,35 @@
-# VitalopsWeb
+# VitalOps
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.0.3.
+VitalOps is a web application for tracking fitness workouts and weight, currently under development with Angular 21. Work in progress — core workout and weight-tracking features are implemented and being expanded.
+I am trying to make a fitness tracking web application that is intended to be as simple as possible for the user while providing all the neccessary functionalities that a person who is into fitness would want
 
-## Development server
+## Current features
+- Add, delete and view workout details
+- Track weight with entries and a progress chart
+- User dashboard with the most important metrics that an app has
+- Profile page (work in progress)
 
-To start a local development server, run:
+## Planned
+- Nutrition tracking page
+- Sleep tracking page
 
-```bash
-ng serve
-```
+## Tech stack
+- Angular 21
+- TypeScript, Tailwind 4.1
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## Backend
+- .NET 10 Web API
+- Repo: https://github.com/Miks02/vitalops-api
 
-## Code scaffolding
+## Status
+Work in progress — expect improvements and new pages over time.
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+## Screenshots
+Dashboard  
+<img alt="vital ops 1" src="https://github.com/user-attachments/assets/a8c06007-f227-4315-97a8-a8115b13f2d6" />
 
-```bash
-ng generate component component-name
-```
+Workout details  
+<img alt="vitalops 2" src="https://github.com/user-attachments/assets/36854078-3c4d-45d6-a890-eed2f312d22a" />
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Weight tracking  
+<img alt="vitalops 3" src="https://github.com/user-attachments/assets/65866876-a097-41eb-8b65-178483847d74" />
