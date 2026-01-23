@@ -45,6 +45,15 @@ export class Dashboard {
         this.loadCounts();
     }
 
+    ngAfterViewInit() {
+        setTimeout(() => {
+            const elements = document.querySelectorAll('.typewriter');
+            elements.forEach((el: any) => {
+                el.style.setProperty('--target-width', el.scrollWidth + 'px');
+            });
+        }, 100);
+    }
+
     loadDashboard() {
         return this.dashboardState.getDashboard()
         .pipe(take(1))
@@ -62,7 +71,7 @@ export class Dashboard {
     }
 
     getUserWeight() {
-        const weight = this.userSource()?.weight
+        const weight = this.userSource()?.currentWeight
         if(weight)
             return weight + " KG"
         return "N/A"

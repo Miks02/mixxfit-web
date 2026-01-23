@@ -10,12 +10,12 @@
                 @if(!dashboardSource()?.dailyCalories) {
                     <div class="flex gap-4 items-center opacity-95">
                         <ng-icon name="faSolidGhost" class="text-xl"></ng-icon>
-                        <p class="text-xl font-semibold overflow-hidden whitespace-nowrap border-r-2 border-transparent animate-typewriter w-[14ch]">
+                        <p class="text-xl font-semibold overflow-hidden whitespace-nowra typewriter w-[14ch]">
                             No Data Yet...
                         </p>
                     </div>
                 } @else {
-                    <p class="text-xl font-semibold overflow-hidden whitespace-nowrap border-r-2 border-transparent  w-[12ch]">
+                    <p class="text-xl font-semibold overflow-hidden whitespace-nowra  w-[12ch]">
                         {{dashboardSource()?.dailyCalories}}
                     </p>
                 }
@@ -30,12 +30,12 @@
                 @if(!dashboardSource()?.waterIntake) {
                     <div class="flex gap-4 items-center opacity-95">
                         <ng-icon name="faSolidGhost" class="text-xl"></ng-icon>
-                        <p class="text-xl font-semibold overflow-hidden whitespace-nowrap border-r-2 border-transparent animate-typewriter w-[14ch]">
+                        <p class="text-xl font-semibold overflow-hidden whitespace-nowra typewriter w-[14ch]">
                             No Data Yet...
                         </p>
                     </div>
                 } @else {
-                    <p class="text-xl font-semibold overflow-hidden whitespace-nowrap border-r-2 border-transparent  w-[12ch]">
+                    <p class="text-xl font-semibold overflow-hidden whitespace-nowra  w-[12ch]">
                         {{dashboardSource()?.waterIntake}}
                     </p>
                 }
@@ -47,14 +47,14 @@
                     <h5 class="text-2xl">Sleep</h5>
                 </div>
                 @if(!dashboardSource()?.averageSleep) {
-                    <div class="flex gap-4 items-center opacity-95">
-                        <ng-icon name="faSolidGhost" class="text-xl"></ng-icon>
-                        <p class="text-xl font-semibold overflow-hidden whitespace-nowrap border-r-2 border-transparent animate-typewriter w-[14ch]">
+                    <div class="flex gap-4 items-center opacity-95  ">
+                        <ng-icon name="faSolidGhost" class="pr-2 text-xl"></ng-icon>
+                        <p class="text-xl font-semibold overflow-hidden typewriter">
                             No Data Yet...
                         </p>
                     </div>
                 } @else {
-                    <p class="text-xl font-semibold overflow-hidden whitespace-nowrap border-r-2 border-transparent  w-[12ch]">
+                    <p class="text-xl font-semibold overflow-hidden whitespace-nowra  w-[12ch]">
                         {{dashboardSource()?.averageSleep}}
                     </p>
                 }
@@ -69,14 +69,14 @@
                     <div class="flex gap-4 items-center opacity-95">
                         <ng-icon name="faSolidGhost" class="text-xl"></ng-icon>
                         <p
-                        class="text-xl font-semibold overflow-hidden whitespace-nowrap border-r-2 border-transparent w-[12ch] animate-typewriter">
+                        class="text-xl font-semibold overflow-hidden whitespace-nowra w-[12ch] typewriter">
                         No Data Yet...
                     </p>
                 </div>
             } @else {
                 <p
 
-                class="text-xl font-semibold overflow-hidden whitespace-nowrap border-r-2 border-transparent  w-[12ch]">
+                class="text-xl font-semibold overflow-hidden whitespace-nowra  w-[12ch]">
                 {{dashboardSource()?.lastWorkoutDate | date}}
             </p>
         }
@@ -102,9 +102,9 @@
     </div>
 
     <div class="flex flex-col min-h-70 gap-4">
-        <div  class="flex justify-between items-center h-full flex-col grow gap-4 p-4">
+        <div  class="flex justify-between items-center max-w-[90%] sm:w-auto h-full flex-col grow gap-4 p-4">
             @if(years()?.length! > 0) {
-                <app-workouts-chart [workoutCountsSource]="workoutsPerMonth" class="flex-1 min-w-85 max-w-[99%] mx-auto w-[26vw]"></app-workouts-chart>
+                <app-workouts-chart [workoutCountsSource]="workoutsPerMonth" class="flex-1 min-w-full sm:min-w-85 max-w-[99%] mx-auto w-[26vw]"></app-workouts-chart>
             }
             @else {
                 <div class="flex flex-col gap-2 justify-center items-center py-15 flex-1 min-w-85 max-w-[99%] mx-auto w-[26vw]">
@@ -126,8 +126,8 @@
     </div>
 
     <div class="flex flex-col gap-4 min-h-70">
-        <div  class="flex items-center justify-center flex-col grow gap-4 p-4">
-            <app-weight-chart class="flex-1 min-w-85 max-w-[99%] grow w-[26vw] mx-auto"></app-weight-chart>
+        <div  class="flex items-center justify-center flex-col grow gap-4 p-4 ">
+            <app-weight-chart class="flex-1 min-w-full sm:min-w-85 max-w-[99%] grow w-[26vw] mx-auto"></app-weight-chart>
         </div>
 
     </div>
@@ -147,7 +147,7 @@
             </a>
             <button class="text-left w-full bg-linear-to-br from-yellow-400 to-yellow-500 cursor-pointer rounded px-3 py-2 hover:opacity-50 transition-all duration-200 flex items-center gap-2 justify-center text-lg sm:text-xl active:opacity-40 shadow-all">
                 <ng-icon name="faSolidScaleUnbalanced" class="self-center"></ng-icon>
-                <span class="self-center">Log Weight</span>
+                <a routerLink="/weight" class="self-center">Log weight</a>
             </button>
             <button class="text-left w-full bg-linear-to-br from-yellow-400 to-yellow-500 cursor-pointer rounded px-3 py-2 hover:opacity-50 transition-all duration-200 flex items-center gap-2 justify-center text-lg sm:text-xl active:opacity-40 shadow-all">
                 <ng-icon name="faSolidUtensils" class="self-center"></ng-icon>
