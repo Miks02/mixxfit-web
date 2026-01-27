@@ -4,6 +4,8 @@ import { LayoutState } from '../../../layout/services/layout-state';
 import { NgIcon, provideIcons } from "@ng-icons/core";
 import {
   faSolidBullseye,
+  faSolidChevronLeft,
+  faSolidChevronRight,
   faSolidClock,
   faSolidGhost,
   faSolidMagnifyingGlassChart,
@@ -18,21 +20,23 @@ import { WeightEntryService } from '../services/weight-entry-service';
 import { take } from 'rxjs';
 import { NotificationService } from '../../../core/services/notification-service';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { DatePipe } from "@angular/common";
+import { DatePipe, DecimalPipe } from "@angular/common";
 import { UserService } from '../../../core/services/user-service';
+import { isControlValid } from '../../../core/helpers/FormHelpers';
 
 @Component({
     selector: 'app-weight-page',
-    imports: [WeightChart, NgIcon, ɵInternalFormsSharedModule, ReactiveFormsModule, ReactiveFormsModule, DatePipe],
+    imports: [WeightChart, NgIcon, ɵInternalFormsSharedModule, ReactiveFormsModule, ReactiveFormsModule, DatePipe, DecimalPipe],
     templateUrl: './weight-page.html',
     styleUrl: './weight-page.css',
-    providers: [provideIcons({faSolidScaleUnbalanced, faSolidBullseye, faSolidMagnifyingGlassChart, faSolidClock, faSolidWeightScale, faSolidNoteSticky, faSolidGhost})]
+    providers: [provideIcons({faSolidScaleUnbalanced, faSolidBullseye, faSolidMagnifyingGlassChart, faSolidClock, faSolidWeightScale, faSolidNoteSticky, faSolidGhost, faSolidChevronLeft, faSolidChevronRight})]
 })
 export class WeightPage  {
+    isControlValid = isControlValid
+
     private layoutState = inject(LayoutState);
     private weightService = inject(WeightEntryService);
     private userService = inject(UserService);
-    private router = inject(Router);
     private fb = inject(FormBuilder);
     private notificationService = inject(NotificationService);
 
@@ -66,14 +70,6 @@ export class WeightPage  {
         return this.weightService.getMyWeightSummary()
             .pipe(take(1))
             .subscribe()
-    }
-
-    isControlInvalid(control: string) {
-        const ct = this.form.get(control);
-
-        if(ct?.invalid && (ct?.touched || ct?.dirty))
-            return true;
-        return false;
     }
 
     onSubmit() {
@@ -118,13 +114,6 @@ export class WeightPage  {
     cancelTargetWeightEdit() {
         this.isTargetFormOpen.set(false);
         this.targetWeightForm.reset();
-    }
-
-    isTargetWeightControlInvalid() {
-        const ct = this.targetWeightForm.get('targetWeight');
-        if(ct?.invalid && (ct?.touched || ct?.dirty))
-            return true;
-        return false;
     }
 
     getTargetWeightMessage() {
