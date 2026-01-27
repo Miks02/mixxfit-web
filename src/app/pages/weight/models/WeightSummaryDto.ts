@@ -5,5 +5,5 @@ export type WeightSummaryDto = {
     firstEntry: WeightRecordDto,
     currentWeight: WeightRecordDto,
     progress: number,
-    weightEntries: WeightEntryDetailsDto[]
+    weightLogs: WeightRecordDto[]
 }
