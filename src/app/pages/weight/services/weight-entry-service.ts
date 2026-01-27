@@ -25,7 +25,7 @@ export class WeightEntryService {
 
     set weightSummary(summary: Partial<WeightSummaryDto>) {
         const current = this.weightSummarySubject.getValue() as WeightSummaryDto;
-        this.weightSummarySubject.next({...current, ...summary})
+        this.weightSummarySubject.next({...current, ...summary});
     }
 
     getMyWeightSummary() {
@@ -38,7 +38,7 @@ export class WeightEntryService {
                         progress: res.progress
                     }
                     this.weightLogsSubject.next(res.weightLogs);
-                    this.userService.userDetails = {currentWeight: res.currentWeight.weight}
+                    this.userService.userDetails = {currentWeight: res.currentWeight.weight};
                 })
             )
     }
@@ -52,9 +52,16 @@ export class WeightEntryService {
             );
     }
 
-    addWeightEntry(request: WeightCreateRequestDto) {
-        return this.http.post<WeightEntryDetailsDto>(`${this.api}/weight-entries`, request)
+    getMyWeightLog(id: number) {
+        return this.http.get<WeightEntryDetailsDto>(`${this.api}/weight-entries/${id}`);
+    }
 
+    addWeightEntry(request: WeightCreateRequestDto) {
+        return this.http.post<WeightEntryDetailsDto>(`${this.api}/weight-entries`, request);
+    }
+
+    deleteWeightEntry(id: number) {
+        return this.http.delete<void>(`${this.api}/weight-entries/${id}`);
     }
 
 }
