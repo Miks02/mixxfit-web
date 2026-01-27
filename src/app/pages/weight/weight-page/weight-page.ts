@@ -13,20 +13,19 @@ import {
   faSolidScaleUnbalanced,
   faSolidWeightScale
 } from "@ng-icons/font-awesome/solid";
-import { Router } from '@angular/router';
 import { FormBuilder, ɵInternalFormsSharedModule, ReactiveFormsModule, AbstractControl } from '@angular/forms';
 import { createWeightEntryForm, createTargetWeightForm } from '../../../core/helpers/Factories';
 import { WeightEntryService } from '../services/weight-entry-service';
 import { take } from 'rxjs';
 import { NotificationService } from '../../../core/services/notification-service';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { DatePipe, DecimalPipe } from "@angular/common";
+import { DatePipe, DecimalPipe, SlicePipe } from "@angular/common";
 import { UserService } from '../../../core/services/user-service';
 import { isControlValid } from '../../../core/helpers/FormHelpers';
 
 @Component({
     selector: 'app-weight-page',
-    imports: [WeightChart, NgIcon, ɵInternalFormsSharedModule, ReactiveFormsModule, ReactiveFormsModule, DatePipe, DecimalPipe],
+    imports: [WeightChart, NgIcon, ɵInternalFormsSharedModule, ReactiveFormsModule, ReactiveFormsModule, DatePipe, DecimalPipe, SlicePipe],
     templateUrl: './weight-page.html',
     styleUrl: './weight-page.css',
     providers: [provideIcons({faSolidScaleUnbalanced, faSolidBullseye, faSolidMagnifyingGlassChart, faSolidClock, faSolidWeightScale, faSolidNoteSticky, faSolidGhost, faSolidChevronLeft, faSolidChevronRight})]
@@ -42,11 +41,14 @@ export class WeightPage  {
 
     userSource = toSignal(this.userService.userDetails$, {initialValue: null});
     weightSummarySource = toSignal(this.weightService.weightSummary$, {initialValue: null});
+    weightLogsSource = toSignal(this.weightService.weightLogs$, {initialValue: null})
+
     form = createWeightEntryForm(this.fb);
     targetWeightForm = createTargetWeightForm(this.fb);
     isTargetFormOpen = signal(false);
     isEditingTarget = computed(() => this.isTargetFormOpen())
 
+    weightLogs = computed(() => this.weightLogsSource());
     firstEntry = computed(() => this.weightSummarySource()?.firstEntry)
     currentWeight = computed(() => this.weightSummarySource()?.currentWeight)
     progress = computed(() => this.weightSummarySource()?.progress)
