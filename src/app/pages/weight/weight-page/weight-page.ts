@@ -1,4 +1,4 @@
-import { Component, computed, inject, AfterViewInit, signal, WritableSignal } from '@angular/core';
+import { Component, computed, inject, AfterViewInit, signal, WritableSignal, isWritableSignal } from '@angular/core';
 import { WeightChart } from "../../misc/weight-chart/weight-chart";
 import { LayoutState } from '../../../layout/services/layout-state';
 import { NgIcon, provideIcons } from "@ng-icons/core";
@@ -13,10 +13,10 @@ import {
     faSolidScaleUnbalanced,
     faSolidWeightScale
 } from "@ng-icons/font-awesome/solid";
-import { FormBuilder, ɵInternalFormsSharedModule, ReactiveFormsModule, AbstractControl } from '@angular/forms';
+import { FormBuilder, ɵInternalFormsSharedModule, ReactiveFormsModule, AbstractControl, FormsModule } from '@angular/forms';
 import { createWeightEntryForm, createTargetWeightForm } from '../../../core/helpers/Factories';
 import { WeightEntryService } from '../services/weight-entry-service';
-import { take } from 'rxjs';
+import { take, tap } from 'rxjs';
 import { NotificationService } from '../../../core/services/notification-service';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { DatePipe, DecimalPipe, SlicePipe } from "@angular/common";
@@ -30,7 +30,7 @@ import { formatDate } from '../../../core/helpers/Utility';
 
 @Component({
     selector: 'app-weight-page',
-    imports: [WeightChart, NgIcon, ɵInternalFormsSharedModule, ReactiveFormsModule, ReactiveFormsModule, DatePipe, DecimalPipe, SlicePipe, Modal],
+    imports: [WeightChart, NgIcon, ɵInternalFormsSharedModule, ReactiveFormsModule, ReactiveFormsModule, DatePipe, DecimalPipe, SlicePipe, Modal, FormsModule],
     templateUrl: './weight-page.html',
     styleUrl: './weight-page.css',
     providers: [provideIcons({faSolidScaleUnbalanced, faSolidBullseye, faSolidMagnifyingGlassChart, faSolidClock, faSolidWeightScale, faSolidNoteSticky, faSolidGhost, faSolidChevronLeft, faSolidChevronRight})]
@@ -48,14 +48,20 @@ export class WeightPage  {
     selectedWeightEntry: WritableSignal<WeightEntryDetailsDto | null> = signal(null);
     userSource = toSignal(this.userService.userDetails$, {initialValue: null});
     weightSummarySource = toSignal(this.weightService.weightSummary$, {initialValue: null});
-    weightLogsSource = toSignal(this.weightService.weightLogs$, {initialValue: null})
+    weightListDetailsSource = toSignal(this.weightService.weightListDetails$, {initialValue: null})
 
     form = createWeightEntryForm(this.fb);
     targetWeightForm = createTargetWeightForm(this.fb);
     isTargetFormOpen = signal(false);
     isEditingTarget = computed(() => this.isTargetFormOpen())
 
-    weightLogs = computed(() => this.weightLogsSource());
+    selectedYear: WritableSignal<number | null> = signal(null);
+    selectedMonth: WritableSignal<number | null> = signal(null);
+
+    months = computed(() => this.weightListDetailsSource()?.months);
+    years = computed(() => this.weightSummarySource()?.years);
+
+    weightLogs = computed(() => this.weightListDetailsSource()?.weightLogs);
     firstEntry = computed(() => this.weightSummarySource()?.firstEntry)
     currentWeight = computed(() => this.weightSummarySource()?.currentWeight)
     progress = computed(() => this.weightSummarySource()?.progress)
@@ -76,7 +82,13 @@ export class WeightPage  {
     }
 
     loadWeightSummary() {
-        return this.weightService.getMyWeightSummary()
+        return this.weightService.getMyWeightSummary(this.selectedMonth(), this.selectedYear())
+        .pipe(take(1))
+        .subscribe()
+    }
+
+    loadWeightLogs() {
+        return this.weightService.getMyWeightLogs(this.selectedMonth(), this.selectedYear())
         .pipe(take(1))
         .subscribe()
     }
@@ -132,11 +144,11 @@ export class WeightPage  {
 
     loadWeightEntry(id: number) {
         return this.weightService.getMyWeightLog(id)
-            .pipe(take(1))
-            .subscribe((res) => {
-                this.selectedWeightEntry.set(res)
-                this.isModalOpen.set(true);
-            })
+        .pipe(take(1))
+        .subscribe((res) => {
+            this.selectedWeightEntry.set(res)
+            this.isModalOpen.set(true);
+        })
 
     }
 
@@ -145,12 +157,12 @@ export class WeightPage  {
             return;
 
         return this.weightService.deleteWeightEntry(this.selectedWeightEntry()?.id!)
-            .pipe(take(1))
-            .subscribe(() => {
-                this.loadWeightSummary()
-                this.isModalOpen.set(false);
-                this.notificationService.showSuccess("Weight log has been deleted successfully")
-            })
+        .pipe(take(1))
+        .subscribe(() => {
+            this.loadWeightSummary()
+            this.isModalOpen.set(false);
+            this.notificationService.showSuccess("Weight log has been deleted successfully")
+        })
     }
 
     closeModal() {
@@ -171,6 +183,25 @@ export class WeightPage  {
             primaryAction: () => this.deleteWeightEntry(),
             secondaryAction: () => this.isModalOpen.set(false)
         };
+    }
+
+    convertMonthNumberToString(month: number): string {
+        switch(month) {
+            case 1: return "January";
+            case 2: return "February";
+            case 3: return "March";
+            case 4: return "April";
+            case 5: return "May";
+            case 6 :return "June";
+            case 7: return "July";
+            case 8: return "August";
+            case 9: return "September";
+            case 10: return "October";
+            case 11: return "November";
+            case 12: return "December";
+            default:
+                return "Undefined"
+        }
     }
 
 

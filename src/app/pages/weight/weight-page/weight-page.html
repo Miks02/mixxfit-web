@@ -142,26 +142,23 @@
         <div class="flex justify-between items-center bg-linear-to-br from-violet-500 to-violet-400 w-full rounded-t-2xl px-4 py-2 flex-wrap gap-2">
             <h1 class="font-bold text-xl text-slate-200">Weight Logs</h1>
             <div class="flex gap-2 flex-wrap items-center">
-                <select class="px-2 py-1 bg-slate-100 rounded-md shadow-md text-slate-800 font-semibold text-sm">
-                    <option selected disabled hidden>Month</option>
-                    <option value="1">January</option>
-                    <option value="2">February</option>
-                    <option value="3">March</option>
-                    <option value="4">April</option>
-                    <option value="5">May</option>
-                    <option value="6">June</option>
-                    <option value="7">July</option>
-                    <option value="8">August</option>
-                    <option value="9">September</option>
-                    <option value="10">October</option>
-                    <option value="11">November</option>
-                    <option value="12">December</option>
+                <select
+                [(ngModel)]="selectedMonth"
+                (change)="loadWeightLogs()"
+                class="px-2 py-1 bg-slate-100 rounded-md shadow-md text-slate-800 font-semibold text-sm min-w-25 text-center">
+                <option [ngValue]="null" selected disabled hidden>{{convertMonthNumberToString(months()?.at(0)!)}}</option>
+                    @for(month of months(); track month) {
+                        <option [ngValue]="month">{{convertMonthNumberToString(month)}}</option>
+                    }
                 </select>
-                <select class="px-2 py-1 bg-slate-100 rounded-md shadow-md text-slate-800 font-semibold text-sm">
-                    <option selected disabled hidden>Year</option>
-                    <option value="2026">2026</option>
-                    <option value="2025">2025</option>
-                    <option value="2024">2024</option>
+                <select
+                [(ngModel)]="selectedYear"
+                (change)="loadWeightLogs()"
+                class="px-2 py-1 bg-slate-100 rounded-md shadow-md text-slate-800 font-semibold text-sm text-center">
+                <option [ngValue]="null" selected disabled hidden>{{years()?.at(0)}}</option>
+                    @for(year of years(); track year) {
+                        <option [ngValue]="year">{{year}}</option>
+                    }
                 </select>
             </div>
         </div>
