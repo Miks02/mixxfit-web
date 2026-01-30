@@ -1,9 +1,10 @@
-import { Component, computed, inject, AfterViewInit, signal, WritableSignal, isWritableSignal } from '@angular/core';
+import { Component, computed, inject, signal, WritableSignal } from '@angular/core';
 import { WeightChart } from "../../misc/weight-chart/weight-chart";
 import { LayoutState } from '../../../layout/services/layout-state';
 import { NgIcon, provideIcons } from "@ng-icons/core";
 import {
     faSolidBullseye,
+    faSolidChartLine,
     faSolidChevronLeft,
     faSolidChevronRight,
     faSolidClock,
@@ -16,7 +17,7 @@ import {
 import { FormBuilder, ɵInternalFormsSharedModule, ReactiveFormsModule, AbstractControl, FormsModule } from '@angular/forms';
 import { createWeightEntryForm, createTargetWeightForm } from '../../../core/helpers/Factories';
 import { WeightEntryService } from '../services/weight-entry-service';
-import { take, tap } from 'rxjs';
+import { take } from 'rxjs';
 import { NotificationService } from '../../../core/services/notification-service';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { DatePipe, DecimalPipe, SlicePipe } from "@angular/common";
@@ -33,7 +34,7 @@ import { formatDate } from '../../../core/helpers/Utility';
     imports: [WeightChart, NgIcon, ɵInternalFormsSharedModule, ReactiveFormsModule, ReactiveFormsModule, DatePipe, DecimalPipe, SlicePipe, Modal, FormsModule],
     templateUrl: './weight-page.html',
     styleUrl: './weight-page.css',
-    providers: [provideIcons({faSolidScaleUnbalanced, faSolidBullseye, faSolidMagnifyingGlassChart, faSolidClock, faSolidWeightScale, faSolidNoteSticky, faSolidGhost, faSolidChevronLeft, faSolidChevronRight})]
+    providers: [provideIcons({faSolidScaleUnbalanced, faSolidBullseye, faSolidMagnifyingGlassChart, faSolidClock, faSolidWeightScale, faSolidNoteSticky, faSolidGhost, faSolidChevronLeft, faSolidChevronRight, faSolidChartLine})]
 })
 export class WeightPage  {
     isControlValid = isControlValid
@@ -62,10 +63,11 @@ export class WeightPage  {
     years = computed(() => this.weightSummarySource()?.years);
 
     weightLogs = computed(() => this.weightListDetailsSource()?.weightLogs);
-    firstEntry = computed(() => this.weightSummarySource()?.firstEntry)
-    currentWeight = computed(() => this.weightSummarySource()?.currentWeight)
-    progress = computed(() => this.weightSummarySource()?.progress)
-    targetWeight = computed(() => this.userSource()?.targetWeight)
+    firstEntry = computed(() => this.weightSummarySource()?.firstEntry);
+    currentWeight = computed(() => this.weightSummarySource()?.currentWeight);
+    progress = computed(() => this.weightSummarySource()?.progress);
+    targetWeight = computed(() => this.userSource()?.targetWeight);
+    weightChart = computed(() => this.weightSummarySource()?.weightChart!);
 
     ngOnInit() {
         this.layoutState.setTitle("Weight Tracking");
@@ -82,7 +84,7 @@ export class WeightPage  {
     }
 
     loadWeightSummary() {
-        return this.weightService.getMyWeightSummary(this.selectedMonth(), this.selectedYear())
+        return this.weightService.getMyWeightSummary(this.selectedMonth(), this.selectedYear(), this.targetWeight())
         .pipe(take(1))
         .subscribe()
     }
@@ -93,14 +95,27 @@ export class WeightPage  {
         .subscribe()
     }
 
+    loadWeightChart(targetWeight: number | null = null) {
+        return this.weightService.getMyWeightChart(targetWeight ?? this.targetWeight())
+        .pipe(take(1))
+        .subscribe()
+    }
+
     onSubmit() {
         if(this.form.invalid)
             return;
 
-        this.weightService.addWeightEntry(this.form.value).pipe(take(1)).subscribe({
+        this.weightService.addWeightEntry(this.form.value)
+        .pipe(take(1))
+        .subscribe({
             next: () => {
+                this.form.reset();
                 this.notificationService.showSuccess("Weight logged successfully");
                 this.loadWeightSummary();
+            },
+            error: (err) => {
+                if(err.error.errorCode === "General.LimitReached")
+                    this.notificationService.showInfo("You can only log weight once per day")
             }
         });
 
@@ -123,10 +138,13 @@ export class WeightPage  {
         if(this.targetWeightForm.invalid)
             return;
 
-        this.userService.updateTargetWeight(this.targetWeightForm.value).pipe(take(1)).subscribe({
-            next: () => {
+        this.userService.updateTargetWeight(this.targetWeightForm.value)
+        .pipe(take(1))
+        .subscribe({
+            next: (res) => {
                 this.notificationService.showSuccess("Target weight updated successfully");
                 this.isTargetFormOpen.set(false);
+                this.loadWeightChart(res);
             }
         });
     }
@@ -200,7 +218,7 @@ export class WeightPage  {
             case 11: return "November";
             case 12: return "December";
             default:
-                return "Undefined"
+            return "Undefined"
         }
     }
 

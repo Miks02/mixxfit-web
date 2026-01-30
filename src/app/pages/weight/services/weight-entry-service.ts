@@ -6,8 +6,8 @@ import { environment } from '../../../../environments/environment.development';
 import { WeightEntryDetailsDto } from '../models/WeightEntryDetailsDto';
 import { BehaviorSubject, tap } from 'rxjs';
 import { WeightSummaryDto } from '../models/WeightSummaryDto';
-import { WeightRecordDto } from '../models/WeightRecordDto';
 import { WeightListDetailsDto } from '../models/WeightListDetailsDto';
+import { WeightChartDto } from '../models/WeightChartDto';
 
 @Injectable({
   providedIn: 'root',
@@ -18,21 +18,24 @@ export class WeightEntryService {
     private http = inject(HttpClient);
     private userService = inject(UserService);
 
-    private weightSummarySubject = new BehaviorSubject<WeightSummaryDto | undefined>(undefined);
-    private weightListDetailsSubject = new BehaviorSubject<WeightListDetailsDto | undefined>(undefined);
+    private weightSummarySubject = new BehaviorSubject<WeightSummaryDto | null>(null);
+    private weightListDetailsSubject = new BehaviorSubject<WeightListDetailsDto | null>(null);
+    private weightChartSubject = new BehaviorSubject<WeightChartDto | null>(null);
 
     weightSummary$ = this.weightSummarySubject.asObservable();
     weightListDetails$ = this.weightListDetailsSubject.asObservable();
+    weightChart$ = this.weightChartSubject.asObservable();
 
     set weightSummary(summary: Partial<WeightSummaryDto>) {
         const current = this.weightSummarySubject.getValue() as WeightSummaryDto;
         this.weightSummarySubject.next({...current, ...summary});
     }
 
-    getMyWeightSummary(month: number | null = null, year: number | null = null) {
+    getMyWeightSummary(month: number | null = null, year: number | null = null, targetWeight: number | null = null) {
         const params = new HttpParams()
             .set('month', month as number)
             .set('year', year as number)
+            .set('targetWeight', targetWeight as number)
 
         return this.http.get<WeightSummaryDto>(`${this.api}/weight-entries`, {params})
             .pipe(
@@ -41,10 +44,13 @@ export class WeightEntryService {
                         firstEntry: res.firstEntry,
                         currentWeight: res.currentWeight,
                         progress: res.progress,
-                        years: res.years
+                        years: res.years,
+                        weightChart: res.weightChart
+
                     }
                     this.weightListDetailsSubject.next(res.weightListDetails);
                     this.userService.userDetails = {currentWeight: res.currentWeight.weight};
+                    this.weightChartSubject.next(res.weightChart);
                 })
             )
     }
@@ -53,7 +59,6 @@ export class WeightEntryService {
         const params = new HttpParams()
             .set('month', month as number)
             .set('year', year as number)
-
 
         return this.http.get<WeightListDetailsDto>(`${this.api}/weight-entries/logs`, {params})
             .pipe(
@@ -65,6 +70,21 @@ export class WeightEntryService {
 
     getMyWeightLog(id: number) {
         return this.http.get<WeightEntryDetailsDto>(`${this.api}/weight-entries/${id}`);
+    }
+
+    getMyWeightChart(targetWeight: number | null = null) {
+        const params = new HttpParams()
+            .set('targetWeight', targetWeight as number)
+
+        return this.http.get<WeightChartDto>(`${this.api}/weight-entries/weight-chart`, {params})
+            .pipe(
+                tap(res => {
+                    this.weightChartSubject.next(res);
+                    this.weightSummary = {
+                        weightChart: res
+                    }
+                })
+            )
     }
 
     addWeightEntry(request: WeightCreateRequestDto) {
