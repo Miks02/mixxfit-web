@@ -22,7 +22,7 @@ import { createWorkoutForm, createWorkoutObject } from '../../../core/helpers/Fa
 import { WorkoutService } from '../services/workout-service';
 import { Router } from '@angular/router';
 import { NotificationService } from '../../../core/services/notification-service';
-import { handleValidationErrors } from '../../../core/helpers/FormHelpers';
+import { handleValidationErrors, isControlValid } from '../../../core/helpers/FormHelpers';
 import { DatePipe } from '@angular/common';
 
 @Component({
@@ -33,6 +33,7 @@ import { DatePipe } from '@angular/common';
     providers: [provideIcons({faSolidTag, faSolidCalendarDay, faSolidDumbbell, faSolidFireFlameCurved, faSolidBookOpen, faSolidBars, faSolidNoteSticky, faSolidXmark, faSolidCircle, faSolidPersonRunning, faSolidChildReaching})]
 })
 export class WorkoutForm {
+    isControlValid = isControlValid
     isModalFormOpen: boolean = false;
 
     layoutState = inject(LayoutState)
@@ -108,11 +109,6 @@ export class WorkoutForm {
         if(this.exercises.length === 0) {
             this.notificationService.showWarning("Add at least 1 exercise entry");
         }
-    }
-
-    isControlInvalid(control: string): boolean | undefined {
-        const c = this.form.get(control);
-        return c?.invalid && (c?.touched || c.dirty)
     }
 
     onSubmit() {

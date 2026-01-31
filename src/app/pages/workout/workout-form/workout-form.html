@@ -12,14 +12,14 @@
                     <label class="flex flex-col gap-2">
                         <span class="text-sm font-medium text-slate-700">Workout name <span class="text-red-600">*</span></span>
                         <div class="flex items-center gap-4 justify-between shadow-md bg-linear-to-br from-white to-slate-50 rounded-lg px-4 py-4 transition-colors duration-200 border focus-within:outline outline-amber-400"
-                        [class.border-red-500]="isControlInvalid('name')"
-                        [class.border-transparent]="!isControlInvalid('name')">
+                        [class.border-red-500]="!isControlValid('name', form)"
+                        [class.border-transparent]="isControlValid('name', form)">
                         <div class="flex justify-center">
                             <ng-icon name="faSolidTag" class="text-emerald-700! text-xl"></ng-icon>
                         </div>
                         <input formControlName="name" class="flex-1 bg-transparent outline-none text-lg" type="text" placeholder="Enter workout name..">
                     </div>
-                    @if(isControlInvalid('name')) {
+                    @if(!isControlValid('name', form)) {
                         <div class="text-red-600 text-sm mx-auto font-semibold">
                             @if(form.get('name')?.errors?.['required']) {
                                 <span>Workout name is required</span>
@@ -34,8 +34,8 @@
                 <label class="flex flex-col gap-2">
                     <span class="text-sm font-medium text-slate-700">Date <span class="text-red-600">*</span></span>
                     <div class="flex items-center gap-4 justify-between shadow-md bg-linear-to-br from-white to-slate-50 rounded-lg px-4 py-4 transition-colors duration-200 border focus-within:outline outline-amber-400"
-                    [class.border-red-500]="isControlInvalid('workoutDate')"
-                    [class.border-transparent]="!isControlInvalid('workoutDate')">
+                    [class.border-red-500]="!isControlValid('workoutDate', form)"
+                    [class.border-transparent]="isControlValid('workoutDate', form)">
                     <div class="flex justify-center">
                         <ng-icon name="faSolidCalendarDay" class="text-emerald-700! text-xl"></ng-icon>
                     </div>
@@ -136,14 +136,14 @@
     <label class="flex flex-col gap-2">
         <span class="text-sm font-medium text-slate-700">Notes (optional)</span>
         <div class="flex items-start gap-4 justify-between shadow-md bg-linear-to-br from-white to-slate-50 rounded-lg px-4 py-4 transition-colors duration-200 border focus-within:outline outline-amber-400"
-        [class.border-red-500]="isControlInvalid('notes')"
-        [class.border-transparent]="!isControlInvalid('notes')">
+        [class.border-red-500]="isControlValid('notes', form)"
+        [class.border-transparent]="isControlValid('notes', form)">
         <div class="flex justify-center mt-1">
             <ng-icon name="faSolidNoteSticky" class="text-emerald-700! text-xl"></ng-icon>
         </div>
         <textarea formControlName="notes" rows="3" class="flex-1 bg-transparent outline-none resize-none text-lg" placeholder="Write your custom notes..."></textarea>
     </div>
-    @if(isControlInvalid('notes')) {
+    @if(!isControlValid('notes', form)) {
         <div class="text-red-600 text-sm mx-auto font-semibold">
             @if(form.get('notes')?.errors?.['maxlength']) {
                 <span>Notes cannot exceed 100 characters</span>
