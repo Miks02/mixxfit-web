@@ -26,7 +26,7 @@ import {
 import { FormBuilder, FormsModule, Validators, ReactiveFormsModule, FormArray, FormGroup, RequiredValidator } from "@angular/forms";
 import { ExerciseType } from '../models/ExerciseType';
 import { CardioType } from '../models/CardioType';
-import { clearValidators, onlyNumbersCheck, minArrayLength, clearFormInputs, addValidators } from '../../../core/helpers/FormHelpers';
+import { clearValidators, onlyNumbersCheck, minArrayLength, clearFormInputs, addValidators, isControlValid } from '../../../core/helpers/FormHelpers';
 import { createExerciseForm } from '../../../core/helpers/Factories';
 import { Subject, takeUntil } from 'rxjs';
 import { NotificationService } from '../../../core/services/notification-service';
@@ -51,6 +51,8 @@ export class ExerciseForm {
     private destroy$ = new Subject<void>();
 
     form = createExerciseForm(this.fb)
+    isControlValid = isControlValid
+
 
     get sets() { return this.form.get('sets') as FormArray }
     get tempReps() { return this.form.get('tempReps') }
@@ -70,11 +72,6 @@ export class ExerciseForm {
 
     onClose() {
         this.close.emit();
-    }
-
-    isControlInvalid(control: string): boolean | undefined {
-        const c = this.form.get(control);
-        return c?.invalid && (c?.touched || c.dirty)
     }
 
     createSetGroup(reps: number, weight: number): FormGroup {
@@ -180,7 +177,7 @@ export class ExerciseForm {
             }
         })
     }
-    
+
     private createExerciseGroup(): FormGroup {
 
         const formValue = {...this.form.value}
