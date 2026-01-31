@@ -148,20 +148,54 @@
         </label>
     </div>
 
-    <div class="flex justify-center">
-        <button type="button" (click)="addSet()" class="bg-yellow-500 hover:opacity-90 active:opacity-80 text-gray-800 font-semibold px-6 py-2 rounded-lg shadow-md">
+    @if(sets.length > 0) {
+        <div class="flex justify-center">
+            <button
+            type="button" (click)="addBodyweightSet()" class="bg-yellow-500 hover:opacity-70 active:opacity-50 text-gray-800 font-semibold px-6 py-2 rounded-lg shadow-all cursor-pointer transition-all duration-200">
             Add Set
         </button>
     </div>
+}
 
-    <div class="border-t-2 border-slate-300 my-2"></div>
+<div class="border-t-2 border-slate-300 my-2"></div>
 
-    <div class="space-y-3 max-h-40 overflow-y-auto shadow-md rounded-xl">
+<div class="space-y-3 max-h-40 overflow-y-auto shadow-md rounded-xl">
+    @if(sets.length === 0) {
         <div class="text-center text-slate-600 py-6 bg-slate-50 rounded-xl border border-slate-200">
             <p class="font-semibold text-slate-700">No Sets Added</p>
             <p class="text-sm text-slate-500 mt-1">Add sets to track your progress</p>
+
+            <button type="button" (click)="addBodyweightSet()" class="bg-yellow-500 hover:opacity-70 active:opacity-50 text-gray-800 mt-4 font-semibold px-6 py-2 rounded-lg shadow-all cursor-pointer transition-all duration-200">
+                Add Set
+            </button>
         </div>
-    </div>
+
+    }
+
+    @for(set of sets.controls; track $index) {
+        <div (click)="removeSet($index)" class="flex items-center justify-between bg-slate-50 rounded-lg p-3 shadow-sm hover:shadow-md transition-all duration-200 hover:bg-amber-200 cursor-pointer">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-lg bg-yellow-400 shadow-all flex items-center justify-center">
+                    <ng-icon name="faSolidCheck" class="text-indigo-500"></ng-icon>
+                </div>
+                <div>
+                    <div class="text-sm font-semibold text-slate-800">Set {{$index + 1}}</div>
+                </div>
+            </div>
+            <div class="flex gap-6">
+                <div class="flex flex-col items-center gap-2 font-semibold text-amber-500">
+                    <ng-icon name="faSolidScaleUnbalanced" class="text-2xl!"></ng-icon>
+                    <p>{{set.get('weightKg')?.value}} KG</p>
+                </div>
+                <div class="flex flex-col gap-2 font-semibold text-emerald-700">
+                    <ng-icon name="faSolidRotate" class="text-2xl!"></ng-icon>
+
+                    <p>{{set.get('reps')?.value}}</p>
+                </div>
+            </div>
+        </div>
+    }
+</div>
 }
 
 @case(3) {

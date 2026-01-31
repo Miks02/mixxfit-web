@@ -83,22 +83,47 @@ export class ExerciseForm {
     createSetGroup(reps: number, weight: number): FormGroup {
         return this.fb.group({
             reps: [reps, [Validators.required, Validators.min(1)]],
-            weightKg: [weight, [Validators.required, Validators.min(1)]]
+            weightKg: [weight, [Validators.min(1), Validators.max(1000)]]
         })
     }
 
-    addSet() {
-        const reps = this.form.get('tempReps')?.value;
-        const weight = this.form.get('tempWeight')?.value
+    addBodyweightSet() {
+        const reps = this.tempReps?.value;
+        const addedWeight = Number(this.tempWeight?.value || 0);
+        const weight = addedWeight + (this.currentWeight() || 0);
 
-        if(weight == null || reps == null) {
-            this.notificationService.showWarning("Enter weight and reps before adding a set");
+        if(reps === null) {
+            this.notificationService.showWarning("Enter reps before adding a set");
+            return;
+        }
+
+        if(!isControlValid('tempWeight', this.form) || !isControlValid('tempReps', this.form)) {
+            this.notificationService.showWarning("Check your inputs and try again. Watch out for red indicators that indicate invalidity")
             return;
         }
 
         this.form.updateValueAndValidity();
         this.sets.push(this.createSetGroup(reps, weight))
     }
+
+    addSet() {
+        const reps = this.form.get('tempReps')?.value;
+        const weight = this.form.get('tempWeight')?.value
+
+        if(weight === null || reps === null) {
+            this.notificationService.showWarning("Enter weight and reps before adding a set");
+            return;
+        }
+
+        if(!isControlValid('tempWeight', this.form) || !isControlValid('tempReps', this.form)) {
+            this.notificationService.showWarning("Check your inputs and try again. Watch out for red indicators that indicate invalidity")
+            return;
+        }
+
+        this.form.updateValueAndValidity();
+        this.sets.push(this.createSetGroup(reps, weight))
+    }
+
 
     removeSet(index: number) {
         return this.sets.removeAt(index);
@@ -128,25 +153,25 @@ export class ExerciseForm {
         .pipe(takeUntil(this.destroy$))
         .subscribe(type => {
             this.resetFormInputs();
-                if(type === ExerciseType.Cardio) {
-                    this.form.get('cardioType')?.patchValue(CardioType.SteadyState)
-                    return;
-                }
-                if(type === ExerciseType.Weights) {
-                    addValidators(['tempWeight', 'tempReps'], this.form, [Validators.required, Validators.min(0),
-                    Validators.max(1000) ,onlyNumbersCheck()])
+            if(type === ExerciseType.Cardio) {
+                this.form.get('cardioType')?.patchValue(CardioType.SteadyState)
+                return;
+            }
+            if(type === ExerciseType.Weights) {
+                addValidators(['tempWeight', 'tempReps'], this.form, [Validators.required, Validators.min(1),
+                    Validators.max(1000), onlyNumbersCheck()])
                     this.addSetValidators();
                     return;
                 }
                 if(type === ExerciseType.Bodyweight) {
-                    addValidators(['tempWeight'], this.form, [Validators.min(0), Validators.max(1000), onlyNumbersCheck()])
-                    addValidators(['tempReps', 'tempReps'], this.form, [Validators.required, Validators.min(0),
-                    Validators.max(1000),onlyNumbersCheck()])
-                    this.addSetValidators();
-                    return;
-                }
-        })
-    }
+                    addValidators(['tempWeight'], this.form, [Validators.min(1), Validators.max(1000), onlyNumbersCheck()])
+                    addValidators(['tempReps', 'tempReps'], this.form, [Validators.required, Validators.min(1),
+                        Validators.max(1000),onlyNumbersCheck()])
+                        this.addSetValidators();
+                        return;
+                    }
+                })
+            }
 
     private resetFormInputs() {
         this.sets.clear();
@@ -176,8 +201,6 @@ export class ExerciseForm {
                 return;
             }
 
-
-
         })
     }
 
@@ -186,9 +209,7 @@ export class ExerciseForm {
         .pipe(takeUntil(this.destroy$))
         .subscribe(value => {
             if(value.length > 0) {
-                this.tempReps?.reset();
-                this.tempWeight?.reset();
-                clearValidators(['tempWeight', 'tempReps'], this.form);
+                this.clearWeightAndRepsRequiredValidators();
             }
             else {
                 this.tempReps?.addValidators([Validators.required, Validators.min(1), onlyNumbersCheck()]);
@@ -197,6 +218,13 @@ export class ExerciseForm {
                 this.tempReps?.updateValueAndValidity();
             }
         })
+    }
+
+    private clearWeightAndRepsRequiredValidators() {
+        this.tempReps?.reset();
+        this.tempWeight?.reset();
+        clearValidators(['tempWeight', 'tempReps'], this.form);
+        this.initializeForm();
     }
 
     private createExerciseGroup(): FormGroup {
