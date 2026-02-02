@@ -373,7 +373,9 @@
                         <p class="text-sm text-slate-500">Irreversible account actions</p>
                     </div>
                 </div>
-                <button class="w-full bg-linear-to-br from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold py-3 px-4 rounded-lg shadow-md hover:shadow-lg transition duration-200 flex items-center justify-center gap-2 active:scale-95 cursor-pointer shadow-all">
+                <button
+                (click)="openDeleteAccountModal()"
+                class="w-full bg-linear-to-br from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold py-3 px-4 rounded-lg shadow-md hover:shadow-lg transition duration-200 flex items-center justify-center gap-2 active:scale-95 cursor-pointer shadow-all">
                     <ng-icon name="faSolidTrash"></ng-icon>
                     <span>Delete Account</span>
                 </button>
@@ -398,3 +400,7 @@
 </div>
 
 </div>
+
+@if(isModalOpen()) {
+    <app-modal (close)="closeModal()" [data]="buildModal()"></app-modal>
+}

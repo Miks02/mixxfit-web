@@ -27,7 +27,7 @@ import { ProfileService } from '../services/profile-service';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { AccountStatus } from '../../../core/models/AccountStatus';
 import { take } from 'rxjs';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import {
     createFullNameForm,
     createDateOfBirthForm,
@@ -40,10 +40,14 @@ import { UserService } from '../../../core/services/user-service';
 import { NotificationService } from '../../../core/services/notification-service';
 import { handleValidationErrors } from '../../../core/helpers/FormHelpers';
 import { environment } from '../../../../environments/environment.development';
+import { AuthService } from '../../../core/services/auth-service';
+import { Modal } from '../../../layout/utilities/modal/modal';
+import { ModalData } from '../../../core/models/ModalData';
+import { ModalType } from '../../../core/models/ModalType';
 
 @Component({
     selector: 'app-profile-page',
-    imports: [NgIcon, FormsModule, ReactiveFormsModule, DatePipe, RouterLink],
+    imports: [NgIcon, FormsModule, ReactiveFormsModule, DatePipe, RouterLink, Modal],
     templateUrl: './profile-page.html',
     styleUrl: './profile-page.css',
     providers: [provideIcons({
@@ -72,7 +76,9 @@ export class ProfilePage {
     private fb = inject(FormBuilder);
     private profileService = inject(ProfileService);
     private userService = inject(UserService);
+    private authService = inject(AuthService)
     private notificationService = inject(NotificationService);
+    private router = inject(Router)
 
     urlOnly = environment.urlOnly;
     userData = toSignal(this.userService.userDetails$, {initialValue: null});
@@ -89,6 +95,7 @@ export class ProfilePage {
     editingField: string | null = null;
     selectedProfileImageFile: WritableSignal<File | null> = signal(null);
     previewImage: WritableSignal<string> = signal("");
+    isModalOpen = signal(false);
 
     ngOnInit() {
         this.layoutState.setTitle("My Profile");
@@ -383,5 +390,37 @@ export class ProfilePage {
                 this.notificationService.showError("Unexpected error happened while trying to delete a profile picture");
             }
         })
+    }
+
+    openDeleteAccountModal() {
+        this.isModalOpen.set(true);
+    }
+
+    closeModal() {
+        this.isModalOpen.set(false);
+    }
+
+    deleteProfile() {
+        this.userService.deleteAccount()
+        .pipe(take(1))
+        .subscribe({
+            next: () => {
+                this.notificationService.showSuccess("Your account has been deleted successfully")
+                this.authService.clearAuthData();
+                this.router.navigate(['/login']);
+            }
+        })
+    }
+
+    buildModal(): ModalData {
+        return {
+            title: 'Delete Account',
+            subtitle: 'You are about to permanently delete your account. This action cannot be undone and all your data will be lost.',
+            type: ModalType.Warning,
+            primaryActionLabel: 'Confirm',
+            secondaryActionLabel: 'Cancel',
+            primaryAction: () => this.deleteProfile(),
+            secondaryAction: () => this.isModalOpen.set(false)
+        };
     }
 }
