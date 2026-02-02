@@ -48,7 +48,6 @@ export class UserService {
     }
 
     getMe() {
-
         if(!this.isUserLoaded) {
             return this.http.get<UserDetailsDto>(`${this.api}/users/me`)
             .pipe(
@@ -59,7 +58,14 @@ export class UserService {
                 })
             )
         }
-        return of(this.userDetailsSubject.getValue() as UserDetailsDto);
+        return of(this.userDetailsSubject.getValue() as UserDetailsDto)
+        .pipe(
+            tap((res) => {
+                this.userDetails = res;
+                if(res.imagePath !== null)
+                    this.userDetails.imagePath = this.urlOnly + res.imagePath;
+            })
+        );
     }
 
     deleteAccount() {
