@@ -81,7 +81,6 @@ export class ProfilePage {
     private notificationService = inject(NotificationService);
     private router = inject(Router)
 
-    urlOnly = environment.urlOnly;
     userData = toSignal(this.userService.userDetails$, {initialValue: null});
 
     profileDetailsSource = toSignal(this.profileService.profilePage$, {initialValue: null})
@@ -341,7 +340,7 @@ export class ProfilePage {
 
     getProfileImageSrc(): string {
         if (this.previewImage() !== "") return this.previewImage();
-        if (this.userData()?.imagePath) return this.urlOnly + this.userData()!.imagePath;
+        if (this.userData()?.imagePath  && this.userData()?.imagePath !== null) return this.userData()!.imagePath as string;
         return this.userData()?.gender === 1 ? 'user_male.png' : (this.userData()?.gender === 2 ? 'user_female.png' : 'user_other.png');
     }
 
