@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { BehaviorSubject,  map,  Observable,  of,  switchMap,  switchMapTo,  tap } from 'rxjs';
+import { BehaviorSubject, of, tap } from 'rxjs';
 import { UserDetailsDto } from '../models/UserDetailsDto';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment.development';
@@ -12,7 +12,6 @@ import { UpdateGenderDto } from '../models/User/UpdateGenderDto';
 import { UpdateHeightDto } from '../models/User/UpdateHeightDto';
 import { UpdateTargetWeightDto } from '../models/User/UpdateTargetWeightDto';
 import { Gender } from '../models/Gender';
-import { UpdateProfilePictureDto } from '../models/User/UpdateProfilePictureDto';
 
 @Injectable({
     providedIn: 'root',
