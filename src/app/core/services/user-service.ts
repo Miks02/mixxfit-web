@@ -60,6 +60,16 @@ export class UserService {
         return of(this.userDetailsSubject.getValue() as UserDetailsDto);
     }
 
+    deleteProfilePicture() {
+        return this.http.delete<void>(`${this.api}/users/profile-picture`)
+        .pipe(
+            tap(() => {
+                const next = this.mergeUserDetails({imagePath: null});
+                this.userDetailsSubject.next(next)
+            })
+        )
+    }
+
     updateFullName(fullName: UpdateFullNameDto) {
         return this.http.patch<UpdateFullNameDto>(`${this.api}/users/fullname`, fullName )
         .pipe(
