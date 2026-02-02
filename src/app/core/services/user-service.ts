@@ -59,6 +59,11 @@ export class UserService {
         return of(this.userDetailsSubject.getValue() as UserDetailsDto);
     }
 
+    deleteAccount() {
+        console.log("alo bre")
+        return this.http.delete<void>(`${this.api}/users`)
+    }
+
     deleteProfilePicture() {
         return this.http.delete<void>(`${this.api}/users/profile-picture`)
         .pipe(
