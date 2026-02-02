@@ -18,6 +18,7 @@ import { Gender } from '../models/Gender';
 })
 export class UserService {
     private api = environment.apiUrl;
+    private urlOnly = environment.urlOnly;
     private userDetailsSubject = new BehaviorSubject<UserDetailsDto | null>(null);
     public userDetails$ = this.userDetailsSubject.asObservable();
 
@@ -53,6 +54,8 @@ export class UserService {
             .pipe(
                 tap((res) => {
                     this.userDetails = res;
+                    if(res.imagePath !== null)
+                        this.userDetails.imagePath = this.urlOnly + res.imagePath;
                 })
             )
         }
@@ -161,7 +164,7 @@ export class UserService {
         return this.http.patch(`${this.api}/users/profile-picture`, formData, {responseType: 'text'})
         .pipe(
             tap(res => {
-                const next = this.mergeUserDetails({imagePath: res})
+                const next = this.mergeUserDetails({imagePath: this.urlOnly + res})
                 this.userDetailsSubject.next(next);
             })
         )
