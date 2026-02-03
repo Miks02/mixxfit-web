@@ -9,7 +9,7 @@ body {
   margin: 0;
 }
 
-.shadow-all {
+@utility shadow-all {
   box-shadow: 0 0 5px #333;
 }
 
