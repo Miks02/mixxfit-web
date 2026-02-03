@@ -41,7 +41,7 @@ function handleErrors(error: HttpErrorResponse, notificationService: Notificatio
             errorMessage = "Duplicate Entry. Please check your input and try again."
             break;
         }
-        case 422: {
+        case 429: {
             errorMessage = "Too many requests, try again later"
             break;
         }
