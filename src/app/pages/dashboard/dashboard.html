@@ -2,7 +2,7 @@
     <div class="flex flex-col-reverse md:flex-col gap-6 mx-auto">
         <div class="flex justify-start sm:justify-center gap-8 flex-wrap">
 
-            <div class="flex flex-col pl-5 justify-between bg-linear-to-br from-amber-500 to to-amber-600 rounded-2xl w-full lg:w-65  h-45 px-2 py-4 text-gray-100 font-semibold shadow-xl hover:shadow-white/50 transition-all duration-200">
+            <div class="flex flex-col pl-5 justify-between bg-linear-to-br from-amber-500 to to-amber-600 rounded-2xl w-full lg:w-65 grow h-45 px-2 py-4 text-gray-100 font-semibold shadow-xl hover:shadow-white/50 transition-all duration-200">
                 <div class="flex items-center gap-5">
                     <ng-icon name="faSolidFireFlameCurved" class="text-5xl"></ng-icon>
                     <h5 class="text-2xl">Daily calories</h5>
@@ -22,7 +22,7 @@
 
             </div>
 
-            <div class="flex flex-col pl-5 justify-between bg-linear-to-br from-cyan-500/90 to to-cyan-600  shadow-xl  rounded-2xl w-full lg:w-65  h-45 px-2 py-4 text-gray-100 font-semibold hover:shadow-white/50 transition-all duration-200">
+            <div class="flex flex-col pl-5 justify-between bg-linear-to-br from-cyan-500/90 to to-cyan-600  shadow-xl  rounded-2xl w-full lg:w-65 grow h-45 px-2 py-4 text-gray-100 font-semibold hover:shadow-white/50 transition-all duration-200">
                 <div class="flex items-center gap-5">
                     <ng-icon name="faSolidGlassWater" class="text-5xl"></ng-icon>
                     <h5 class="text-2xl">Water intake</h5>
@@ -31,7 +31,7 @@
                     <div class="flex gap-4 items-center opacity-95">
                         <ng-icon name="faSolidGhost" class="text-xl"></ng-icon>
                         <p class="text-xl font-semibold overflow-hidden whitespace-nowra typewriter w-[14ch]">
-                            No Data Yet...
+                            Coming soon
                         </p>
                     </div>
                 } @else {
@@ -41,7 +41,7 @@
                 }
             </div>
 
-            <div class="flex flex-col pl-5 justify-between bg-linear-to-br from-teal-500/90 to to-teal-600 shadow-xl  rounded-2xl w-full lg:w-65  h-45 px-2 py-4 text-gray-100 font-semibold hover:shadow-white/50 transition-all duration-200">
+            <div class="flex flex-col pl-5 justify-between bg-linear-to-br from-teal-500/90 to to-teal-600 shadow-xl  rounded-2xl w-full lg:w-65 grow h-45 px-2 py-4 text-gray-100 font-semibold hover:shadow-white/50 transition-all duration-200">
                 <div class="flex items-center gap-5">
                     <ng-icon name="faSolidMoon" class="text-5xl"></ng-icon>
                     <h5 class="text-2xl">Sleep</h5>
@@ -50,7 +50,7 @@
                     <div class="flex gap-4 items-center opacity-95  ">
                         <ng-icon name="faSolidGhost" class="pr-2 text-xl"></ng-icon>
                         <p class="text-xl font-semibold overflow-hidden typewriter">
-                            No Data Yet...
+                            Coming soon
                         </p>
                     </div>
                 } @else {
@@ -60,7 +60,7 @@
                 }
             </div>
 
-            <div class="flex flex-col pl-5 justify-between bg-linear-to-br from-slate-500/90 to to-slate-600 shadow-xl rounded-2xl w-full lg:w-65  h-45 px-2 py-4 text-gray-100 font-semibold hover:shadow-white/50 transition-all duration-200">
+            <div class="flex flex-col pl-5 justify-between bg-linear-to-br from-slate-500/90 to to-slate-600 shadow-xl rounded-2xl grow w-full lg:w-65  h-45 px-2 py-4 text-gray-100 font-semibold hover:shadow-white/50 transition-all duration-200">
                 <div class="flex items-center gap-5">
                     <ng-icon name="faSolidDumbbell" class="text-5xl"></ng-icon>
                     <h5 class="text-2xl">Last workout</h5>
@@ -152,13 +152,13 @@
                 <ng-icon name="faSolidDumbbell" class="self-center"></ng-icon>
                 <span class="self-center">Add Workout</span>
             </a>
-            <button class="text-left w-full bg-linear-to-br from-yellow-400 to-yellow-500 cursor-pointer rounded px-3 py-2 hover:opacity-50 transition-all duration-200 flex items-center gap-2 justify-center text-lg sm:text-xl active:opacity-40 shadow-all">
+            <button routerLink="/weight" class="text-left w-full bg-linear-to-br from-yellow-400 to-yellow-500 cursor-pointer rounded px-3 py-2 hover:opacity-50 transition-all duration-200 flex items-center gap-2 justify-center text-lg sm:text-xl active:opacity-40 shadow-all">
                 <ng-icon name="faSolidScaleUnbalanced" class="self-center"></ng-icon>
-                <a routerLink="/weight" class="self-center">Log weight</a>
+                <span class="self-center">Log weight</span>
             </button>
-            <button class="text-left w-full bg-linear-to-br from-yellow-400 to-yellow-500 cursor-pointer rounded px-3 py-2 hover:opacity-50 transition-all duration-200 flex items-center gap-2 justify-center text-lg sm:text-xl active:opacity-40 shadow-all">
-                <ng-icon name="faSolidUtensils" class="self-center"></ng-icon>
-                <span class="self-center">Add Meal</span>
+            <button routerLink="/profile" class="text-left w-full bg-linear-to-br from-yellow-400 to-yellow-500 cursor-pointer rounded px-3 py-2 hover:opacity-50 transition-all duration-200 flex items-center gap-2 justify-center text-lg sm:text-xl active:opacity-40 shadow-all">
+                <ng-icon name="faSolidUser" class="self-center"></ng-icon>
+                <span class="self-center">My Profile</span>
             </button>
             <button class="text-left w-full bg-linear-to-br from-yellow-400 to-yellow-500 cursor-pointer rounded px-3 py-2 hover:opacity-50 transition-all duration-200 flex items-center gap-2 justify-center text-lg sm:text-xl active:opacity-40 shadow-all">
                 <ng-icon name="faSolidCalculator" class="self-center"></ng-icon>
