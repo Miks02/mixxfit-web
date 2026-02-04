@@ -16,10 +16,11 @@ import { LayoutState } from '../../../layout/services/layout-state';
 import { WorkoutService } from '../services/workout-service';
 import { WorkoutListItemDto } from '../models/WorkoutListItemDto';
 import { NotificationService } from '../../../core/services/notification-service';
+import { NgxSkeletonLoaderComponent } from 'ngx-skeleton-loader';
 
 @Component({
     selector: 'app-workout-list',
-    imports: [RouterLink, DatePipe, FormsModule, NgIcon],
+    imports: [RouterLink, DatePipe, FormsModule, NgIcon, NgxSkeletonLoaderComponent],
     templateUrl: './workout-list.html',
     styleUrl: './workout-list.css',
     providers: [
@@ -54,16 +55,20 @@ export class WorkoutList {
     workoutsSource = toSignal(
         this.workoutService.pagedWorkouts$.pipe(
             tap(res => {
-                this.page = res.page;
-                this.pageSize.set(res.pageSize);
-                this.totalCount.set(res.totalCount);
-            }),
-            map(res => res.items)
+                this.page = res?.page as number;
+                this.pageSize.set(res?.pageSize as number);
+                this.totalCount.set(res?.totalCount as number);
+            })
         ),
-        { initialValue: [] as WorkoutListItemDto[] }
+        { initialValue: null }
     );
 
     workoutSummarySource = toSignal(this.workoutService.workoutSummary$);
+    workoutList = computed(() => {
+
+        return this.workoutsSource()?.items
+    })
+
 
     totalPages = computed(() => {
         if (!this.totalCount() || !this.pageSize())
@@ -74,7 +79,7 @@ export class WorkoutList {
     ngOnInit() {
         this.layoutState.setTitle('Workouts');
         this.loadWorkouts();
-
+        console.log(this.workoutList())
         this.search$
             .pipe(
                 debounceTime(300),
@@ -137,7 +142,8 @@ export class WorkoutList {
     }
 
     getWorkoutCardClass() {
-        return this.workoutsSource().length < 2
+
+        return this.workoutList()?.length! < 2
             ? 'w-full'
             : 'w-full md:w-[calc(50%-0.375rem)]';
     }

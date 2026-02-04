@@ -28,10 +28,11 @@ import { ModalType } from '../../../core/models/ModalType';
 import { WeightEntryDetailsDto } from '../models/WeightEntryDetailsDto';
 import { Modal } from "../../../layout/utilities/modal/modal";
 import { formatDate } from '../../../core/helpers/Utility';
+import { NgxSkeletonLoaderComponent } from 'ngx-skeleton-loader';
 
 @Component({
     selector: 'app-weight-page',
-    imports: [WeightChart, NgIcon, ɵInternalFormsSharedModule, ReactiveFormsModule, ReactiveFormsModule, DatePipe, DecimalPipe, SlicePipe, Modal, FormsModule],
+    imports: [WeightChart, NgIcon, ɵInternalFormsSharedModule, ReactiveFormsModule, ReactiveFormsModule, DatePipe, DecimalPipe, SlicePipe, Modal, FormsModule, NgxSkeletonLoaderComponent],
     templateUrl: './weight-page.html',
     styleUrl: './weight-page.css',
     providers: [provideIcons({faSolidScaleUnbalanced, faSolidBullseye, faSolidMagnifyingGlassChart, faSolidClock, faSolidWeightScale, faSolidNoteSticky, faSolidGhost, faSolidChevronLeft, faSolidChevronRight, faSolidChartLine})]
