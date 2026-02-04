@@ -18,9 +18,9 @@ export class WeightEntryService {
     private http = inject(HttpClient);
     private userService = inject(UserService);
 
-    private weightSummarySubject = new BehaviorSubject<WeightSummaryDto | null>(null);
-    private weightListDetailsSubject = new BehaviorSubject<WeightListDetailsDto | null>(null);
-    private weightChartSubject = new BehaviorSubject<WeightChartDto | null>(null);
+    private weightSummarySubject = new BehaviorSubject<WeightSummaryDto | undefined>(undefined);
+    private weightListDetailsSubject = new BehaviorSubject<WeightListDetailsDto | undefined>(undefined);
+    private weightChartSubject = new BehaviorSubject<WeightChartDto | undefined>(undefined);
 
     weightSummary$ = this.weightSummarySubject.asObservable();
     weightListDetails$ = this.weightListDetailsSubject.asObservable();

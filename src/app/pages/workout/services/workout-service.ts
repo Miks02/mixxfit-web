@@ -16,9 +16,7 @@ import { environment } from '../../../../environments/environment';
 })
 export class WorkoutService {
     private readonly api: string = environment.apiUrl;
-    private pagedWorkoutsSubject = new BehaviorSubject<PagedResult<WorkoutListItemDto>>(
-        {items: [], totalCount: 0, page: 0, pageSize: 0, totalCountPaginated: 0}
-    );
+    private pagedWorkoutsSubject = new BehaviorSubject<PagedResult<WorkoutListItemDto> | undefined>(undefined)
     private workoutSummarySubject = new BehaviorSubject<WorkoutSummaryDto | undefined>(undefined)
     private queryParams = new BehaviorSubject<QueryParams>(
         {sort: "", search: "", date: "", page: 1}

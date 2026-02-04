@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal, WritableSignal } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { faSolidDumbbell, faSolidFireFlameCurved, faSolidGlassWater, faSolidMoon, faSolidScaleUnbalanced, faSolidUtensils, faSolidCalculator, faSolidGhost, faSolidMagnifyingGlassMinus, faSolidChartLine, faSolidUser } from '@ng-icons/font-awesome/solid';
 import {
@@ -15,13 +15,13 @@ import { UserService } from '../../core/services/user-service';
 import { DatePipe } from '@angular/common';
 import { WorkoutService } from '../workout/services/workout-service';
 import { FormsModule } from '@angular/forms';
-import { Gender } from '../../core/models/Gender';
 import { WeightEntryService } from '../weight/services/weight-entry-service';
+import { NgxSkeletonLoaderModule } from 'ngx-skeleton-loader';
 Chart.register(...registerables)
 
 @Component({
     selector: 'app-dashboard',
-    imports: [NgIcon, WorkoutsChart, WeightChart, RouterLink, DatePipe, FormsModule],
+    imports: [NgIcon, WorkoutsChart, WeightChart, RouterLink, DatePipe, FormsModule, NgxSkeletonLoaderModule],
     templateUrl: './dashboard.html',
     styleUrl: './dashboard.css',
     providers: [provideIcons({faSolidDumbbell, faSolidFireFlameCurved, faSolidGlassWater, faSolidMoon, faSolidScaleUnbalanced, faSolidUtensils, faSolidCalculator, faSolidGhost, faSolidChartLine, faSolidUser})]
@@ -34,6 +34,8 @@ export class Dashboard {
     private weightService = inject(WeightEntryService);
     private router = inject(Router)
 
+    isLoading: boolean = false;
+
     dashboardSource = toSignal(this.dashboardState.dashboard$, {initialValue: null})
     userSource = toSignal(this.userService.userDetails$, {initialValue: null})
     workoutsPerMonth = toSignal(this.workoutService.workoutCounts$, {initialValue: null});
@@ -42,6 +44,8 @@ export class Dashboard {
     selectedYear: number = new Date().getFullYear();
 
     years = computed(() => this.workoutsPerMonth()?.years)
+    weightChart = computed(() => this.weightChartSource() ?? undefined)
+    recentWorkouts = computed(() => this.dashboardSource()?.recentWorkouts)
 
     ngOnInit() {
         this.layoutState.setTitle("Dashboard")
