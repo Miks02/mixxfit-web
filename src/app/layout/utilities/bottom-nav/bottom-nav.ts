@@ -2,12 +2,15 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { provideIcons, NgIcon } from '@ng-icons/core';
 import {
   faSolidBars,
+  faSolidBookOpen,
   faSolidBowlRice,
   faSolidChartLine,
   faSolidDumbbell,
   faSolidGear,
+  faSolidMoon,
   faSolidScaleUnbalanced,
-  faSolidUser
+  faSolidUser,
+  faSolidUtensils
 } from "@ng-icons/font-awesome/solid";
 import { RouterLink } from "@angular/router";
 
@@ -16,7 +19,7 @@ import { RouterLink } from "@angular/router";
     imports: [NgIcon, RouterLink],
     templateUrl: './bottom-nav.html',
     styleUrl: './bottom-nav.css',
-    providers: [provideIcons({faSolidUser, faSolidChartLine, faSolidBars, faSolidScaleUnbalanced, faSolidDumbbell, faSolidGear})]
+    providers: [provideIcons({faSolidUser, faSolidChartLine, faSolidBars, faSolidScaleUnbalanced, faSolidDumbbell, faSolidGear, faSolidUtensils, faSolidBookOpen, faSolidMoon})]
 
 })
 export class BottomNav {

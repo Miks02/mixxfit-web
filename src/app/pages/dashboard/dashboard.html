@@ -1,5 +1,5 @@
-<div class="flex w-full flex-col-reverse md:flex-row justify-between flex-wrap gap-6">
-    <div class="flex flex-col-reverse md:flex-col gap-6 mx-auto">
+<div class="flex w-full flex-col-reverse lg:flex-row justify-between flex-wrap gap-6">
+    <div class="flex flex-col-reverse lg:flex-col gap-6 mx-auto">
         <div class="flex justify-start sm:justify-center gap-8 flex-wrap">
 
             <div class="flex flex-col pl-5 justify-between bg-linear-to-br from-amber-500 to to-amber-600 rounded-2xl w-full lg:w-65 grow h-45 px-2 py-4 text-gray-100 font-semibold shadow-xl hover:shadow-white/50 transition-all duration-200">
@@ -179,7 +179,7 @@
             [class.hover:shadow-blue-300]="userSource()?.gender == 1"
             [class.active:shadow-rose-600]="userSource()?.gender == 2"
             [class.hover:shadow-rose-300]="userSource()?.gender == 2"
-            class="rounded-full w-25 h-25 shadow-all bg-slate-600 flex items-center justify-center text-white text-2xl font-semibold hover:opacity-70 active:opacity-50 transition duration-200 cursor-pointer">
+            class="rounded-full w-25 h-25 shadow-all bg-slate-600 flex items-center justify-center text-white text-2xl font-semibold hover:opacity-70 active:opacity-50 transition duration-200 cursor-pointer object-cover">
             <h4 class="mt-4 text-lg font-semibold text-slate-800">{{this.userSource()?.fullName }}</h4>
             <div class="mt-3 w-full grid grid-cols-3 gap-4 text-center">
                 <div>
