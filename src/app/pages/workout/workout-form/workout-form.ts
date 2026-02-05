@@ -24,6 +24,7 @@ import { Router } from '@angular/router';
 import { NotificationService } from '../../../core/services/notification-service';
 import { handleValidationErrors, isControlValid } from '../../../core/helpers/FormHelpers';
 import { DatePipe } from '@angular/common';
+import { finalize, tap } from 'rxjs';
 
 @Component({
     selector: 'app-workout-form',
@@ -132,8 +133,9 @@ export class WorkoutForm {
             return;
         }
         const workout = createWorkoutObject(this.form);
-        this.form.invalid;
-        this.workoutService.addWorkout(workout).subscribe({
+        this.form.disable();
+        this.workoutService.addWorkout(workout)
+        .subscribe({
             next: () => {
                 this.notificationService.showSuccess("Workout logged successfully!")
                 this.router.navigate(['/workouts'])
@@ -144,6 +146,7 @@ export class WorkoutForm {
                     return;
                 }
                 handleValidationErrors(err, this.form);
+                this.form.enable();
             }
 
         })

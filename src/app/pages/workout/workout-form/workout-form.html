@@ -174,7 +174,7 @@
 </div>
 
 <div class="flex justify-center pt-2">
-    <button type="submit" [disabled]="form.invalid" class="bg-emerald-500 disabled:opacity-50 text-white px-6 py-2 rounded-lg font-semibold shadow-all disabled:pointer-events-none cursor-pointer transition-all duration-200 hover:shadow-md hover:opacity-70 active:opacity-50">Save Workout</button>
+    <button type="submit" [disabled]="form.invalid || form.disabled" class="bg-emerald-500 disabled:opacity-50 text-white px-6 py-2 rounded-lg font-semibold shadow-all disabled:pointer-events-none cursor-pointer transition-all duration-200 hover:shadow-md hover:opacity-70 active:opacity-50">Save Workout</button>
 </div>
 </form>
 </div>
