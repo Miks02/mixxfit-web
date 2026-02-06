@@ -49,7 +49,7 @@ export class AppLayout {
     logout() {
         this.authService.logout()
         .pipe(takeUntil(this.destroy$))
-        .subscribe();
+        .subscribe(() => this.router.navigate(['/login']));
     }
 
     private loadUser() {
