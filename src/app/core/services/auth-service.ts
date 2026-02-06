@@ -70,10 +70,7 @@ export class AuthService {
 
         return this.http.post<void>(`${this.api}/auth/logout`,{}, {withCredentials: true})
         .pipe(
-            tap(() => {
-                this.clearAuthData();
-                this.router.navigate(['/login']);
-            })
+            tap(() => this.clearAuthData())
         )
     }
 

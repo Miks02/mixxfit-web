@@ -26,8 +26,15 @@ function handleErrors(error: HttpErrorResponse, notificationService: Notificatio
             break;
         }
         case 401: {
-            errorMessage = getAuthError(error.error.errorCode)
-            break;
+            let errorCode = error.error.errorCode;
+
+            if(errorCode === "Auth.LoginFailed") {
+                notificationService.showError("Invalid email address or password.");
+                errorMessage = "Invalid email address or password."
+                return;
+            }
+            notificationService.showInfo("Your session has expired or is no longer valid. Please sign in again");
+            return;
         }
         case 403: {
             errorMessage = "Forbidden access.";
@@ -64,8 +71,6 @@ function getAuthError(errorCode: string): string {
     switch(errorCode) {
         case "Auth.LoginFailed":
         return "Invalid email address or password.";
-        case "Auth.ExpiredToken":
-        return "Session has expired. Please login again.";
         default:
         return "Unexpected error happened during authentication. Try again later.";
     }

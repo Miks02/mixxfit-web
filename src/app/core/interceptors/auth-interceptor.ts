@@ -2,13 +2,14 @@ import { HttpEvent, HttpHandlerFn, HttpInterceptorFn, HttpRequest } from '@angul
 import { AuthService } from '../services/auth-service';
 import { inject } from '@angular/core';
 import { catchError, filter, Observable, switchMap, take, tap, throwError } from 'rxjs';
+import { Router } from '@angular/router';
 
 let isRefreshing: boolean = false;
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
     const authService = inject(AuthService)
     let token = authService.accessToken;
-
+    let router = inject(Router);
 
     if(!token) {
         return next(req);
@@ -19,7 +20,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
         catchError((error: any) => {
             console.log("Error happened ", error.status)
             if(error.status === 401) {
-                return handle401Error(req, next, authService);
+                return handle401Error(req, next, router, authService);
             }
             return throwError(() => error);
         })
@@ -29,6 +30,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 function handle401Error(
     req: HttpRequest<any>,
     next: HttpHandlerFn,
+    router: Router,
     authService: AuthService): Observable<HttpEvent<any>> {
         if(!isRefreshing) {
             isRefreshing = true;
@@ -38,24 +40,13 @@ function handle401Error(
                     isRefreshing = false;
                     const newToken = res;
                     authService.accessToken = newToken;
-                    console.log("Response from handle401error: ", res)
                     return next(addTokenHeader(req, newToken))
                 }),
                 catchError((err) => {
                     isRefreshing = false;
-                    console.log("Error from handle401error: ", err)
                     if(err.status == 401) {
-                        return authService.logout().pipe(
-                            switchMap(() => {
-                                return throwError(() => err)
-                            }),
-                            catchError((err) => {
-                                console.error("Error occurred while trying to refresh the token", err)
-                                authService.clearAuthData();
-                                return throwError(() => err)
-                            })
-
-                        )
+                        authService.clearAuthData()
+                        router.navigate(['/login'])
                     }
                     return throwError(() => err)
 
