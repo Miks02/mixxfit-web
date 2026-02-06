@@ -36,11 +36,11 @@ export class AppLayout {
 
     ngAfterViewInit() {
         this.router.events
-        .pipe((filter(e => e instanceof NavigationEnd)))
-        .subscribe(() => {
-            console.log(this.content.nativeElement.scrollHeight)
-            this.content.nativeElement.scrollTo({top: 0})
-        })
+        .pipe(
+            filter(e => e instanceof NavigationEnd && !e.url.includes('?')),
+            takeUntil(this.destroy$)
+        )
+        .subscribe(() => this.content.nativeElement.scrollTo({top: 0}))
     }
 
     ngOnDestroy() {
