@@ -1,13 +1,13 @@
 import { Component, inject, OnInit, signal, WritableSignal } from '@angular/core';
-import { DatePipe } from '@angular/common';
+import { DatePipe, DecimalPipe } from '@angular/common';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
-    faSolidDumbbell,
-    faSolidPersonRunning,
-    faSolidChildReaching,
-    faSolidCalendarDay,
-    faSolidNoteSticky,
-    faSolidTag
+  faSolidDumbbell,
+  faSolidPersonRunning,
+  faSolidChildReaching,
+  faSolidCalendarDay,
+  faSolidNoteSticky,
+  faSolidTag
 } from "@ng-icons/font-awesome/solid";
 import { ActivatedRoute, Router } from '@angular/router';
 import { take, tap } from 'rxjs';
@@ -25,7 +25,7 @@ import { ModalType } from '../../../core/models/ModalType';
 @Component({
     selector: 'app-workout-details',
     standalone: true,
-    imports: [DatePipe, NgIcon, Modal],
+    imports: [DatePipe, NgIcon, Modal, DecimalPipe],
     templateUrl: './workout-details.html',
     styleUrl: './workout-details.css',
     providers: [

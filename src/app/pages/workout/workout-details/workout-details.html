@@ -91,9 +91,9 @@
                             @else {
                                 @if(isCardioTypeSteadyState(exercise)) {
                                     <div class="flex flex-wrap gap-3 text-sm">
-                                        <span class="bg-white border-2 border-blue-200 rounded-xl px-4 py-2 shadow-sm font-semibold text-slate-700 hover:border-blue-300 transition-all">Duration: {{ exercise.durationMinutes || 0 }}m {{ exercise.durationSeconds || 0 }}s</span>
-                                        <span class="bg-white border-2 border-blue-200 rounded-xl px-4 py-2 shadow-sm font-semibold text-slate-700 hover:border-blue-300 transition-all">Distance: {{ exercise.distanceKm || 0 }} km</span>
-                                        <span class="bg-white border-2 border-blue-200 rounded-xl px-4 py-2 shadow-sm font-semibold text-slate-700 hover:border-blue-300 transition-all">Calories: {{ exercise.caloriesBurned || 0 }}</span>
+                                        <span class="bg-white border-2 border-blue-200 rounded-xl px-4 py-2 shadow-sm font-semibold text-slate-700 hover:border-blue-300 transition-all">Duration: {{ (exercise.durationMinutes || 0) | number }}m {{ exercise.durationSeconds || 0 }}s</span>
+                                        <span class="bg-white border-2 border-blue-200 rounded-xl px-4 py-2 shadow-sm font-semibold text-slate-700 hover:border-blue-300 transition-all">Distance: {{ (exercise.distanceKm || 0) | number:'1.2-2'  }} km</span>
+                                        <span class="bg-white border-2 border-blue-200 rounded-xl px-4 py-2 shadow-sm font-semibold text-slate-700 hover:border-blue-300 transition-all">Calories: {{ (exercise.caloriesBurned) || 0 | number:'1.2-2'  }}</span>
                                     </div>
                                 }
                                 @else {
