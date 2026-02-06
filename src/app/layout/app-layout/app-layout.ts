@@ -1,10 +1,10 @@
-import { Component, computed, inject, Output, Signal } from '@angular/core';
+import { Component, computed, ElementRef, inject, Output, Signal, ViewChild } from '@angular/core';
 import { Sidebar } from '../utilities/sidebar/sidebar';
 import { Header } from '../utilities/header/header';
-import { Router, RouterOutlet } from "@angular/router";
+import { NavigationEnd, Router, RouterOutlet } from "@angular/router";
 import { BottomNav } from "../utilities/bottom-nav/bottom-nav";
 import { AuthService } from '../../core/services/auth-service';
-import { Subject, take, takeUntil, tap } from 'rxjs';
+import { filter, Subject, take, takeUntil, tap } from 'rxjs';
 import { UserService } from '../../core/services/user-service';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Gender } from '../../core/models/Gender';
@@ -16,6 +16,7 @@ import { Gender } from '../../core/models/Gender';
     styleUrl: './app-layout.css',
 })
 export class AppLayout {
+    @ViewChild('content') content!: ElementRef<HTMLDivElement>
 
     authService = inject(AuthService);
     userService = inject(UserService);
@@ -31,6 +32,15 @@ export class AppLayout {
 
     ngOnInit() {
         this.loadUser();
+    }
+
+    ngAfterViewInit() {
+        this.router.events
+        .pipe((filter(e => e instanceof NavigationEnd)))
+        .subscribe(() => {
+            console.log(this.content.nativeElement.scrollHeight)
+            this.content.nativeElement.scrollTo({top: 0})
+        })
     }
 
     ngOnDestroy() {
