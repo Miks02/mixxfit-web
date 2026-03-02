@@ -12,84 +12,100 @@ import { WorkoutsPerMonthDto } from '../models/WorkoutsPerMonthDto';
 import { environment } from '../../../../environments/environment';
 
 @Injectable({
-    providedIn: 'root',
+  providedIn: 'root',
 })
 export class WorkoutService {
-    private readonly api: string = environment.apiUrl;
-    private pagedWorkoutsSubject = new BehaviorSubject<PagedResult<WorkoutListItemDto> | undefined>(undefined)
-    private workoutSummarySubject = new BehaviorSubject<WorkoutSummaryDto | undefined>(undefined)
-    private queryParams = new BehaviorSubject<QueryParams>(
-        {sort: "", search: "", date: "", page: 1}
+  private readonly api: string = environment.apiUrl;
+  private pagedWorkoutsSubject = new BehaviorSubject<PagedResult<WorkoutListItemDto> | undefined>(undefined)
+  private workoutSummarySubject = new BehaviorSubject<WorkoutSummaryDto | undefined>(undefined)
+  private queryParams = new BehaviorSubject<QueryParams | undefined>(undefined)
+  private workoutCountsSubject = new BehaviorSubject<WorkoutsPerMonthDto | null>(null)
+
+  pagedWorkouts$ = this.pagedWorkoutsSubject.asObservable();
+  workoutSummary$ = this.workoutSummarySubject.asObservable();
+  workoutCounts$ = this.workoutCountsSubject.asObservable();
+
+  private http = inject(HttpClient)
+
+  getQueryParams() {return this.queryParams.value}
+  setQueryParams(queryParams: QueryParams) {this.queryParams.next(queryParams)}
+
+  getUserWorkoutsPage(): Observable<WorkoutPageDto> {
+    const params = this.getHttpQueryParams();
+
+    return this.http.get<WorkoutPageDto>(`${this.api}/workouts/overview`, {params}).pipe(
+      tap(res => {
+        this.pagedWorkoutsSubject.next(res.pagedWorkouts)
+        this.workoutSummarySubject.next(res.workoutSummary)
+      }),
+      map(res => res)
+    );
+  }
+
+  getUserWorkoutsByQuery(): Observable<PagedResult<WorkoutListItemDto>> {
+    const params = this.getHttpQueryParams();
+
+    return this.http.get<PagedResult<WorkoutListItemDto>>(`${this.api}/workouts`, {params})
+    .pipe(
+      tap(res => {
+        this.pagedWorkoutsSubject.next(res)
+      }),
+      map(res => res)
     )
-    private workoutCountsSubject = new BehaviorSubject<WorkoutsPerMonthDto | null>(null)
+  }
 
-    pagedWorkouts$ = this.pagedWorkoutsSubject.asObservable();
-    workoutSummary$ = this.workoutSummarySubject.asObservable();
-    workoutCounts$ = this.workoutCountsSubject.asObservable();
+  getUserWorkout(id: number): Observable<WorkoutDetailsDto> {
+    return this.http.get<WorkoutDetailsDto>(`${this.api}/workouts/${id}`);
+  }
 
-    private http = inject(HttpClient)
+  getUserWorkoutCountsByMonth(year: number | null = null) {
+    let params = new HttpParams();
 
-    getQueryParams() {return this.queryParams.value}
-    setQueryParams(queryParams: QueryParams) {this.queryParams.next(queryParams)}
-
-    getUserWorkoutsPage(): Observable<WorkoutPageDto> {
-        const params = this.getHttpQueryParams();
-
-        return this.http.get<WorkoutPageDto>(`${this.api}/workouts/overview`, {params}).pipe(
-            tap(res => {
-                this.pagedWorkoutsSubject.next(res.pagedWorkouts)
-                this.workoutSummarySubject.next(res.workoutSummary)
-            }),
-            map(res => res)
-        );
+    if (year !== null && year !== undefined) {
+      params = params.set('year', year.toString());
     }
 
-    getUserWorkoutsByQuery(): Observable<PagedResult<WorkoutListItemDto>> {
-        const params = this.getHttpQueryParams();
+    return this.http.get<WorkoutsPerMonthDto>(`${this.api}/workouts/workout-chart`, { params })
+    .pipe(
+      tap(res => this.workoutCountsSubject.next(res))
+    );
+  }
 
-        return this.http.get<PagedResult<WorkoutListItemDto>>(`${this.api}/workouts`, {params})
-            .pipe(
-                tap(res => {
-                     this.pagedWorkoutsSubject.next(res)
-                }),
-                 map(res => res)
-            )
-    }
+  addWorkout(model: CreateWorkoutDto): Observable<WorkoutDetailsDto> {
+    return this.http.post<WorkoutDetailsDto>(`${this.api}/workouts`, model).pipe(
+      tap(res => console.log(res))
+    )
 
-    getUserWorkout(id: number): Observable<WorkoutDetailsDto> {
-        return this.http.get<WorkoutDetailsDto>(`${this.api}/workouts/${id}`);
-    }
+  }
 
-    getUserWorkoutCountsByMonth(year: number | null = null) {
-        const params = new HttpParams().set('year', year?.toString()!)
+  deleteWorkout(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.api}/workouts/${id}`).pipe(
+      tap(res => console.log("Delete response: ", res))
+    )
+  }
 
-        return this.http.get<WorkoutsPerMonthDto>(`${this.api}/workouts/workouts-per-month`, {params})
-            .pipe(
-                tap(res => this.workoutCountsSubject.next(res))
-            )
-    }
+  private getHttpQueryParams(): HttpParams {
+    const queryParams = this.getQueryParams();
+    let params = new HttpParams();
 
-    addWorkout(model: CreateWorkoutDto): Observable<WorkoutDetailsDto> {
-        return this.http.post<WorkoutDetailsDto>(`${this.api}/workouts`, model).pipe(
-            tap(res => console.log(res))
-        )
+    console.log("Current query params: ", queryParams);
 
-    }
+    if(queryParams === undefined)
+      return params;
 
-    deleteWorkout(id: number): Observable<void> {
-        return this.http.delete<void>(`${this.api}/workouts/${id}`).pipe(
-            tap(res => console.log("Delete response: ", res))
-        )
-    }
+    if(queryParams.page !== null && queryParams.page !== undefined)
+      params = params.set('page', queryParams.page)
 
-    private getHttpQueryParams(): HttpParams {
-        const queryParams = this.getQueryParams();
+    if(queryParams.sort !== null && queryParams.sort !== undefined)
+      params = params.set('sort', queryParams.sort);
 
-        return new HttpParams()
-            .set('sortBy', queryParams.sort)
-            .set('searchBy', queryParams.search)
-            .set('date', queryParams.date)
-            .set('page', queryParams.page)
-    }
+    if(queryParams.search !== null && queryParams.search !== undefined)
+      params = params.set('search', queryParams.search);
+
+    if(queryParams.date !== null && queryParams.date !== undefined)
+      params = params.set('date', queryParams.date);
+
+    return params;
+  }
 
 }

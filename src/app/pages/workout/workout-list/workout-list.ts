@@ -51,9 +51,9 @@ export class WorkoutList {
     workoutsSource = toSignal(this.workoutService.pagedWorkouts$,{ initialValue: null });
 
     page: number = 1;
-    search: string = '';
-    sort: string = 'Newest';
-    date: string = '';
+    search: string | null= null;
+    sort: string | null = null;
+    date: string | null = null;
 
     totalCount = computed(() => this.workoutsSource()?.totalCount);
     pageSize = computed(() => this.workoutsSource()?.pageSize);
@@ -98,14 +98,14 @@ export class WorkoutList {
         .pipe(takeUntil(this.destroy$))
         .subscribe(params => {
             this.page = params['page'] ? +params['page'] : 1;
-            this.search = params['search'] || '';
-            this.sort = params['sort'] || 'Newest';
-            this.date = params['date'] || '';
+            this.search = params['search'] || null;
+            this.sort = params['sort'] || 'newest';
+            this.date = params['date'] || null;
 
             this.workoutService.setQueryParams({
-                sort: this.sort,
-                search: this.search,
-                date: this.date,
+                sort: this.sort!,
+                search: this.search!,
+                date: this.date!,
                 page: this.page
             });
 
@@ -118,7 +118,7 @@ export class WorkoutList {
         });
     }
 
-    updateQueryParams(params: Partial<{ page: number; search: string; sort: string; date: string }>) {
+    updateQueryParams(params: Partial<{ page: number; search: string; sort: string; date: string | null}>) {
         this.router.navigate([], {
             relativeTo: this.activatedRoute,
             queryParams: params,
@@ -155,7 +155,7 @@ export class WorkoutList {
     }
 
     onSortChange() {
-        this.updateQueryParams({ sort: this.sort, page: 1 });
+        this.updateQueryParams({ sort: this.sort!, page: 1 });
     }
 
     onDateChange() {

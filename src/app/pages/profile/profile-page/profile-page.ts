@@ -99,9 +99,7 @@ export class ProfilePage {
 
     ngOnInit() {
         this.layoutState.setTitle("My Profile");
-        this.profileService.getProfilePage().pipe(take(1)).subscribe((res) => {
-            this.initForms();
-        });
+        this.initForms();
     }
 
     genderLabel = computed(() => {
