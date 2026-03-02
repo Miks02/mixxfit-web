@@ -75,9 +75,11 @@ export class AuthService {
     }
 
     rotateAuthTokens(): Observable<string> {
-        return this.http.post<string>(`${this.api}/auth/refresh-token`, {}, {
+        return this.http.post<AuthResponse>(`${this.api}/auth/refresh-token`, {}, {
             withCredentials: true
-        });
+        }).pipe(
+            map((res: any) => res.accessToken)
+        )
     }
 
     test(): Observable<void> {
