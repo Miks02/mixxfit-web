@@ -10,7 +10,7 @@ import { WeightListDetailsDto } from '../models/WeightListDetailsDto';
 import { WeightChartDto } from '../models/WeightChartDto';
 
 @Injectable({
-  providedIn: 'root',
+    providedIn: 'root',
 })
 export class WeightEntryService {
     private api = environment.apiUrl;
@@ -33,39 +33,55 @@ export class WeightEntryService {
 
     getMyWeightSummary(month: number | null = null, year: number | null = null, targetWeight: number | null = null) {
         const params = new HttpParams()
-            .set('month', month as number)
-            .set('year', year as number)
-            .set('targetWeight', targetWeight as number)
+
+        if(month !== null && month !== undefined) {
+            params.set('month', month as number)
+        }
+
+        if(year !== null && year !== undefined) {
+            params.set('year', year as number)
+        }
+
+        if(targetWeight !== null && targetWeight !== undefined) {
+            params.set('targetWeight', targetWeight as number)
+        }
 
         return this.http.get<WeightSummaryDto>(`${this.api}/weight-entries`, {params})
-            .pipe(
-                tap(res => {
-                    this.weightSummary = {
-                        firstEntry: res.firstEntry,
-                        currentWeight: res.currentWeight,
-                        progress: res.progress,
-                        years: res.years,
-                        weightChart: res.weightChart
+        .pipe(
+            tap(res => {
+                this.weightSummary = {
+                    firstEntry: res.firstEntry,
+                    currentWeight: res.currentWeight,
+                    progress: res.progress,
+                    years: res.years,
+                    weightChart: res.weightChart
 
-                    }
-                    this.weightListDetailsSubject.next(res.weightListDetails);
-                    this.userService.userDetails = {currentWeight: res.currentWeight.weight};
-                    this.weightChartSubject.next(res.weightChart);
-                })
-            )
+                }
+                this.weightListDetailsSubject.next(res.weightListDetails);
+                this.userService.userDetails = {currentWeight: res.currentWeight.weight};
+                this.weightChartSubject.next(res.weightChart);
+            })
+        )
     }
 
     getMyWeightLogs(month: number | null = null, year: number | null = null) {
-        const params = new HttpParams()
-            .set('month', month as number)
-            .set('year', year as number)
+        let params = new HttpParams();
+
+        if(month !== null && month !== undefined) {
+            params.set('month', month as number)
+        }
+
+        if(year !== null && year !== undefined) {
+            params.set('year', year as number)
+
+        }
 
         return this.http.get<WeightListDetailsDto>(`${this.api}/weight-entries/logs`, {params})
-            .pipe(
-                tap(res => {
-                    this.weightListDetailsSubject.next(res);
-                })
-            );
+        .pipe(
+            tap(res => {
+                this.weightListDetailsSubject.next(res);
+            })
+        );
     }
 
     getMyWeightLog(id: number) {
@@ -73,18 +89,21 @@ export class WeightEntryService {
     }
 
     getMyWeightChart(targetWeight: number | null = null) {
-        const params = new HttpParams()
-            .set('targetWeight', targetWeight as number)
+        let params = new HttpParams();
+
+        if(targetWeight != null && targetWeight != undefined) {
+            params.set('targetWeight', targetWeight as number)
+        }
 
         return this.http.get<WeightChartDto>(`${this.api}/weight-entries/weight-chart`, {params})
-            .pipe(
-                tap(res => {
-                    this.weightChartSubject.next(res);
-                    this.weightSummary = {
-                        weightChart: res
-                    }
-                })
-            )
+        .pipe(
+            tap(res => {
+                this.weightChartSubject.next(res);
+                this.weightSummary = {
+                    weightChart: res
+                }
+            })
+        )
     }
 
     addWeightEntry(request: WeightCreateRequestDto) {
