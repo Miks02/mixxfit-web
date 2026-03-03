@@ -4,6 +4,9 @@ import { ExerciseType } from "../../pages/workout/models/ExerciseType";
 import { minArrayLength, onlyNumbersCheck } from "./FormHelpers";
 import { ExerciseEntryFormValue } from "../../pages/workout/models/ExerciseEntryFormValue";
 import { CreateWorkoutDto } from "../../pages/workout/models/CreateWorkoutDto";
+import { UnitSystem } from "../../pages/nutrition/models/UnitSystem";
+import { ActivityLevel } from "../../pages/nutrition/models/ActivityLevel";
+import { Gender } from "../models/Gender";
 
 export function createExerciseForm(fb: FormBuilder): FormGroup {
     return fb.group({
@@ -128,5 +131,19 @@ export function createChangePasswordForm(fb: FormBuilder): FormGroup {
         currentPassword: ['', [Validators.required, Validators.minLength(6)]],
         newPassword: ['', [Validators.required, Validators.minLength(6)]],
         confirmPassword: ['', [Validators.required, Validators.minLength(6)]]
+    });
+}
+
+export function createCalculateCaloriesForm(fb: FormBuilder): FormGroup {
+  return fb.group({
+      unitSystem: [UnitSystem.Metric],
+      age: [null, [Validators.required, Validators.min(1), Validators.max(120), onlyNumbersCheck()]],
+      gender: [null, [Validators.required]],
+      weightKg: [null, [Validators.min(1), Validators.max(500), onlyNumbersCheck()]],
+      weightLbs: [null, [Validators.min(1), Validators.max(1100), onlyNumbersCheck()]],
+      heightCm: [null, [Validators.min(50), Validators.max(300), onlyNumbersCheck()]],
+      heightFt: [null, [Validators.min(1), Validators.max(10), onlyNumbersCheck()]],
+      heightIn: [0, [Validators.min(0), Validators.max(11), onlyNumbersCheck()]],
+      activityLevel: [ActivityLevel.Moderate, [Validators.required]]
     });
 }
