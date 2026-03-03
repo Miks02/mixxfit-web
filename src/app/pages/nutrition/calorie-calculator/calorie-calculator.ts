@@ -118,7 +118,7 @@ export class CalorieCalculator {
       activityLevel: this.form.get('activityLevel')?.value
     }
 
-    this.calorieService.calculateCalories(request).subscribe()
+    this.calorieService.calculateCalories(request).subscribe(res => this.result.set(res));
   }
 
   onClose() {
