@@ -2,7 +2,7 @@ export type CalorieResult = {
     bmr: number;
     maintenance: number;
     mildLoss: number;
-    loss: number;
+    aggressiveLoss: number;
     mildGain: number;
-    gain: number;
+    aggressiveGain: number;
 }
