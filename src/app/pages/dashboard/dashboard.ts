@@ -1,6 +1,6 @@
-import { Component, computed, inject, effect } from '@angular/core';
+import { Component, computed, inject, effect, WritableSignal, signal } from '@angular/core';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import { faSolidDumbbell, faSolidFireFlameCurved, faSolidGlassWater, faSolidMoon, faSolidScaleUnbalanced, faSolidUtensils, faSolidCalculator, faSolidGhost, faSolidMagnifyingGlassMinus, faSolidChartLine, faSolidUser } from '@ng-icons/font-awesome/solid';
+import { faSolidDumbbell, faSolidFireFlameCurved, faSolidGlassWater, faSolidMoon, faSolidScaleUnbalanced, faSolidUtensils, faSolidCalculator, faSolidGhost,  faSolidChartLine, faSolidUser } from '@ng-icons/font-awesome/solid';
 import {
     Chart, registerables
 } from 'chart.js';
@@ -17,11 +17,12 @@ import { WorkoutService } from '../workout/services/workout-service';
 import { FormsModule } from '@angular/forms';
 import { WeightEntryService } from '../weight/services/weight-entry-service';
 import { NgxSkeletonLoaderModule } from 'ngx-skeleton-loader';
+import { CalorieCalculator } from '../nutrition/calorie-calculator/calorie-calculator';
 Chart.register(...registerables)
 
 @Component({
     selector: 'app-dashboard',
-    imports: [NgIcon, WorkoutsChart, WeightChart, RouterLink, DatePipe, FormsModule, NgxSkeletonLoaderModule],
+    imports: [NgIcon, WorkoutsChart, WeightChart, RouterLink, DatePipe, FormsModule, NgxSkeletonLoaderModule, CalorieCalculator],
     templateUrl: './dashboard.html',
     styleUrl: './dashboard.css',
     providers: [provideIcons({faSolidDumbbell, faSolidFireFlameCurved, faSolidGlassWater, faSolidMoon, faSolidScaleUnbalanced, faSolidUtensils, faSolidCalculator, faSolidGhost, faSolidChartLine, faSolidUser})]
@@ -35,12 +36,12 @@ export class Dashboard {
     private router = inject(Router)
 
     isLoading: boolean = false;
+    isCalorieCalculatorOpen: WritableSignal<boolean> = signal(false);
 
     dashboardSource = toSignal(this.dashboardState.dashboard$, {initialValue: null})
     userSource = toSignal(this.userService.userDetails$, {initialValue: null})
     workoutsPerMonth = toSignal(this.workoutService.workoutCounts$, {initialValue: null});
     weightChartSource = toSignal(this.weightService.weightChart$, {initialValue: null});
-
 
     years = computed(() => this.workoutsPerMonth()?.years)
     weightChart = computed(() => this.weightChartSource() ?? undefined)
