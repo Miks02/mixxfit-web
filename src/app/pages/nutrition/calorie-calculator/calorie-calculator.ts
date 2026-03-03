@@ -89,12 +89,11 @@ export class CalorieCalculator {
       }
     }
   }
-  
-  calculate() {
 
-    if(this.form.invalid) {
+  calculate() {
+    
+    if(this.form.invalid)
       return;
-    }
 
     let weightKg: number
     let heightCm: number
