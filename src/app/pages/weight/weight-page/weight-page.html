@@ -129,7 +129,7 @@
         </div>
 
         <div class="flex flex-col gap-4">
-            @if(weightChart() === undefined) {
+            @if(!weightChart()) {
                 <div class="flex items-center justify-center flex-col min-h-100 grow gap-4 p-4">
                     <ngx-skeleton-loader
                     count="8"
