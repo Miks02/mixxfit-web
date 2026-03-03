@@ -73,7 +73,7 @@ export class CalorieCalculator {
         this.form.patchValue({ weightLbs: Math.round(current.weightKg * 2.2046) });
       }
       if (current.heightCm) {
-        const totalInches = current.heightCm / 2.54;
+        const totalInches = Math.round(current.heightCm / 2.54);
         this.form.patchValue({
           heightFt: Math.floor(totalInches / 12),
           heightIn: Math.round(totalInches % 12)
@@ -89,7 +89,7 @@ export class CalorieCalculator {
       }
     }
   }
-
+  
   calculate() {
 
     if(this.form.invalid) {
@@ -137,9 +137,10 @@ export class CalorieCalculator {
 
     if (this.initialHeight) {
       patches['heightCm'] = this.initialHeight;
-      const totalInches = this.initialHeight / 2.54;
+      const totalInches = Math.round(this.initialHeight / 2.54);
       patches['heightFt'] = Math.floor(totalInches / 12);
       patches['heightIn'] = Math.round(totalInches % 12);
+
     }
 
     if(this.initialGender)
