@@ -1,0 +1,227 @@
+<div (click)="onClose()" class="fixed inset-0 z-150 w-full h-dvh bg-slate-700/40 backdrop-blur-2xl"></div>
+
+<div class="fixed inset-0 z-160 flex items-center justify-center p-0 sm:p-6 lg:p-8 pointer-events-none">
+
+  <div class="pointer-events-auto bg-slate-200 w-full md:w-160 h-dvh sm:h-auto sm:max-h-[90dvh] flex flex-col overflow-hidden sm:rounded-2xl shadow-2xl">
+
+    <div class="flex-none flex pt-[env(safe-area-inset-top)] justify-between items-center px-4 bg-linear-to-br from-yellow-500 to-yellow-400 sm:rounded-t-2xl h-auto min-h-12 sticky top-0 z-20">
+      <div class="flex items-center gap-2">
+        <ng-icon name="faSolidCalculator" class="text-xl text-slate-800"></ng-icon>
+        <h1 class="text-xl font-bold text-slate-800">Calorie Calculator</h1>
+      </div>
+      <button (click)="onClose()" class="flex items-center justify-center cursor-pointer p-2 hover:text-red-600 active:opacity-70 text-red-800">
+        <ng-icon name="faSolidXmark" class="text-2xl"></ng-icon>
+      </button>
+    </div>
+
+    <form class="flex flex-col flex-1 overflow-y-auto p-5 sm:p-7 gap-6" [formGroup]="form">
+
+      <div class="flex rounded-xl shadow-md border border-slate-300 self-start w-full sm:w-auto">
+        <button
+        type="button"
+        (click)="onUnitChange(UnitSystem.Metric)"
+        [class.bg-amber-500]="isMetric"
+        [class.text-white]="isMetric"
+        [class.bg-white]="!isMetric"
+        [class.text-slate-600]="!isMetric"
+        class="flex-1 sm:flex-none px-6 py-2 font-semibold text-sm transition-all duration-200 rounded-l-xl">
+        Metric (kg / cm)
+      </button>
+      <button
+      type="button"
+      (click)="onUnitChange(UnitSystem.Imperial)"
+      [class.bg-amber-500]="!isMetric"
+      [class.text-white]="!isMetric"
+      [class.bg-white]="isMetric"
+      [class.text-slate-600]="isMetric"
+      class="flex-1 sm:flex-none px-6 py-2 font-semibold text-sm transition-all duration-200 rounded-r-xl">
+      Imperial (lbs / ft)
+    </button>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+    <label class="flex flex-col gap-2">
+      <span class="text-sm font-medium text-slate-700">Age <span class="text-red-600">*</span></span>
+      <div class="flex items-center gap-3 shadow-md bg-linear-to-br from-white to-slate-50 rounded-lg px-4 py-3 border-transparent transition-colors duration-200 border focus-within:outline outline-amber-400"
+      [class.border-red-500]="!isControlValid('age', form)"
+      [class.border-transparent]="isControlValid('age', form)">
+      <ng-icon name="faSolidHourglass" class="text-emerald-700! text-xl flex-none"></ng-icon>
+      <input formControlName="age" type="number" min="1" max="120"
+      class="flex-1 bg-transparent outline-none text-base" placeholder="Enter age...">
+    </div>
+  </label>
+
+  <label class="flex flex-col gap-2">
+    <span class="text-sm font-medium text-slate-700">Gender <span class="text-red-600">*</span></span>
+    <div class="flex items-center gap-3 shadow-md bg-linear-to-br from-white to-slate-50 rounded-lg px-4 py-3 transition-colors duration-200 border border-transparent focus-within:outline outline-amber-400">
+      <ng-icon name="faSolidPerson" class="text-emerald-700! text-xl flex-none"></ng-icon>
+      <select formControlName="gender" class="flex-1 bg-transparent outline-none text-base font-semibold appearance-none">
+        <option [ngValue]="null" selected disabled hidden>Gender</option>
+        <option [ngValue]="1">Male</option>
+        <option [ngValue]="2">Female</option>
+        <option [ngValue]="3">Other</option>
+      </select>
+    </div>
+  </label>
+
+  @if(isMetric) {
+    <label class="flex flex-col gap-2">
+      <span class="text-sm font-medium text-slate-700">Weight (kg) <span class="text-red-600">*</span></span>
+      <div class="flex items-center gap-3 shadow-md bg-linear-to-br from-white to-slate-50 rounded-lg px-4 py-3 transition-colors duration-200 border focus-within:outline outline-amber-400"
+      [class.border-red-500]="!isControlValid('weightKg', form)"
+      [class.border-transparent]="isControlValid('weightKg', form)">
+      <ng-icon name="faSolidScaleUnbalanced" class="text-emerald-700! text-xl flex-none"></ng-icon>
+      <input formControlName="weightKg" type="number" min="1" max="500"
+      class="flex-1 bg-transparent outline-none text-base" placeholder="Enter weight...">
+    </div>
+  </label>
+
+  <label class="flex flex-col gap-2">
+    <span class="text-sm font-medium text-slate-700">Height (cm) <span class="text-red-600">*</span></span>
+    <div class="flex items-center gap-3 shadow-md bg-linear-to-br from-white to-slate-50 rounded-lg px-4 py-3 transition-colors duration-200 border focus-within:outline outline-amber-400"
+    [class.border-red-500]="!isControlValid('heightCm', form)"
+    [class.border-transparent]="isControlValid('heightCm', form)">
+    <ng-icon name="faSolidRulerVertical" class="text-emerald-700! text-xl flex-none"></ng-icon>
+    <input formControlName="heightCm" type="number" min="50" max="300"
+    class="flex-1 bg-transparent outline-none text-base" placeholder="Enter height...">
+  </div>
+</label>
+} @else {
+  <label class="flex flex-col gap-2">
+    <span class="text-sm font-medium text-slate-700">Weight (lbs) <span class="text-red-600">*</span></span>
+    <div class="flex items-center gap-3 shadow-md bg-linear-to-br from-white to-slate-50 rounded-lg px-4 py-3 transition-colors duration-200 border focus-within:outline outline-amber-400"
+    [class.border-red-500]="!isControlValid('weightLbs', form)"
+    [class.border-transparent]="isControlValid('weightLbs', form)">
+    <ng-icon name="faSolidScaleUnbalanced" class="text-emerald-700! text-xl flex-none"></ng-icon>
+    <input formControlName="weightLbs" type="number" min="1" max="1100"
+    class="flex-1 bg-transparent outline-none text-base" placeholder="Enter weight...">
+  </div>
+</label>
+
+<div class="flex flex-col gap-2">
+  <span class="text-sm font-medium text-slate-700">Height <span class="text-red-600">*</span></span>
+  <div class="flex gap-2">
+    <div class="flex items-center gap-3 shadow-md bg-linear-to-br from-white to-slate-50 rounded-lg px-4 py-3 transition-colors duration-200 border border-transparent focus-within:outline outline-amber-400 flex-1">
+      <ng-icon name="faSolidRulerVertical" class="text-emerald-700! text-xl flex-none"></ng-icon>
+      <input formControlName="heightFt" type="number" min="1" max="10"
+      class="flex-1 bg-transparent outline-none text-base w-0" placeholder="ft">
+      <span class="text-sm text-slate-500 font-semibold">ft</span>
+    </div>
+    <div class="flex items-center gap-3 shadow-md bg-linear-to-br from-white to-slate-50 rounded-lg px-4 py-3 transition-colors duration-200 border border-transparent focus-within:outline outline-amber-400 flex-1">
+      <input formControlName="heightIn" type="number" min="0" max="11"
+      class="flex-1 bg-transparent outline-none text-base w-0" placeholder="in">
+      <span class="text-sm text-slate-500 font-semibold">in</span>
+    </div>
+  </div>
+</div>
+}
+</div>
+
+<div class="flex flex-col gap-2">
+  <span class="text-sm font-medium text-slate-700">Activity Level <span class="text-red-600">*</span></span>
+  <div class="grid grid-cols-1 gap-2">
+    @for(level of [
+    { value: ActivityLevel.Sedentary, label: 'Sedentary', desc: 'Little or no exercise' },
+    { value: ActivityLevel.Light,     label: 'Lightly Active', desc: 'Light exercise 1–3 days/week' },
+    { value: ActivityLevel.Moderate,  label: 'Moderately Active', desc: 'Moderate exercise 3–5 days/week' },
+    { value: ActivityLevel.Active,    label: 'Very Active', desc: 'Hard exercise 6–7 days/week' },
+    { value: ActivityLevel.VeryActive, label: 'Extra Active', desc: 'Very hard exercise + physical job' }
+    ]; track level.value) {
+      <button
+      type="button"
+      (click)="form.patchValue({ activityLevel: level.value })"
+      [class.bg-amber-500]="form.get('activityLevel')?.value === level.value"
+      [class.text-white]="form.get('activityLevel')?.value === level.value"
+      [class.shadow-md]="form.get('activityLevel')?.value === level.value"
+      [class.bg-white]="form.get('activityLevel')?.value !== level.value"
+      [class.text-slate-700]="form.get('activityLevel')?.value !== level.value"
+      class="flex items-center justify-between px-4 py-3 rounded-xl border border-transparent transition-all duration-200 text-left hover:border-amber-400">
+      <div class="flex items-center gap-3">
+        <ng-icon name="faSolidBoltLightning" class="text-lg flex-none"
+        [class.text-white]="form.get('activityLevel')?.value === level.value"
+        [class.text-amber-500]="form.get('activityLevel')?.value !== level.value">
+      </ng-icon>
+      <span class="font-semibold text-sm sm:text-base">{{ level.label }}</span>
+    </div>
+    <span class="text-xs sm:text-sm opacity-75 text-right">{{ level.desc }}</span>
+  </button>
+}
+</div>
+</div>
+
+<div class="flex justify-center pt-1">
+  <button
+  type="button"
+  [disabled]="this.form.invalid"
+  (click)="calculate()"
+  class="bg-linear-to-br from-amber-500 to-amber-600 hover:opacity-80 active:opacity-60 text-white font-bold px-10 py-3 rounded-xl shadow-lg cursor-pointer transition-all duration-200 flex items-center gap-2 text-lg disabled:opacity-70 disabled:cursor-not-allowed">
+  <ng-icon name="faSolidCalculator" class="text-xl"></ng-icon>
+  Calculate
+</button>
+</div>
+
+@if(result()) {
+  <div class="flex flex-col gap-3 border-t-2 border-slate-300 pt-5">
+    <div class="flex items-center gap-2 mb-1">
+      <ng-icon name="faSolidFireFlameCurved" class="text-2xl text-amber-500!"></ng-icon>
+      <h2 class="text-lg font-bold text-slate-800">Your Results</h2>
+    </div>
+
+    <div class="bg-linear-to-br from-amber-500 to-amber-600 rounded-xl p-4 text-white shadow-md flex justify-between items-center">
+      <div>
+        <p class="text-sm font-medium opacity-90">Basal Metabolic Rate (BMR)</p>
+        <p class="text-2xl font-bold">{{ result()!.bmr }} kcal</p>
+      </div>
+      <ng-icon name="faSolidFireFlameCurved" class="text-4xl opacity-40"></ng-icon>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-1">
+
+      <div class="bg-white rounded-xl p-4 shadow-md flex justify-between items-center border-l-4 border-red-500">
+        <div>
+          <p class="text-xs font-medium text-slate-500">Aggressive loss (−500)</p>
+          <p class="text-xl font-bold text-slate-800">{{ result()!.aggressiveLoss }} kcal</p>
+        </div>
+        <ng-icon name="faSolidArrowDown" class="text-2xl text-red-500!"></ng-icon>
+      </div>
+
+      <div class="bg-white rounded-xl p-4 shadow-md flex justify-between items-center border-l-4 border-orange-400">
+        <div>
+          <p class="text-xs font-medium text-slate-500">Mild loss (−250)</p>
+          <p class="text-xl font-bold text-slate-800">{{ result()!.mildLoss }} kcal</p>
+        </div>
+        <ng-icon name="faSolidArrowDown" class="text-2xl text-orange-400!"></ng-icon>
+      </div>
+
+      <div class="bg-white rounded-xl p-4 shadow-md flex justify-between items-center border-l-4 border-emerald-500 sm:col-span-2">
+        <div>
+          <p class="text-xs font-medium text-slate-500">Maintenance</p>
+          <p class="text-xl font-bold text-slate-800">{{ result()!.maintenance }} kcal</p>
+        </div>
+        <ng-icon name="faSolidMinus" class="text-2xl text-emerald-500!"></ng-icon>
+      </div>
+
+      <div class="bg-white rounded-xl p-4 shadow-md flex justify-between items-center border-l-4 border-blue-400">
+        <div>
+          <p class="text-xs font-medium text-slate-500">Mild gain (+250)</p>
+          <p class="text-xl font-bold text-slate-800">{{ result()!.mildGain }} kcal</p>
+        </div>
+        <ng-icon name="faSolidArrowUp" class="text-2xl text-blue-400!"></ng-icon>
+      </div>
+
+      <div class="bg-white rounded-xl p-4 shadow-md flex justify-between items-center border-l-4 border-violet-500">
+        <div>
+          <p class="text-xs font-medium text-slate-500">Aggressive gain (+500)</p>
+          <p class="text-xl font-bold text-slate-800">{{ result()!.aggressiveGain }} kcal</p>
+        </div>
+        <ng-icon name="faSolidArrowUp" class="text-2xl text-violet-500!"></ng-icon>
+      </div>
+
+    </div>
+  </div>
+}
+
+</form>
+</div>
+</div>
