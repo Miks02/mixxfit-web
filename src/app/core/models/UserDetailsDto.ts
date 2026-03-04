@@ -11,6 +11,7 @@ export type UserDetailsDto = {
     currentWeight?: number,
     targetWeight?: number,
     height?: number,
+    dailyCalorieGoal?: number,
 
     accountStatus: AccountStatus,
     dateOfBirth?: string,
