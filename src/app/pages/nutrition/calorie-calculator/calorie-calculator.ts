@@ -81,7 +81,7 @@ export class CalorieCalculator {
       }
     } else {
       if (current.weightLbs) {
-        this.form.patchValue({ weightKg: Math.round(current.weightLbs / 2.2046 * 10) / 10 });
+        this.form.patchValue({ weightKg: Math.round((current.weightLbs / 2.2046) * 10 / 10).toFixed(1) });
       }
       if (current.heightFt !== null) {
         const totalInches = (current.heightFt || 0) * 12 + (current.heightIn || 0);
@@ -91,7 +91,7 @@ export class CalorieCalculator {
   }
 
   calculate() {
-    
+
     if(this.form.invalid)
       return;
 
@@ -130,7 +130,7 @@ export class CalorieCalculator {
     if (this.initialAge) patches['age'] = this.initialAge;
 
     if (this.initialWeight) {
-      patches['weightKg'] = this.initialWeight;
+      patches['weightKg'] = this.initialWeight.toFixed(1);
       patches['weightLbs'] = Math.round(this.initialWeight * 2.2046);
     }
 
