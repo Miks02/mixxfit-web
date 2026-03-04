@@ -9,7 +9,7 @@ import { SetDailyCaloriesRequest } from '../models/SetDailyCaloriesRequest';
     providedIn: 'root',
 })
 export class NutritionService {
-    private api: string = environment.apiUrl;
+    private api: string = environment.apiUrl + '/nutrition';
 
     private http = inject(HttpClient);
     private userService = inject(UserService);
@@ -17,9 +17,9 @@ export class NutritionService {
     private calorieResultSubject = new BehaviorSubject<CalorieResult | undefined>(undefined);
 
     calculateCalories(request: SetDailyCaloriesRequest): Observable<CalorieResult>  {
-        return this.http.post<CalorieResult>(`${this.api}/calories`, request).pipe(
-            tap((res) => console.log(res))
-        )
+        return this.http.post<CalorieResult>(`${this.api}/calorie-goals`, request)
     }
+
+
 
 }
