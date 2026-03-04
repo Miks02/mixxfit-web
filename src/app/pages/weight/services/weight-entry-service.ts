@@ -58,7 +58,6 @@ export class WeightEntryService {
 
                 }
                 this.weightListDetailsSubject.next(res.weightListDetails);
-                this.userService.userDetails = {currentWeight: res.currentWeight.weight};
                 this.weightChartSubject.next(res.weightChart);
             })
         )
