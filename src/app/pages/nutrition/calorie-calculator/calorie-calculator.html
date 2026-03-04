@@ -194,7 +194,7 @@ class="bg-linear-to-br from-amber-500 to-amber-600 rounded-xl p-4 text-white sha
 <div
 class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-1">
 <div
-(click)="setDailyCalories(result()!.aggressiveLoss)"
+(click)="selectedCalorieValue.set(result()!.aggressiveLoss)"
 class="bg-white rounded-xl p-4 shadow-md flex justify-between items-center border-l-4 border-red-500 hover:bg-amber-200 cursor-pointer hover:border-amber-400 transition duration-200 active:opacity-70 group
 {{ selectedCalorieValue() === result()!.aggressiveLoss ? 'border-amber-400! bg-amber-200!' : 'border-red-500' }}">
 <div>
@@ -209,7 +209,7 @@ class="text-2xl group-hover:text-amber-600!"></ng-icon>
 </div>
 
 <div
-(click)="setDailyCalories(result()!.mildLoss)"
+(click)="selectedCalorieValue.set(result()!.mildLoss)"
 class="bg-white rounded-xl p-4 shadow-md flex justify-between items-center border-l-4 border-amber-400 hover:bg-amber-200 cursor-pointer hover:border-amber-400 transition duration-200 active:opacity-70 group {{ selectedCalorieValue() === result()!.mildLoss ? 'border-amber-400! bg-amber-200!' : 'border-amber-400' }}">
 <div>
     <p class="text-xs font-medium text-slate-500">Mild loss (−250)</p>
@@ -222,7 +222,7 @@ class="text-2xl group-hover:text-amber-600!"></ng-icon>
 </div>
 
 <div
-(click)="setDailyCalories(result()!.maintenance)"
+(click)="selectedCalorieValue.set(result()!.maintenance)"
 class="bg-white rounded-xl p-4 shadow-md flex justify-between items-center border-l-4 border-emerald-500 sm:col-span-2 hover:bg-amber-200 cursor-pointer hover:border-amber-400 transition duration-200 active:opacity-70 group {{ selectedCalorieValue() === result()!.maintenance ? 'border-amber-400! bg-amber-200!' : 'border-emerald-500' }}">
 <div>
     <p class="text-xs font-medium text-slate-500">Maintenance</p>
@@ -236,7 +236,7 @@ class="text-2xl group-hover:text-amber-600!"></ng-icon>
 </div>
 
 <div
-(click)="setDailyCalories(result()!.mildGain)"
+(click)="selectedCalorieValue.set(result()!.mildGain)"
 class="bg-white rounded-xl p-4 shadow-md flex justify-between items-center border-l-4 border-blue-400 hover:bg-amber-200 cursor-pointer hover:border-amber-400 transition duration-200 active:opacity-70 group {{ selectedCalorieValue() === result()!.mildGain ? 'border-amber-400! bg-amber-200!' : 'border-blue-400' }}">
 <div>
     <p class="text-xs font-medium text-slate-500">Mild gain (+250)</p>
@@ -250,7 +250,7 @@ class="text-2xl group-hover:text-amber-600!"></ng-icon>
 </div>
 
 <div
-(click)="setDailyCalories(result()!.aggressiveGain)"
+(click)="selectedCalorieValue.set(result()!.aggressiveGain)"
 class="bg-white rounded-xl p-4 shadow-md flex justify-between items-center border-l-4 border-violet-500 hover:bg-amber-200 cursor-pointer hover:border-amber-400 transition duration-200 active:opacity-70 group {{ selectedCalorieValue() === result()!.aggressiveGain ? 'border-amber-400! bg-amber-200!' : 'border-violet-500' }}">
 <div>
     <p class="text-xs font-medium text-slate-500">Aggressive gain (+500)</p>
@@ -291,6 +291,7 @@ class="text-2xl text-cyan-500! transition duration-200 self-center!"></ng-icon>
 </div>
 <div class="flex mx-auto w-full justify-center pt-1">
     <button
+    (click)="setDailyCalories()"
     type="button"
     [disabled]="!validateCalories()"
     class="bg-linear-to-br from-amber-500 mx-auto to-amber-600 hover:opacity-80 active:opacity-60 text-white font-bold px-10 py-3 rounded-xl shadow-lg cursor-pointer transition-all duration-200 flex items-center gap-2 text-lg disabled:opacity-70 disabled:cursor-not-allowed">

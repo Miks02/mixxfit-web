@@ -17,16 +17,16 @@
                     <ng-icon name="faSolidFireFlameCurved" class="text-5xl"></ng-icon>
                     <h5 class="text-2xl">Daily calories</h5>
                 </div>
-                @if(!dashboardSource()?.dailyCalories) {
+                @if(!userSource()?.dailyCalorieGoal) {
                     <div class="flex gap-4 items-center opacity-95">
                         <ng-icon name="faSolidGhost" class="text-xl"></ng-icon>
                         <p class="text-xl font-semibold overflow-hidden whitespace-nowra typewriter w-[14ch]">
-                            Coming soon...
+                            No data yet...
                         </p>
                     </div>
                 } @else {
                     <p class="text-xl font-semibold overflow-hidden whitespace-nowra  w-[12ch]">
-                        {{dashboardSource()?.dailyCalories}}
+                        {{userSource()?.dailyCalorieGoal}} kCal
                     </p>
                 }
 
