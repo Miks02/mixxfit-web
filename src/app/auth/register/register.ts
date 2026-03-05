@@ -1,12 +1,12 @@
-import { Component, inject, signal, WritableSignal, OnDestroy } from '@angular/core';
-import { FormBuilder, FormGroup, ValidationErrors, Validators, ReactiveFormsModule, AbstractControl } from '@angular/forms';
-import {NgIcon, provideIcons} from '@ng-icons/core';
-import {faSolidEnvelope, faSolidLock, faSolidUser, faSolidUserTag} from '@ng-icons/font-awesome/solid';
-import { Router, RouterLink } from '@angular/router';
-import { AuthService } from '../../core/services/auth-service';
-import { RegisterRequest } from '../../core/models/RegisterRequest';
 import { HttpErrorResponse } from '@angular/common/http';
-import { finalize, Subject, take, takeUntil } from 'rxjs';
+import { Component, inject, signal, WritableSignal } from '@angular/core';
+import { AbstractControl, FormBuilder, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
+import { Router, RouterLink } from '@angular/router';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { faSolidEnvelope, faSolidLock, faSolidUser, faSolidUserTag } from '@ng-icons/font-awesome/solid';
+import { finalize, take } from 'rxjs';
+import { RegisterRequest } from '../../core/models/RegisterRequest';
+import { AuthService } from '../../core/services/auth-service';
 
 @Component({
     selector: 'app-register',
