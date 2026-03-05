@@ -16,7 +16,7 @@ import { WorkoutService } from '../workout/services/workout-service';
 import { FormsModule } from '@angular/forms';
 import { WeightEntryService } from '../weight/services/weight-entry-service';
 import { NgxSkeletonLoaderModule } from 'ngx-skeleton-loader';
-import { CalorieCalculator } from '../nutrition/calorie-calculator/calorie-calculator';
+import { CalorieCalculator } from '../nutrition/components/calorie-calculator/calorie-calculator';
 import { UserState } from '../../core/states/user-state';
 Chart.register(...registerables)
 
