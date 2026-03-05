@@ -1,37 +1,35 @@
 import { Component, computed, EventEmitter, inject, Input, Output } from '@angular/core';
+import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
 import { NgIcon, provideIcons } from "@ng-icons/core";
 import {
-    faSolidCalendarDay,
-    faSolidTag,
-    faSolidDumbbell,
-    faSolidFireFlameCurved,
-    faSolidBookOpen,
     faSolidBars,
-    faSolidPencil,
-    faSolidNoteSticky,
-    faSolidXmark,
-    faSolidCircle,
-    faSolidScaleUnbalanced,
-    faSolidRotate,
+    faSolidBookOpen,
+    faSolidCalendarDay,
     faSolidCheck,
-    faSolidFilter,
-    faSolidPersonRunning,
+    faSolidCircle,
     faSolidClock,
+    faSolidFilter,
+    faSolidFireFlameCurved,
+    faSolidForwardStep,
     faSolidHeartCircleBolt,
     faSolidHeartPulse,
+    faSolidNoteSticky,
+    faSolidPencil,
+    faSolidPersonRunning,
+    faSolidRotate,
     faSolidRoute,
+    faSolidScaleUnbalanced,
     faSolidStopwatch,
-    faSolidForwardStep,
+    faSolidTag,
+    faSolidXmark
 } from "@ng-icons/font-awesome/solid";
-import { FormBuilder, FormsModule, Validators, ReactiveFormsModule, FormArray, FormGroup, RequiredValidator } from "@angular/forms";
-import { ExerciseType } from '../models/ExerciseType';
-import { CardioType } from '../models/CardioType';
-import { clearValidators, onlyNumbersCheck, minArrayLength, clearFormInputs, addValidators, isControlValid } from '../../../core/helpers/FormHelpers';
-import { createExerciseForm } from '../../../core/helpers/Factories';
 import { Subject, takeUntil } from 'rxjs';
+import { createExerciseForm } from '../../../core/helpers/Factories';
+import { addValidators, clearFormInputs, clearValidators, isControlValid, minArrayLength, onlyNumbersCheck } from '../../../core/helpers/FormHelpers';
 import { NotificationService } from '../../../core/services/notification-service';
-import { UserService } from '../../../core/services/user-service';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { UserState } from '../../../core/states/user-state';
+import { CardioType } from '../models/CardioType';
+import { ExerciseType } from '../models/ExerciseType';
 
 
 @Component({
@@ -47,7 +45,7 @@ export class ExerciseForm {
     @Input()
     exercises!: FormArray;
 
-    private userService = inject(UserService);
+    private userState = inject(UserState);
     private fb = inject(FormBuilder);
     private notificationService = inject(NotificationService);
 
@@ -56,7 +54,7 @@ export class ExerciseForm {
     form = createExerciseForm(this.fb)
     isControlValid = isControlValid
 
-    userSource = toSignal(this.userService.userDetails$, {initialValue: null})
+    userSource = this.userState.userDetails;
 
     currentWeight = computed(() => this.userSource()?.currentWeight)
 

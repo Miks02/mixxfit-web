@@ -37,6 +37,7 @@ import { LayoutState } from '../../../../layout/services/layout-state';
 import { Modal } from '../../../../layout/utilities/modal/modal';
 import { PasswordForm } from '../../components/password-form/password-form';
 import { ProfileService } from '../../services/profile-service';
+import { UserState } from '../../../../core/states/user-state';
 
 
 @Component({
@@ -70,11 +71,12 @@ export class ProfilePage {
     private fb = inject(FormBuilder);
     private profileService = inject(ProfileService);
     private userService = inject(UserService);
+    private userState = inject(UserState);
     private authService = inject(AuthService)
     private notificationService = inject(NotificationService);
     private router = inject(Router)
 
-    userData = toSignal(this.userService.userDetails$, {initialValue: null});
+    userData = this.userState.userDetails;
 
     profileDetailsSource = toSignal(this.profileService.profilePage$, {initialValue: null})
 

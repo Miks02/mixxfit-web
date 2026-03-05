@@ -1,16 +1,17 @@
-import { inject, Injectable } from '@angular/core';
-import { BehaviorSubject, of, tap } from 'rxjs';
-import { UserDetailsDto } from '../models/UserDetailsDto';
 import { HttpClient } from '@angular/common/http';
+import { inject, Injectable } from '@angular/core';
+import { of, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { UpdateFullNameDto } from '../models/User/UpdateFullNameDto';
-import { UpdateUserNameDto } from '../models/User/UpdateUserNameDto';
-import { UpdateEmailDto } from '../models/User/UpdateEmailDto';
+import { Gender } from '../models/Gender';
 import { UpdateDateOfBirthDto } from '../models/User/UpdateDateOfBirthDto';
+import { UpdateEmailDto } from '../models/User/UpdateEmailDto';
+import { UpdateFullNameDto } from '../models/User/UpdateFullNameDto';
 import { UpdateGenderDto } from '../models/User/UpdateGenderDto';
 import { UpdateHeightDto } from '../models/User/UpdateHeightDto';
 import { UpdateTargetWeightDto } from '../models/User/UpdateTargetWeightDto';
-import { Gender } from '../models/Gender';
+import { UpdateUserNameDto } from '../models/User/UpdateUserNameDto';
+import { UserDetailsDto } from '../models/UserDetailsDto';
+import { UserState } from '../states/user-state';
 
 @Injectable({
     providedIn: 'root',
@@ -18,53 +19,26 @@ import { Gender } from '../models/Gender';
 export class UserService {
     private api = environment.apiUrl;
     private urlOnly = environment.urlOnly;
-    private userDetailsSubject = new BehaviorSubject<UserDetailsDto | null>(null);
-    public userDetails$ = this.userDetailsSubject.asObservable();
 
     private http = inject(HttpClient);
-
-    set userDetails(userDetails: Partial<UserDetailsDto>) {
-        const currentUser = this.userDetailsSubject.getValue() as UserDetailsDto
-        this.userDetailsSubject.next({...currentUser,...userDetails});
-    }
-
-    get userDetails() {
-        return this.userDetailsSubject.getValue() as UserDetailsDto;
-    }
-
-    get isUserLoaded() {
-        return this.userDetailsSubject.getValue() !== null;
-    }
-
-    private mergeUserDetails<T extends Partial<UserDetailsDto>>(patch: T): UserDetailsDto {
-        const current = this.userDetailsSubject.getValue() ?? {} as UserDetailsDto;
-        const next = { ...current, ...patch } as UserDetailsDto;
-        return next;
-    }
-
-    resetCurrentUser() {
-        this.userDetailsSubject.next(null);
-    }
+    private userState = inject(UserState);
 
     getMe() {
-        if(!this.isUserLoaded) {
-            return this.http.get<UserDetailsDto>(`${this.api}/users/me`)
-            .pipe(
-                tap((res) => {
-                    this.userDetails = res;
-                    if(res.imagePath !== null)
-                        this.userDetails.imagePath = this.urlOnly + res.imagePath;
-                })
-            )
+
+        if(this.userState.isUserLoaded()) {
+            const userDetails = this.userState.userDetails() as UserDetailsDto;
+            return of(userDetails);
         }
-        return of(this.userDetailsSubject.getValue() as UserDetailsDto)
-        .pipe(
+
+        return this.http.get<UserDetailsDto>(`${this.api}/users/me`).pipe(
             tap((res) => {
-                this.userDetails = res;
-                if(res.imagePath !== null)
-                    this.userDetails.imagePath = this.urlOnly + res.imagePath;
+                this.userState.setUserDetails(res);
+                if(res.imagePath !== null) {
+                    let image = this.urlOnly + res.imagePath;
+                    this.userState.updateUserDetails({ imagePath: image });
+                }
             })
-        );
+        )
     }
 
     deleteAccount() {
@@ -75,8 +49,7 @@ export class UserService {
         return this.http.delete<void>(`${this.api}/users/profile-picture`)
         .pipe(
             tap(() => {
-                const next = this.mergeUserDetails({imagePath: null});
-                this.userDetailsSubject.next(next)
+                this.userState.updateUserDetails({imagePath: null});
             })
         )
     }
@@ -85,10 +58,8 @@ export class UserService {
         return this.http.patch<UpdateFullNameDto>(`${this.api}/users/fullname`, fullName )
         .pipe(
             tap((res) => {
-                const next = this.mergeUserDetails({fullName: res.firstName + ' ' + res.lastName});
-                this.userDetailsSubject.next(next)
-            }),
-            tap((res) => { console.log(res) })
+                this.userState.updateUserDetails({fullName: res.firstName + ' ' + res.lastName})
+            })
         )
     }
 
@@ -96,8 +67,7 @@ export class UserService {
         return this.http.patch(`${this.api}/users/username`, username, {responseType: 'text'})
         .pipe(
             tap(res => {
-                const next = this.mergeUserDetails({ userName: res });
-                this.userDetailsSubject.next(next);
+                this.userState.updateUserDetails({userName: res});
             })
         );
     }
@@ -106,8 +76,7 @@ export class UserService {
         return this.http.patch(`${this.api}/users/email`, email, {responseType: 'text'})
         .pipe(
             tap(res => {
-                const next = this.mergeUserDetails({ email: res });
-                this.userDetailsSubject.next(next);
+                this.userState.updateUserDetails({email: res});
             })
         );
     }
@@ -116,8 +85,7 @@ export class UserService {
         return this.http.patch<string>(`${this.api}/users/date-of-birth`, dob)
         .pipe(
             tap(res => {
-                const next = this.mergeUserDetails({ dateOfBirth: res });
-                this.userDetailsSubject.next(next);
+                this.userState.updateUserDetails({dateOfBirth: res});
             })
         );
     }
@@ -126,8 +94,7 @@ export class UserService {
         return this.http.patch<Gender>(`${this.api}/users/gender`, gender)
         .pipe(
             tap(res => {
-                const next = this.mergeUserDetails({ gender: res });
-                this.userDetailsSubject.next(next);
+                this.userState.updateUserDetails({gender: res});
             })
         );
     }
@@ -136,8 +103,7 @@ export class UserService {
         return this.http.patch<number>(`${this.api}/users/height`, height)
         .pipe(
             tap(res => {
-                const next = this.mergeUserDetails({ height: res });
-                this.userDetailsSubject.next(next);
+                this.userState.updateUserDetails({height: res});
             })
         );
     }
@@ -146,8 +112,7 @@ export class UserService {
         return this.http.patch<number>(`${this.api}/users/target-weight`, targetWeight)
         .pipe(
             tap(res => {
-                const next = this.mergeUserDetails({ targetWeight: res });
-                this.userDetailsSubject.next(next);
+                this.userState.updateUserDetails({targetWeight: res});
             })
         );
     }
@@ -159,8 +124,7 @@ export class UserService {
         return this.http.patch(`${this.api}/users/profile-picture`, formData, {responseType: 'text'})
         .pipe(
             tap(res => {
-                const next = this.mergeUserDetails({imagePath: this.urlOnly + res})
-                this.userDetailsSubject.next(next);
+                this.userState.updateUserDetails({imagePath: this.urlOnly + res});
             })
         )
     }

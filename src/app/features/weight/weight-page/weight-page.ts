@@ -29,6 +29,7 @@ import { WeightEntryDetailsDto } from '../models/WeightEntryDetailsDto';
 import { Modal } from "../../../layout/utilities/modal/modal";
 import { formatDate } from '../../../core/helpers/Utility';
 import { NgxSkeletonLoaderComponent } from 'ngx-skeleton-loader';
+import { UserState } from '../../../core/states/user-state';
 
 @Component({
     selector: 'app-weight-page',
@@ -43,12 +44,13 @@ export class WeightPage  {
     private layoutState = inject(LayoutState);
     private weightService = inject(WeightEntryService);
     private userService = inject(UserService);
+    private userState = inject(UserState);
     private fb = inject(FormBuilder);
     private notificationService = inject(NotificationService);
 
     isModalOpen = signal(false);
     selectedWeightEntry: WritableSignal<WeightEntryDetailsDto | null> = signal(null);
-    userSource = toSignal(this.userService.userDetails$, {initialValue: null});
+    userSource = this.userState.userDetails;
     weightSummarySource = toSignal(this.weightService.weightSummary$, {initialValue: null});
     weightListDetailsSource = toSignal(this.weightService.weightListDetails$, {initialValue: null})
 

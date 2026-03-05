@@ -5,12 +5,10 @@ import { inject } from '@angular/core';
 import { RegisterRequest } from '../models/RegisterRequest';
 import { AuthResponse } from '../models/AuthResponse';
 import { Observable, map, tap } from 'rxjs';
-import { UserDto } from '../models/UserDto';
 import { LoginRequest } from '../models/LoginRequest';
-import { Router } from '@angular/router';
-import { UserService } from './user-service';
 import { UpdatePasswordDto } from '../models/User/UpdatePasswordDto';
 import { environment } from '../../../environments/environment';
+import { UserState } from '../states/user-state';
 
 @Injectable({
     providedIn: 'root',
@@ -21,8 +19,7 @@ export class AuthService {
     public accessToken$ = this.accessTokenSubject.asObservable();
 
     private readonly http = inject(HttpClient)
-    private router = inject(Router);
-    private userService = inject(UserService);
+    private userState = inject(UserState);
 
     get accessToken(): string | null {return this.accessTokenSubject.value}
     set accessToken(accessToken: string | null) {
@@ -38,27 +35,23 @@ export class AuthService {
         this.accessTokenSubject.next(this.accessToken)
     }
 
-    register(model: RegisterRequest): Observable<UserDto> {
+    register(model: RegisterRequest): Observable<AuthResponse> {
         return this.http.post<AuthResponse>(`${this.api}/auth/register`, model, {withCredentials: true})
         .pipe(
             tap(res => {
                 this.accessToken = res.accessToken;
-                this.userService.userDetails = res.user;
-                this.router.navigate(['/dashboard']);
-            }),
-            map(res => res.user)
+                this.userState.setUserDetails(res.user);
+            })
         )
     }
 
-    login(model: LoginRequest): Observable<UserDto> {
+    login(model: LoginRequest): Observable<AuthResponse> {
         return this.http.post<AuthResponse>(`${this.api}/auth/login`, model , {withCredentials: true})
         .pipe(
             tap(res => {
                 this.accessToken = res.accessToken;
-                this.userService.userDetails = res.user;
-                this.router.navigate(['/dashboard']);
-            }),
-            map(res => res.user),
+                this.userState.setUserDetails(res.user);
+            })
         )
     }
 
@@ -94,7 +87,7 @@ export class AuthService {
     }
 
     clearAuthData() {
-        this.userService.resetCurrentUser();
+        this.userState.resetCurrentUser();
         localStorage.removeItem('token');
         this.accessTokenSubject.next(null);
     }

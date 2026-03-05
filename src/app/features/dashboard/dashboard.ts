@@ -11,13 +11,13 @@ import { WeightChart } from "../misc/weight-chart/weight-chart";
 import { Router, RouterLink } from "@angular/router";
 import { DashboardState } from './services/dashboard-state';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { UserService } from '../../core/services/user-service';
 import { DatePipe } from '@angular/common';
 import { WorkoutService } from '../workout/services/workout-service';
 import { FormsModule } from '@angular/forms';
 import { WeightEntryService } from '../weight/services/weight-entry-service';
 import { NgxSkeletonLoaderModule } from 'ngx-skeleton-loader';
 import { CalorieCalculator } from '../nutrition/calorie-calculator/calorie-calculator';
+import { UserState } from '../../core/states/user-state';
 Chart.register(...registerables)
 
 @Component({
@@ -30,7 +30,7 @@ Chart.register(...registerables)
 export class Dashboard {
     private layoutState = inject(LayoutState);
     private dashboardState = inject(DashboardState);
-    private userService = inject(UserService);
+    private userState = inject(UserState);
     private workoutService = inject(WorkoutService);
     private weightService = inject(WeightEntryService);
     private router = inject(Router)
@@ -39,7 +39,6 @@ export class Dashboard {
     isCalorieCalculatorOpen: WritableSignal<boolean> = signal(false);
 
     dashboardSource = toSignal(this.dashboardState.dashboard$, {initialValue: null})
-    userSource = toSignal(this.userService.userDetails$, {initialValue: null})
     workoutsPerMonth = toSignal(this.workoutService.workoutCounts$, {initialValue: null});
     weightChartSource = toSignal(this.weightService.weightChart$, {initialValue: null});
 
@@ -49,6 +48,8 @@ export class Dashboard {
 
     selectedYear: number = new Date().getFullYear();
     private yearInitialized = false;
+
+    userDetails = this.userState.userDetails;
 
     constructor() {
         effect(() => {
@@ -88,7 +89,7 @@ export class Dashboard {
     }
 
     loadWeightChart() {
-        const targetWeight = this.userSource()?.targetWeight;
+        const targetWeight = this.userDetails()?.targetWeight;
         return this.weightService.getMyWeightChart(targetWeight)
         .pipe(take(1))
         .subscribe();
@@ -99,14 +100,14 @@ export class Dashboard {
     }
 
     getUserWeight() {
-        const weight = this.userSource()?.currentWeight
+        const weight = this.userDetails()?.currentWeight;
         if(weight)
             return weight + " KG"
         return "N/A"
     }
 
     getUserHeight() {
-        const height = this.userSource()?.height;
+        const height = this.userDetails()?.height;
 
         if(height)
             return height + " CM"
@@ -114,15 +115,15 @@ export class Dashboard {
     }
 
     getUserAge() {
-        const age = this.userSource()?.age;
+        const age = this.userDetails()?.age;
         if(age)
             return age
         return "N/A"
     }
 
     getProfileImageSrc(): string {
-        if (this.userSource()?.imagePath && this.userSource()?.imagePath !== null) return this.userSource()!.imagePath as string;
-        return this.userSource()?.gender === 1 ? 'user_male.png' : (this.userSource()?.gender === 2 ? 'user_female.png' : 'user_other.png');
+        if (this.userDetails()?.imagePath && this.userDetails()?.imagePath !== null) return this.userDetails()!.imagePath as string;
+        return this.userDetails()?.gender === 1 ? 'user_male.png' : (this.userDetails()?.gender === 2 ? 'user_female.png' : 'user_other.png');
     }
 
 }

@@ -1,6 +1,6 @@
-import { UserDto } from "./UserDto"
+import { UserDetailsDto } from "./UserDetailsDto"
 
 export type AuthResponse = {
     accessToken: string,
-    user: UserDto
+    user: UserDetailsDto
 }

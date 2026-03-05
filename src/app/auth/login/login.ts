@@ -1,12 +1,12 @@
-import { Component, signal, inject, WritableSignal } from '@angular/core';
-import {NgIcon, provideIcons} from '@ng-icons/core';
-import {faSolidLock, faSolidCheck, faSolidEnvelope} from '@ng-icons/font-awesome/solid';
-import {Router, RouterLink} from '@angular/router';
-import {ReactiveFormsModule, FormBuilder, Validators, FormsModule} from '@angular/forms';
-import { AuthService } from '../../core/services/auth-service';
-import { LoginRequest } from '../../core/models/LoginRequest';
-import { finalize, Subject, takeUntil } from 'rxjs';
+import { Component, inject, signal, WritableSignal } from '@angular/core';
+import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { Router, RouterLink } from '@angular/router';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { faSolidCheck, faSolidEnvelope, faSolidLock } from '@ng-icons/font-awesome/solid';
+import { finalize, take } from 'rxjs';
+import { LoginRequest } from '../../core/models/LoginRequest';
+import { AuthService } from '../../core/services/auth-service';
 
 @Component({
     selector: 'app-login',
@@ -22,10 +22,9 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     providers: [provideIcons({faSolidEnvelope, faSolidLock, faSolidCheck})]
 })
 export class Login {
-    private destroy$ = new Subject<void>
-
     private readonly fb = inject(FormBuilder);
     private readonly authService = inject(AuthService)
+    private router = inject(Router);
 
     isLoading: WritableSignal<boolean> = signal(false);
 
@@ -39,16 +38,15 @@ export class Login {
     get password() {return this.form.get('password')}
 
     onSubmit() {
-        if(this.form.invalid)
-            {
+        if(this.form.invalid){
             this.form.markAllAsTouched();
             return;
         }
         this.isLoading.set(true);
 
         this.authService.login(this.form.value as LoginRequest)
-        .pipe(takeUntil(this.destroy$), finalize(() => this.isLoading.set(false)))
-        .subscribe()
+        .pipe(take(1), finalize(() => this.isLoading.set(false)))
+        .subscribe(() => this.router.navigate(['/dashboard']))
     }
 
 }
