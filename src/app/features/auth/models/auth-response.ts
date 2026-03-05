@@ -1,4 +1,4 @@
-import { UserDetailsDto } from "./UserDetailsDto"
+import { UserDetailsDto } from "../../../core/models/UserDetailsDto"
 
 export type AuthResponse = {
     accessToken: string,

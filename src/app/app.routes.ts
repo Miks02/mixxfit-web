@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
-import { AuthLayout } from './auth/auth-layout/auth-layout';
-import { Login } from './auth/login/login';
-import { Register } from './auth/register/register';
+import { AuthLayout } from './features/auth/auth-layout/auth-layout';
+import { Login } from './features/auth/pages/login/login';
+import { Register } from './features/auth/pages/register/register';
 import { Dashboard } from './features/dashboard/dashboard';
 import { AppLayout } from './layout/app-layout/app-layout';
 import { WorkoutList } from './features/workout/workout-list/workout-list';
