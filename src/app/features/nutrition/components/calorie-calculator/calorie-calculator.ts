@@ -40,10 +40,10 @@ import { CaloriesSummary } from '../calories-summary/calories-summary';
     })]
 })
 export class CalorieCalculator {
-    initialAge = input<number | null>(null);
-    initialWeight = input<number | null>(null);
-    initialHeight = input<number | null>(null);
-    initialGender = input<Gender | null>(null);
+    initialAge = input<number | undefined>(undefined);
+    initialWeight = input<number | undefined>(undefined);
+    initialHeight = input<number | undefined>(undefined);
+    initialGender = input<Gender | undefined>(undefined);
 
     close = output<void>();
     caloriesUpdated = output<void>();
