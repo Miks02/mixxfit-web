@@ -14,7 +14,7 @@ import {
     faSolidScaleUnbalanced,
     faSolidWeightScale
 } from "@ng-icons/font-awesome/solid";
-import { FormBuilder, ɵInternalFormsSharedModule, ReactiveFormsModule, AbstractControl, FormsModule } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, AbstractControl, FormsModule } from '@angular/forms';
 import { createWeightEntryForm, createTargetWeightForm } from '../../../core/helpers/Factories';
 import { WeightEntryService } from '../services/weight-entry-service';
 import { take } from 'rxjs';
@@ -32,7 +32,7 @@ import { NgxSkeletonLoaderComponent } from 'ngx-skeleton-loader';
 
 @Component({
     selector: 'app-weight-page',
-    imports: [WeightChart, NgIcon, ɵInternalFormsSharedModule, ReactiveFormsModule, ReactiveFormsModule, DatePipe, DecimalPipe, SlicePipe, Modal, FormsModule, NgxSkeletonLoaderComponent],
+    imports: [WeightChart, NgIcon, ReactiveFormsModule, ReactiveFormsModule, DatePipe, DecimalPipe, SlicePipe, Modal, FormsModule, NgxSkeletonLoaderComponent],
     templateUrl: './weight-page.html',
     styleUrl: './weight-page.css',
     providers: [provideIcons({faSolidScaleUnbalanced, faSolidBullseye, faSolidMagnifyingGlassChart, faSolidClock, faSolidWeightScale, faSolidNoteSticky, faSolidGhost, faSolidChevronLeft, faSolidChevronRight, faSolidChartLine})]
@@ -91,6 +91,7 @@ export class WeightPage  {
     }
 
     loadWeightLogs() {
+      console.warn(this.selectedMonth() + "yar")
         return this.weightService.getMyWeightLogs(this.selectedMonth(), this.selectedYear())
         .pipe(take(1))
         .subscribe()
