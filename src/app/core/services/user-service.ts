@@ -1,18 +1,17 @@
-import { inject, Injectable } from '@angular/core';
-import { BehaviorSubject, of, tap } from 'rxjs';
-import { UserDetailsDto } from '../models/UserDetailsDto';
 import { HttpClient } from '@angular/common/http';
+import { inject, Injectable } from '@angular/core';
+import { of, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { UpdateFullNameDto } from '../models/User/UpdateFullNameDto';
-import { UpdateUserNameDto } from '../models/User/UpdateUserNameDto';
-import { UpdateEmailDto } from '../models/User/UpdateEmailDto';
+import { Gender } from '../models/Gender';
 import { UpdateDateOfBirthDto } from '../models/User/UpdateDateOfBirthDto';
+import { UpdateEmailDto } from '../models/User/UpdateEmailDto';
+import { UpdateFullNameDto } from '../models/User/UpdateFullNameDto';
 import { UpdateGenderDto } from '../models/User/UpdateGenderDto';
 import { UpdateHeightDto } from '../models/User/UpdateHeightDto';
 import { UpdateTargetWeightDto } from '../models/User/UpdateTargetWeightDto';
-import { Gender } from '../models/Gender';
+import { UpdateUserNameDto } from '../models/User/UpdateUserNameDto';
+import { UserDetailsDto } from '../models/UserDetailsDto';
 import { UserState } from '../states/user-state';
-import { toObservable } from '@angular/core/rxjs-interop';
 
 @Injectable({
     providedIn: 'root',
@@ -20,24 +19,9 @@ import { toObservable } from '@angular/core/rxjs-interop';
 export class UserService {
     private api = environment.apiUrl;
     private urlOnly = environment.urlOnly;
-    private userDetailsSubject = new BehaviorSubject<UserDetailsDto | null>(null);
-    public userDetails$ = this.userDetailsSubject.asObservable();
 
     private http = inject(HttpClient);
     private userState = inject(UserState);
-
-    set userDetails(userDetails: Partial<UserDetailsDto>) {
-        const currentUser = this.userDetailsSubject.getValue() as UserDetailsDto
-        this.userDetailsSubject.next({...currentUser,...userDetails});
-    }
-
-    get userDetails() {
-        return this.userDetailsSubject.getValue() as UserDetailsDto;
-    }
-
-    resetCurrentUser() {
-        this.userDetailsSubject.next(null);
-    }
 
     getMe() {
 
