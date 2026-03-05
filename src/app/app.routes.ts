@@ -2,15 +2,15 @@ import { Routes } from '@angular/router';
 import { AuthLayout } from './auth/auth-layout/auth-layout';
 import { Login } from './auth/login/login';
 import { Register } from './auth/register/register';
-import { Dashboard } from './pages/dashboard/dashboard';
+import { Dashboard } from './features/dashboard/dashboard';
 import { AppLayout } from './layout/app-layout/app-layout';
-import { WorkoutList } from './pages/workout/workout-list/workout-list';
+import { WorkoutList } from './features/workout/workout-list/workout-list';
 import { authGuard } from './core/guards/auth-guard';
 import { guestGuard } from './core/guards/guest-guard';
-import { WorkoutForm } from './pages/workout/workout-form/workout-form';
-import { ProfilePage } from './pages/profile/profile-page/profile-page';
-import { WorkoutDetails } from './pages/workout/workout-details/workout-details';
-import { WeightPage } from './pages/weight/weight-page/weight-page';
+import { WorkoutForm } from './features/workout/workout-form/workout-form';
+import { ProfilePage } from './features/profile/pages/profile-page/profile-page';
+import { WorkoutDetails } from './features/workout/workout-details/workout-details';
+import { WeightPage } from './features/weight/weight-page/weight-page';
 
 export const routes: Routes = [
     {

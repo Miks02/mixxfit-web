@@ -1,49 +1,43 @@
-import { Component, computed, inject, signal, WritableSignal } from '@angular/core';
-import { LayoutState } from '../../../layout/services/layout-state';
-import { FormBuilder, FormsModule, ReactiveFormsModule, FormGroup } from '@angular/forms';
-import { NgIcon, provideIcons } from "@ng-icons/core";
 import { DatePipe } from '@angular/common';
-import {
-    faSolidUser,
-    faSolidCalendarDay,
-    faSolidVenusMars,
-    faSolidPencil,
-    faSolidCheck,
-    faSolidXmark,
-    faSolidEnvelope,
-    faSolidCamera,
-    faSolidAt,
-    faSolidTriangleExclamation,
-    faSolidTrash,
-    faSolidWrench,
-    faSolidLock,
-    faSolidShieldHalved,
-    faSolidKey,
-    faSolidClock,
-    faSolidRulerVertical,
-    faSolidWeightScale
-} from "@ng-icons/font-awesome/solid";
-import { ProfileService } from '../services/profile-service';
+import { Component, computed, inject, signal, WritableSignal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { AccountStatus } from '../../../core/models/AccountStatus';
-import { take } from 'rxjs';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import { NgIcon, provideIcons } from "@ng-icons/core";
 import {
-    createFullNameForm,
-    createDateOfBirthForm,
-    createUsernameForm,
-    createEmailForm,
-    createGenderForm,
-    createHeightForm
-} from '../../../core/helpers/Factories';
-import { UserService } from '../../../core/services/user-service';
-import { NotificationService } from '../../../core/services/notification-service';
-import { handleValidationErrors } from '../../../core/helpers/FormHelpers';
-import { AuthService } from '../../../core/services/auth-service';
-import { Modal } from '../../../layout/utilities/modal/modal';
-import { ModalData } from '../../../core/models/ModalData';
-import { ModalType } from '../../../core/models/ModalType';
-import { PasswordForm } from '../password-form/password-form';
+  faSolidAt,
+  faSolidCalendarDay,
+  faSolidCamera,
+  faSolidCheck,
+  faSolidClock,
+  faSolidEnvelope,
+  faSolidKey,
+  faSolidLock,
+  faSolidPencil,
+  faSolidRulerVertical,
+  faSolidShieldHalved,
+  faSolidTrash,
+  faSolidTriangleExclamation,
+  faSolidUser,
+  faSolidVenusMars,
+  faSolidWeightScale,
+  faSolidWrench,
+  faSolidXmark
+} from "@ng-icons/font-awesome/solid";
+import { take } from 'rxjs';
+import { createDateOfBirthForm, createEmailForm, createFullNameForm, createGenderForm, createHeightForm, createUsernameForm } from '../../../../core/helpers/Factories';
+import { handleValidationErrors } from '../../../../core/helpers/FormHelpers';
+import { AccountStatus } from '../../../../core/models/AccountStatus';
+import { ModalData } from '../../../../core/models/ModalData';
+import { ModalType } from '../../../../core/models/ModalType';
+import { AuthService } from '../../../../core/services/auth-service';
+import { NotificationService } from '../../../../core/services/notification-service';
+import { UserService } from '../../../../core/services/user-service';
+import { LayoutState } from '../../../../layout/services/layout-state';
+import { Modal } from '../../../../layout/utilities/modal/modal';
+import { PasswordForm } from '../../components/password-form/password-form';
+import { ProfileService } from '../../services/profile-service';
+
 
 @Component({
     selector: 'app-profile-page',
