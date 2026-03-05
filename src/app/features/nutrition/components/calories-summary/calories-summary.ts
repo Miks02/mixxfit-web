@@ -1,5 +1,5 @@
 import { Component, computed, input, model, output, signal } from '@angular/core';
-import { CalorieResult } from '../../models/CalorieResult';
+import { CalorieResult } from '../../models/calorie-result';
 import { NgIcon, provideIcons } from "@ng-icons/core";
 import { faSolidArrowDown, faSolidArrowLeft, faSolidArrowUp, faSolidBoltLightning, faSolidCalculator, faSolidCheck, faSolidFireFlameCurved, faSolidHourglass, faSolidMinus, faSolidPerson, faSolidRulerVertical, faSolidScaleUnbalanced, faSolidXmark } from '@ng-icons/font-awesome/solid';
 import { FormsModule } from '@angular/forms';

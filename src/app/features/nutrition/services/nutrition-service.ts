@@ -1,9 +1,9 @@
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environment';
 import { Observable, tap } from 'rxjs';
-import { CalorieResult } from '../models/CalorieResult';
+import { CalorieResult } from '../models/calorie-result';
 import { HttpClient } from '@angular/common/http';
-import { SetDailyCaloriesRequest } from '../models/SetDailyCaloriesRequest';
+import { SetDailyCaloriesRequest } from '../models/set-daily-calories-request';
 import { UserState } from '../../../core/states/user-state';
 
 @Injectable({

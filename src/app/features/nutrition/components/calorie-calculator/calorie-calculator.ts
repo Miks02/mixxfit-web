@@ -20,10 +20,10 @@ import { createCalculateCaloriesForm } from '../../../../core/helpers/Factories'
 import { isControlValid } from '../../../../core/helpers/FormHelpers';
 import { Gender } from '../../../../core/models/Gender';
 import { NotificationService } from '../../../../core/services/notification-service';
-import { ActivityLevel } from '../../models/ActivityLevel';
-import { CalorieResult } from '../../models/CalorieResult';
-import { SetDailyCaloriesRequest } from '../../models/SetDailyCaloriesRequest';
-import { UnitSystem } from '../../models/UnitSystem';
+import { ActivityLevel } from '../../models/activity-level';
+import { CalorieResult } from '../../models/calorie-result';
+import { SetDailyCaloriesRequest } from '../../models/set-daily-calories-request';
+import { UnitSystem } from '../../models/unit-system';
 import { NutritionService } from '../../services/nutrition-service';
 import { CaloriesSummary } from '../calories-summary/calories-summary';
 

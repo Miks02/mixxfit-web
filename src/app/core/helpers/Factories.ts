@@ -4,8 +4,8 @@ import { ExerciseType } from "../../features/workout/models/ExerciseType";
 import { minArrayLength, onlyNumbersCheck } from "./FormHelpers";
 import { ExerciseEntryFormValue } from "../../features/workout/models/ExerciseEntryFormValue";
 import { CreateWorkoutDto } from "../../features/workout/models/CreateWorkoutDto";
-import { UnitSystem } from "../../features/nutrition/models/UnitSystem";
-import { ActivityLevel } from "../../features/nutrition/models/ActivityLevel";
+import { UnitSystem } from "../../features/nutrition/models/unit-system";
+import { ActivityLevel } from "../../features/nutrition/models/activity-level";
 import { Gender } from "../models/Gender";
 
 export function createExerciseForm(fb: FormBuilder): FormGroup {
