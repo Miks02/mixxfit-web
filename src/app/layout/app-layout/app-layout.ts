@@ -1,4 +1,4 @@
-import { Component, computed, ElementRef, inject, Output, Signal, ViewChild } from '@angular/core';
+import { Component, computed, ElementRef, inject, Output, signal, Signal, ViewChild } from '@angular/core';
 import { Sidebar } from '../utilities/sidebar/sidebar';
 import { Header } from '../utilities/header/header';
 import { NavigationEnd, Router, RouterOutlet } from "@angular/router";
@@ -8,6 +8,7 @@ import { filter, Subject, take, takeUntil, tap } from 'rxjs';
 import { UserService } from '../../core/services/user-service';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Gender } from '../../core/models/Gender';
+import { UserState } from '../../core/states/user-state';
 
 @Component({
     selector: 'app-app-layout',
@@ -20,15 +21,16 @@ export class AppLayout {
 
     authService = inject(AuthService);
     userService = inject(UserService);
+    userState = inject(UserState);
     router = inject(Router);
 
     private destroy$ = new Subject<void>();
 
     isSidebarOpen: boolean = false;
     userSource = toSignal(this.userService.userDetails$, {initialValue: null});
-    fullName: Signal<string> = computed(() => this.userSource()?.fullName ?? "");
-    userImage: Signal<string> = computed(() => this.userSource()?.imagePath ?? "")
-    userGender: Signal<Gender> = computed(() => this.userSource()?.gender ?? Gender.Other)
+    fullName: Signal<string> = computed(() => this.userState.userDetails()?.fullName ?? "");
+    userImage: Signal<string> = computed(() => this.userState.userDetails()?.imagePath ?? "")
+    userGender: Signal<Gender> = computed(() => this.userState.userDetails()?.gender ?? Gender.Other)
 
     ngOnInit() {
         this.loadUser();
