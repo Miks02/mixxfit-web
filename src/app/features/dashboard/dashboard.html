@@ -4,7 +4,8 @@
         [initialWeight]="userDetails()?.currentWeight"
         [initialHeight]="userDetails()?.height"
         [initialGender]="userDetails()?.gender"
-        (close)="isCalorieCalculatorOpen.set(false)">
+        (close)="isCalorieCalculatorOpen.set(false)"
+        (caloriesUpdated)="loadDashboard()">
     </app-calorie-calculator>
 }
 

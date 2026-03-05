@@ -1,0 +1,134 @@
+<div
+    class="flex flex-col gap-3 border-slate-300 p-5 relative overflow-y-auto">
+    <div class="flex justify-between w-full">
+        <div class="flex items-center gap-2 mb-1">
+            <ng-icon name="faSolidFireFlameCurved" class="text-2xl text-amber-500!"></ng-icon>
+            <h2 class="text-lg font-bold text-slate-800">Your Results</h2>
+        </div>
+        <button
+        (click)="onBack()"
+        class="flex items-center gap-2 mb-1 bg-linear-to-br from-cyan-400 to-cyan-500 px-2 py-1 rounded-xl hover:opacity-70 active:opacity-50 cursor-pointer transition duration-200">
+        <ng-icon name="faSolidArrowLeft" class="text-xl text-white!"></ng-icon>
+        <h2 class="font-bold text-white!">Back</h2>
+    </button>
+</div>
+
+<div
+class="bg-linear-to-br from-amber-500 to-amber-600 rounded-xl p-4 text-white shadow-md flex justify-between items-center">
+<div>
+    <p class="text-sm font-medium opacity-90">Basal Metabolic Rate (BMR)</p>
+    <p class="text-2xl font-bold">{{ result()!.bmr }} kcal</p>
+</div>
+<ng-icon name="faSolidFireFlameCurved" class="text-4xl opacity-40"></ng-icon>
+</div>
+
+
+<div
+class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-1">
+<div
+(click)="selectedCalorieValue.set(result()!.aggressiveLoss)"
+class="bg-white rounded-xl p-4 shadow-md flex justify-between items-center border-l-4 border-red-500 hover:bg-amber-200 cursor-pointer hover:border-amber-400 transition duration-200 active:opacity-70 group
+{{ selectedCalorieValue() === result()!.aggressiveLoss ? 'border-amber-400! bg-amber-200!' : 'border-red-500' }}">
+<div>
+    <p class="text-xs font-medium text-slate-500">Aggressive loss (−500)</p>
+    <p class="text-xl font-bold text-slate-800">{{ result()!.aggressiveLoss }} kcal</p>
+</div>
+<ng-icon
+name="faSolidArrowDown"
+[class.text-amber-600!]="selectedCalorieValue() === result()!.aggressiveLoss"
+[class.text-red-500!]="selectedCalorieValue() !== result()!.aggressiveLoss"
+class="text-2xl group-hover:text-amber-600!"></ng-icon>
+</div>
+
+<div
+(click)="selectedCalorieValue.set(result()!.mildLoss)"
+class="bg-white rounded-xl p-4 shadow-md flex justify-between items-center border-l-4 border-amber-400 hover:bg-amber-200 cursor-pointer hover:border-amber-400 transition duration-200 active:opacity-70 group {{ selectedCalorieValue() === result()!.mildLoss ? 'border-amber-400! bg-amber-200!' : 'border-amber-400' }}">
+<div>
+    <p class="text-xs font-medium text-slate-500">Mild loss (−250)</p>
+    <p class="text-xl font-bold text-slate-800">{{ result()!.mildLoss }} kcal</p>
+</div>
+<ng-icon name="faSolidArrowDown"
+[class.text-amber-600!]="selectedCalorieValue() === result()!.mildLoss"
+[class.text-amber-400!]="selectedCalorieValue() !== result()!.mildLoss"
+class="text-2xl group-hover:text-amber-600!"></ng-icon>
+</div>
+
+<div
+(click)="selectedCalorieValue.set(result()!.maintenance)"
+class="bg-white rounded-xl p-4 shadow-md flex justify-between items-center border-l-4 border-emerald-500 sm:col-span-2 hover:bg-amber-200 cursor-pointer hover:border-amber-400 transition duration-200 active:opacity-70 group {{ selectedCalorieValue() === result()!.maintenance ? 'border-amber-400! bg-amber-200!' : 'border-emerald-500' }}">
+<div>
+    <p class="text-xs font-medium text-slate-500">Maintenance</p>
+    <p class="text-xl font-bold text-slate-800">{{ result()!.maintenance }} kcal</p>
+</div>
+<ng-icon
+name="faSolidMinus"
+[class.text-amber-600!]="selectedCalorieValue() === result()!.maintenance"
+[class.text-emerald-500!]="selectedCalorieValue() !== result()!.maintenance"
+class="text-2xl group-hover:text-amber-600!"></ng-icon>
+</div>
+
+<div
+(click)="selectedCalorieValue.set(result()!.mildGain)"
+class="bg-white rounded-xl p-4 shadow-md flex justify-between items-center border-l-4 border-blue-400 hover:bg-amber-200 cursor-pointer hover:border-amber-400 transition duration-200 active:opacity-70 group {{ selectedCalorieValue() === result()!.mildGain ? 'border-amber-400! bg-amber-200!' : 'border-blue-400' }}">
+<div>
+    <p class="text-xs font-medium text-slate-500">Mild gain (+250)</p>
+    <p class="text-xl font-bold text-slate-800">{{ result()!.mildGain }} kcal</p>
+</div>
+<ng-icon
+name="faSolidArrowUp"
+[class.text-amber-600!]="selectedCalorieValue() === result()!.mildGain"
+[class.text-blue-400!]="selectedCalorieValue() !== result()!.mildGain"
+class="text-2xl group-hover:text-amber-600!"></ng-icon>
+</div>
+
+<div
+(click)="selectedCalorieValue.set(result()!.aggressiveGain)"
+class="bg-white rounded-xl p-4 shadow-md flex justify-between items-center border-l-4 border-violet-500 hover:bg-amber-200 cursor-pointer hover:border-amber-400 transition duration-200 active:opacity-70 group {{ selectedCalorieValue() === result()!.aggressiveGain ? 'border-amber-400! bg-amber-200!' : 'border-violet-500' }}">
+<div>
+    <p class="text-xs font-medium text-slate-500">Aggressive gain (+500)</p>
+    <p class="text-xl font-bold text-slate-800">{{ result()!.aggressiveGain }} kcal</p>
+</div>
+<ng-icon
+name="faSolidArrowUp"
+[class.text-amber-600!]="selectedCalorieValue() === result()!.aggressiveGain"
+[class.text-violet-500!]="selectedCalorieValue() !== result()!.aggressiveGain"
+class="text-2xl text-violet-500! group-hover:text-amber-600!"></ng-icon>
+</div>
+
+<div
+class="bg-white rounded-xl p-4 shadow-md flex sm:col-span-2 justify-between items-center border-l-4 border-cyan-500">
+<div class="w-full">
+    <div class="flex gap-4 items-center">
+        <p class="text-xs font-medium text-slate-500">Custom</p>
+        @if(calorieModel.invalid && (calorieModel.touched || calorieModel.dirty)) {
+            <p class="text-xs text-red-500 font-semibold">Please enter a valid calorie value (1000-10000).</p>
+        }
+    </div>
+    <input
+    class="p-3 border border-amber-200 rounded-xl w-[90%] sm:w-full max-w-xs text-lg font-bold text-slate-800 outline-none focus:border-amber-400 mt-1 transition duration-200"
+    [class.border-red-500]="!areCaloriesValid() && calorieModel.dirty"
+    [(ngModel)]="selectedCalorieValue"
+    type="number" min="1000" max="10000" required
+    #calorieModel="ngModel">
+
+</div>
+<ng-icon
+[class.rotate-270]="calorieModel.invalid || selectedCalorieValue()! === result()!.maintenance"
+[class.rotate-180]="selectedCalorieValue()! < result()!.maintenance && !calorieModel.invalid"
+[class.rotate-360]="selectedCalorieValue()! > result()!.maintenance && !calorieModel.invalid"
+name="faSolidArrowUp"
+class="text-2xl text-cyan-500! transition duration-200 self-center!"></ng-icon>
+</div>
+
+</div>
+<div class="flex mx-auto w-full justify-center pt-1">
+    <button
+    (click)="onUpdateDailyCalories()"
+    type="button"
+    [disabled]="!areCaloriesValid()"
+    class="bg-linear-to-br from-amber-500 mx-auto to-amber-600 hover:opacity-80 active:opacity-60 text-white font-bold px-10 py-3 rounded-xl shadow-lg cursor-pointer transition-all duration-200 flex items-center gap-2 text-lg disabled:opacity-70 disabled:cursor-not-allowed">
+    <ng-icon name="faSolidCheck" class="text-xl"></ng-icon>
+    Set Daily Calories
+</button>
+</div>
+</div>

@@ -1,5 +1,5 @@
 import { Gender } from "../../../core/models/Gender";
-import { ActivityLevel } from "./ActivityLevel";
+import { ActivityLevel } from "./activity-level";
 
 export type SetDailyCaloriesRequest = {
   age: number,
