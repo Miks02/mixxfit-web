@@ -1,5 +1,5 @@
 import { Component, computed, inject, signal, WritableSignal } from '@angular/core';
-import { LayoutState } from '../../../layout/services/layout-state';
+import { LayoutState } from '../../../../layout/services/layout-state';
 import { FormBuilder, FormsModule, ReactiveFormsModule, FormGroup } from '@angular/forms';
 import { NgIcon, provideIcons } from "@ng-icons/core";
 import { DatePipe } from '@angular/common';
@@ -23,27 +23,21 @@ import {
     faSolidRulerVertical,
     faSolidWeightScale
 } from "@ng-icons/font-awesome/solid";
-import { ProfileService } from '../services/profile-service';
+import { ProfileService } from '../../services/profile-service';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { AccountStatus } from '../../../core/models/AccountStatus';
+import { AccountStatus } from '../../../../core/models/AccountStatus';
 import { take } from 'rxjs';
 import { Router, RouterLink } from '@angular/router';
-import {
-    createFullNameForm,
-    createDateOfBirthForm,
-    createUsernameForm,
-    createEmailForm,
-    createGenderForm,
-    createHeightForm
-} from '../../../core/helpers/Factories';
-import { UserService } from '../../../core/services/user-service';
-import { NotificationService } from '../../../core/services/notification-service';
-import { handleValidationErrors } from '../../../core/helpers/FormHelpers';
-import { AuthService } from '../../../core/services/auth-service';
-import { Modal } from '../../../layout/utilities/modal/modal';
-import { ModalData } from '../../../core/models/ModalData';
-import { ModalType } from '../../../core/models/ModalType';
-import { PasswordForm } from '../password-form/password-form';
+import { UserService } from '../../../../core/services/user-service';
+import { AuthService } from '../../../../core/services/auth-service';
+import { NotificationService } from '../../../../core/services/notification-service';
+import { createDateOfBirthForm, createEmailForm, createFullNameForm, createGenderForm, createHeightForm, createUsernameForm } from '../../../../core/helpers/Factories';
+import { handleValidationErrors } from '../../../../core/helpers/FormHelpers';
+import { ModalType } from '../../../../core/models/ModalType';
+import { ModalData } from '../../../../core/models/ModalData';
+import { Modal } from '../../../../layout/utilities/modal/modal';
+import { PasswordForm } from '../../components/password-form/password-form';
+
 
 @Component({
     selector: 'app-profile-page',

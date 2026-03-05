@@ -2,11 +2,11 @@ import { Component, EventEmitter, inject, Output } from '@angular/core';
 import { NgIcon, provideIcons } from "@ng-icons/core";
 import { faSolidCircleInfo, faSolidInfo, faSolidKey, faSolidLock, faSolidXmark } from "@ng-icons/font-awesome/solid";
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { createChangePasswordForm } from '../../../core/helpers/Factories';
-import { handleValidationErrors, isControlValid } from '../../../core/helpers/FormHelpers';
-import { NotificationService } from '../../../core/services/notification-service';
-import { AuthService } from '../../../core/services/auth-service';
-import { UpdatePasswordDto } from '../../../core/models/User/UpdatePasswordDto';
+import { createChangePasswordForm } from '../../../../core/helpers/Factories';
+import { isControlValid, handleValidationErrors } from '../../../../core/helpers/FormHelpers';
+import { NotificationService } from '../../../../core/services/notification-service';
+import { AuthService } from '../../../../core/services/auth-service';
+import { UpdatePasswordDto } from '../../../../core/models/User/UpdatePasswordDto';
 import { take } from 'rxjs';
 import { Router } from '@angular/router';
 

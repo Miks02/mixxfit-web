@@ -1,11 +1,11 @@
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { CardioType } from "../../pages/workout/models/CardioType";
-import { ExerciseType } from "../../pages/workout/models/ExerciseType";
+import { CardioType } from "../../features/workout/models/CardioType";
+import { ExerciseType } from "../../features/workout/models/ExerciseType";
 import { minArrayLength, onlyNumbersCheck } from "./FormHelpers";
-import { ExerciseEntryFormValue } from "../../pages/workout/models/ExerciseEntryFormValue";
-import { CreateWorkoutDto } from "../../pages/workout/models/CreateWorkoutDto";
-import { UnitSystem } from "../../pages/nutrition/models/UnitSystem";
-import { ActivityLevel } from "../../pages/nutrition/models/ActivityLevel";
+import { ExerciseEntryFormValue } from "../../features/workout/models/ExerciseEntryFormValue";
+import { CreateWorkoutDto } from "../../features/workout/models/CreateWorkoutDto";
+import { UnitSystem } from "../../features/nutrition/models/UnitSystem";
+import { ActivityLevel } from "../../features/nutrition/models/ActivityLevel";
 import { Gender } from "../models/Gender";
 
 export function createExerciseForm(fb: FormBuilder): FormGroup {
