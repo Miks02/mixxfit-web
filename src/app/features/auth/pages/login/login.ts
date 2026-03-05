@@ -5,8 +5,8 @@ import { Router, RouterLink } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { faSolidCheck, faSolidEnvelope, faSolidLock } from '@ng-icons/font-awesome/solid';
 import { finalize, take } from 'rxjs';
-import { LoginRequest } from '../../core/models/LoginRequest';
-import { AuthService } from '../../core/services/auth-service';
+import { LoginRequest } from '../../models/login-request';
+import { AuthService } from '../../../../core/services/auth-service';
 
 @Component({
     selector: 'app-login',

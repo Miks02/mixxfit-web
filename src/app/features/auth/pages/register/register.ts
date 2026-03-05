@@ -5,8 +5,8 @@ import { Router, RouterLink } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { faSolidEnvelope, faSolidLock, faSolidUser, faSolidUserTag } from '@ng-icons/font-awesome/solid';
 import { finalize, take } from 'rxjs';
-import { RegisterRequest } from '../../core/models/RegisterRequest';
-import { AuthService } from '../../core/services/auth-service';
+import { RegisterRequest } from '../../models/register-request';
+import { AuthService } from '../../../../core/services/auth-service';
 
 @Component({
     selector: 'app-register',
