@@ -40,10 +40,9 @@ export class Dashboard {
 
     dashboardSource = toSignal(this.dashboardState.dashboard$, {initialValue: null})
     workoutsPerMonth = toSignal(this.workoutService.workoutCounts$, {initialValue: null});
-    weightChartSource = toSignal(this.weightService.weightChart$, {initialValue: null});
+    weightChart = this.weightService.weightChart;
 
     years = computed(() => this.workoutsPerMonth()?.years)
-    weightChart = computed(() => this.weightChartSource() ?? undefined)
     recentWorkouts = computed(() => this.dashboardSource()?.recentWorkouts)
 
     selectedYear: number = new Date().getFullYear();

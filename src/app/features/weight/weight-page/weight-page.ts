@@ -50,9 +50,9 @@ export class WeightPage  {
 
     isModalOpen = signal(false);
     selectedWeightEntry: WritableSignal<WeightEntryDetails | null> = signal(null);
-    userSource = this.userState.userDetails;
-    weightSummarySource = toSignal(this.weightService.weightSummary$, {initialValue: null});
-    weightListDetailsSource = toSignal(this.weightService.weightListDetails$, {initialValue: null})
+    user = this.userState.userDetails;
+    weightSummary = this.weightService.weightSummary;
+    weightListDetails = this.weightService.weightListDetails;
 
     form = createWeightEntryForm(this.fb);
     targetWeightForm = createTargetWeightForm(this.fb);
@@ -62,15 +62,15 @@ export class WeightPage  {
     selectedYear: WritableSignal<number | null> = signal(null);
     selectedMonth: WritableSignal<number | null> = signal(null);
 
-    months = computed(() => this.weightListDetailsSource()?.months);
-    years = computed(() => this.weightSummarySource()?.years);
+    months = computed(() => this.weightListDetails()?.months);
+    years = computed(() => this.weightSummary()?.years);
 
-    weightLogs = computed(() => this.weightListDetailsSource()?.weightLogs);
-    firstEntry = computed(() => this.weightSummarySource()?.firstEntry);
-    currentWeight = computed(() => this.weightSummarySource()?.currentWeight);
-    progress = computed(() => this.weightSummarySource()?.progress);
-    targetWeight = computed(() => this.userSource()?.targetWeight);
-    weightChart = computed(() => this.weightSummarySource()?.weightChart!);
+    weightLogs = computed(() => this.weightListDetails()?.weightLogs);
+    firstEntry = computed(() => this.weightSummary()?.firstEntry);
+    currentWeight = computed(() => this.weightSummary()?.currentWeight);
+    progress = computed(() => this.weightSummary()?.progress);
+    targetWeight = computed(() => this.user()?.targetWeight);
+    weightChart = computed(() => this.weightSummary()?.weightChart!);
 
     ngOnInit() {
         this.layoutState.setTitle("Weight Tracking");
