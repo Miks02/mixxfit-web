@@ -1,6 +1,6 @@
-import { WeightEntryDetailsDto } from "../../../weight/models/WeightEntryDetailsDto";
+import { WeightEntryDetails } from "../../../weight/models/weight-entry-details";
 
 export type WeightChartDataDto = {
-    entries: WeightEntryDetailsDto[];
+    entries: WeightEntryDetails[];
     targetWeight: number | null;
 }

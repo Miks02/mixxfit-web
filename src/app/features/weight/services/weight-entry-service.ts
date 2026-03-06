@@ -1,13 +1,13 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { UserService } from '../../../core/services/user-service';
-import { WeightCreateRequestDto } from '../models/WeightCreateRequestDto';
-import { environment } from '../../../../environments/environment';
-import { WeightEntryDetailsDto } from '../models/WeightEntryDetailsDto';
 import { BehaviorSubject, tap } from 'rxjs';
-import { WeightSummaryDto } from '../models/WeightSummaryDto';
-import { WeightListDetailsDto } from '../models/WeightListDetailsDto';
-import { WeightChartDto } from '../models/WeightChartDto';
+import { environment } from '../../../../environments/environment';
+import { UserService } from '../../../core/services/user-service';
+import { WeightChartDto } from '../models/weight-chart';
+import { CreateWeightRequest } from '../models/weight-create-request';
+import { WeightEntryDetails } from '../models/weight-entry-details';
+import { WeightListDetails } from '../models/weight-list-details';
+import { WeightSummary } from '../models/weight-summary';
 
 @Injectable({
   providedIn: 'root',
@@ -18,16 +18,16 @@ export class WeightEntryService {
   private http = inject(HttpClient);
   private userService = inject(UserService);
 
-  private weightSummarySubject = new BehaviorSubject<WeightSummaryDto | undefined>(undefined);
-  private weightListDetailsSubject = new BehaviorSubject<WeightListDetailsDto | undefined>(undefined);
+  private weightSummarySubject = new BehaviorSubject<WeightSummary| undefined>(undefined);
+  private weightListDetailsSubject = new BehaviorSubject<WeightListDetails| undefined>(undefined);
   private weightChartSubject = new BehaviorSubject<WeightChartDto | undefined>(undefined);
 
   weightSummary$ = this.weightSummarySubject.asObservable();
   weightListDetails$ = this.weightListDetailsSubject.asObservable();
   weightChart$ = this.weightChartSubject.asObservable();
 
-  set weightSummary(summary: Partial<WeightSummaryDto>) {
-    const current = this.weightSummarySubject.getValue() as WeightSummaryDto;
+  set weightSummary(summary: Partial<WeightSummary>) {
+    const current = this.weightSummarySubject.getValue() as WeightSummary;
     this.weightSummarySubject.next({...current, ...summary});
   }
 
@@ -49,7 +49,7 @@ export class WeightEntryService {
       params = params.set('targetWeight', targetWeight as number)
     }
 
-    return this.http.get<WeightSummaryDto>(`${this.api}/weight-entries`, {params})
+    return this.http.get<WeightSummary>(`${this.api}/weight-entries`, {params})
     .pipe(
       tap(res => {
         this.weightSummary = {
@@ -78,7 +78,7 @@ export class WeightEntryService {
 
     }
 
-    return this.http.get<WeightListDetailsDto>(`${this.api}/weight-entries/logs`, {params})
+    return this.http.get<WeightListDetails>(`${this.api}/weight-entries/logs`, {params})
     .pipe(
       tap(res => {
         this.weightListDetailsSubject.next(res);
@@ -87,7 +87,7 @@ export class WeightEntryService {
   }
 
   getMyWeightLog(id: number) {
-    return this.http.get<WeightEntryDetailsDto>(`${this.api}/weight-entries/${id}`);
+    return this.http.get<WeightEntryDetails>(`${this.api}/weight-entries/${id}`);
   }
 
   getMyWeightChart(targetWeight: number | null = null) {
@@ -108,8 +108,8 @@ export class WeightEntryService {
     )
   }
 
-  addWeightEntry(request: WeightCreateRequestDto) {
-    return this.http.post<WeightEntryDetailsDto>(`${this.api}/weight-entries`, request);
+  addWeightEntry(request: CreateWeightRequest) {
+    return this.http.post<WeightEntryDetails>(`${this.api}/weight-entries`, request);
   }
 
   deleteWeightEntry(id: number) {

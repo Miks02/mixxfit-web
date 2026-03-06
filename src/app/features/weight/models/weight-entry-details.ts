@@ -1,4 +1,4 @@
-export type WeightEntryDetailsDto = {
+export type WeightEntryDetails = {
     id: number,
     weight: number,
     time: string,

@@ -5,7 +5,7 @@ import {
     ChartOptions,
     Chart, registerables
 } from 'chart.js';
-import { WeightChartDto } from '../../weight/models/WeightChartDto';
+import { WeightChartDto } from '../../weight/models/weight-chart';
 
 Chart.register(...registerables);
 

@@ -25,7 +25,7 @@ import { UserService } from '../../../core/services/user-service';
 import { isControlValid } from '../../../core/helpers/FormHelpers';
 import { ModalData } from '../../../core/models/ModalData';
 import { ModalType } from '../../../core/models/ModalType';
-import { WeightEntryDetailsDto } from '../models/WeightEntryDetailsDto';
+import { WeightEntryDetails } from '../models/weight-entry-details';
 import { Modal } from "../../../layout/utilities/modal/modal";
 import { formatDate } from '../../../core/helpers/Utility';
 import { NgxSkeletonLoaderComponent } from 'ngx-skeleton-loader';
@@ -49,7 +49,7 @@ export class WeightPage  {
     private notificationService = inject(NotificationService);
 
     isModalOpen = signal(false);
-    selectedWeightEntry: WritableSignal<WeightEntryDetailsDto | null> = signal(null);
+    selectedWeightEntry: WritableSignal<WeightEntryDetails | null> = signal(null);
     userSource = this.userState.userDetails;
     weightSummarySource = toSignal(this.weightService.weightSummary$, {initialValue: null});
     weightListDetailsSource = toSignal(this.weightService.weightListDetails$, {initialValue: null})
