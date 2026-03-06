@@ -13,6 +13,7 @@
                         <div class="flex gap-4">
                             <ng-icon name="faSolidGhost" class="self-center text-2xl sm:text-3xl"></ng-icon>
                             <p
+                            #typewriter
                             class="text-2xl sm:text-3xl  whitespace-nowrap typewriter items-center">No data yet</p>
                         </div>
 
@@ -41,10 +42,11 @@
                         <div class="flex gap-4">
                             <ng-icon name="faSolidGhost" class="self-center text-2xl sm:text-3xl"></ng-icon>
                             <p
+                            #typewriter
                             class="text-2xl sm:text-3xl  whitespace-nowrap typewriter items-center">No data yet</p>
                         </div>
 
-                        <p class="italic text-lg text-emerald-100/80 typewriter">Add more records to show progress</p>
+                        <p #typewriter class="italic text-lg text-emerald-100/80 typewriter">Add more records to show progress</p>
                     } @else {
                         <p
                         class="text-2xl sm:text-3xl overflow-hidden whitespace-nowrap border-r-2 border-transparent w-[12ch]">{{progress() | number:'1.0-2'}} KG</p>
@@ -66,12 +68,13 @@
             <h5 class="text-2xl sm:text-3xl text-rose-100/90">Target Weight</h5>
 
         </div>
-        <div class="flex gap-4 items-center opacity-95" [class.hidden]="isEditingTarget()">
+        <div class="flex gap-4 items-center opacity-95" [class.hidden]="isTargetFormOpen()">
             <div class="flex flex-col gap-2">
                 @if(!targetWeight()) {
                     <div class="flex gap-4">
                         <ng-icon name="faSolidGhost" class="self-center text-2xl sm:text-3xl"></ng-icon>
                         <p
+                        #typewriter
                         class="text-2xl sm:text-3xl  whitespace-nowrap typewriter items-center">No data yet</p>
                     </div>
 
@@ -86,7 +89,7 @@
             </div>
 
         </div>
-        @if(isEditingTarget()) {
+        @if(isTargetFormOpen()) {
             <form [formGroup]="targetWeightForm" (ngSubmit)="saveTargetWeight()" class="flex flex-col gap-3">
                 <div
                 [class.border-red-500]="!isControlValid('targetWeight', targetWeightForm)"

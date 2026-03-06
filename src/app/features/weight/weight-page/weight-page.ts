@@ -1,6 +1,6 @@
-import { Component, computed, inject, signal, WritableSignal } from '@angular/core';
-import { WeightChart } from "../../misc/weight-chart/weight-chart";
-import { LayoutState } from '../../../layout/services/layout-state';
+import { DatePipe, DecimalPipe, SlicePipe } from "@angular/common";
+import { afterNextRender, Component, computed, effect, ElementRef, inject, signal, untracked, viewChildren, WritableSignal } from '@angular/core';
+import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgIcon, provideIcons } from "@ng-icons/core";
 import {
     faSolidBullseye,
@@ -14,22 +14,21 @@ import {
     faSolidScaleUnbalanced,
     faSolidWeightScale
 } from "@ng-icons/font-awesome/solid";
-import { FormBuilder, ReactiveFormsModule, AbstractControl, FormsModule } from '@angular/forms';
-import { createWeightEntryForm, createTargetWeightForm } from '../../../core/helpers/Factories';
-import { WeightEntryService } from '../services/weight-entry-service';
+import { NgxSkeletonLoaderComponent } from 'ngx-skeleton-loader';
 import { take } from 'rxjs';
-import { NotificationService } from '../../../core/services/notification-service';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { DatePipe, DecimalPipe, SlicePipe } from "@angular/common";
-import { UserService } from '../../../core/services/user-service';
+import { createTargetWeightForm, createWeightEntryForm } from '../../../core/helpers/Factories';
 import { isControlValid } from '../../../core/helpers/FormHelpers';
+import { formatDate } from '../../../core/helpers/Utility';
 import { ModalData } from '../../../core/models/ModalData';
 import { ModalType } from '../../../core/models/ModalType';
-import { WeightEntryDetails } from '../models/weight-entry-details';
-import { Modal } from "../../../layout/utilities/modal/modal";
-import { formatDate } from '../../../core/helpers/Utility';
-import { NgxSkeletonLoaderComponent } from 'ngx-skeleton-loader';
+import { NotificationService } from '../../../core/services/notification-service';
+import { UserService } from '../../../core/services/user-service';
 import { UserState } from '../../../core/states/user-state';
+import { LayoutState } from '../../../layout/services/layout-state';
+import { Modal } from "../../../layout/utilities/modal/modal";
+import { WeightChart } from "../../misc/weight-chart/weight-chart";
+import { WeightEntryDetails } from '../models/weight-entry-details';
+import { WeightEntryService } from '../services/weight-entry-service';
 
 @Component({
     selector: 'app-weight-page',
@@ -57,7 +56,6 @@ export class WeightPage  {
     form = createWeightEntryForm(this.fb);
     targetWeightForm = createTargetWeightForm(this.fb);
     isTargetFormOpen = signal(false);
-    isEditingTarget = computed(() => this.isTargetFormOpen())
 
     selectedYear: WritableSignal<number | null> = signal(null);
     selectedMonth: WritableSignal<number | null> = signal(null);
@@ -71,36 +69,36 @@ export class WeightPage  {
     progress = computed(() => this.weightSummary()?.progress);
     targetWeight = computed(() => this.user()?.targetWeight);
     weightChart = computed(() => this.weightSummary()?.weightChart!);
+    typewriterElements = viewChildren<ElementRef>('typewriter');
+
+    constructor() {
+        this.layoutState.setTitle("Weight Tracking");
+
+        afterNextRender(() => {
+            this.typewriterElements().forEach((el: ElementRef) => {
+                el.nativeElement.style.setProperty('--target-width', el.nativeElement.scrollWidth + 'px');
+            });
+        });
+    }
 
     ngOnInit() {
-        this.layoutState.setTitle("Weight Tracking");
         this.loadWeightSummary();
     }
 
-    ngAfterViewInit() {
-        setTimeout(() => {
-            const elements = document.querySelectorAll('.typewriter');
-            elements.forEach((el: any) => {
-                el.style.setProperty('--target-width', el.scrollWidth + 'px');
-            });
-        }, 100);
-    }
-
     loadWeightSummary() {
-        return this.weightService.getMyWeightSummary(this.selectedMonth(), this.selectedYear(), this.targetWeight())
+        this.weightService.getMyWeightSummary(this.selectedMonth(), this.selectedYear(), this.targetWeight())
         .pipe(take(1))
         .subscribe()
     }
 
     loadWeightLogs() {
-      console.warn(this.selectedMonth() + "yar")
-        return this.weightService.getMyWeightLogs(this.selectedMonth(), this.selectedYear())
+        this.weightService.getMyWeightLogs(this.selectedMonth(), this.selectedYear())
         .pipe(take(1))
         .subscribe()
     }
 
     loadWeightChart(targetWeight: number | null = null) {
-        return this.weightService.getMyWeightChart(targetWeight ?? this.targetWeight())
+        this.weightService.getMyWeightChart(targetWeight ?? this.targetWeight())
         .pipe(take(1))
         .subscribe()
     }
@@ -158,14 +156,8 @@ export class WeightPage  {
         this.targetWeightForm.reset();
     }
 
-    getTargetWeightMessage() {
-        if(this.targetWeight() === this.currentWeight()?.weight)
-            return "You have reached your goal, well done!";
-        return "Keep going you can do it!";
-    }
-
     loadWeightEntry(id: number) {
-        return this.weightService.getMyWeightLog(id)
+        this.weightService.getMyWeightLog(id)
         .pipe(take(1))
         .subscribe((res) => {
             this.selectedWeightEntry.set(res)
@@ -178,7 +170,7 @@ export class WeightPage  {
         if(!this.selectedWeightEntry())
             return;
 
-        return this.weightService.deleteWeightEntry(this.selectedWeightEntry()?.id!)
+        this.weightService.deleteWeightEntry(this.selectedWeightEntry()?.id!)
         .pipe(take(1))
         .subscribe(() => {
             this.loadWeightSummary()
@@ -191,7 +183,13 @@ export class WeightPage  {
         this.isModalOpen.set(false);
     }
 
-    buildModal(): ModalData {
+    getTargetWeightMessage = computed(() => {
+        if(this.targetWeight() === this.currentWeight()?.weight)
+            return "You have reached your goal, well done!";
+        return "Keep going you can do it!";
+    })
+    
+    buildModal = computed((): ModalData => {
         const entry = this.selectedWeightEntry();
         const entryDate = formatDate(entry?.createdAt!)
         const notes = entry?.notes ? `| ${entry.notes}` : ""
@@ -205,25 +203,10 @@ export class WeightPage  {
             primaryAction: () => this.deleteWeightEntry(),
             secondaryAction: () => this.isModalOpen.set(false)
         };
-    }
+    })
 
     convertMonthNumberToString(month: number): string {
-        switch(month) {
-            case 1: return "January";
-            case 2: return "February";
-            case 3: return "March";
-            case 4: return "April";
-            case 5: return "May";
-            case 6 :return "June";
-            case 7: return "July";
-            case 8: return "August";
-            case 9: return "September";
-            case 10: return "October";
-            case 11: return "November";
-            case 12: return "December";
-            default:
-            return "Undefined"
-        }
+        return new Intl.DateTimeFormat('en-US', { month: 'long' }).format(new Date(2000, month - 1));
     }
 
 
