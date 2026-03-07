@@ -244,7 +244,7 @@ export class WeightPage  {
 
         return {
             title: `${entry?.weight} KG | ${entry?.time.substring(0, 5)} | ${entryDate} ${notes}`,
-            subtitle: `${entry?.notes}\nYou are about to delete this weight entry. This action cannot be undone.`,
+            subtitle: `You are about to delete this weight entry. This action cannot be undone.`,
             type: ModalType.Warning,
             primaryActionLabel: 'Confirm',
             secondaryActionLabel: 'Close',
