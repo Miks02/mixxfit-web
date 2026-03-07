@@ -12,15 +12,15 @@ import {
 import { ActivatedRoute, Router } from '@angular/router';
 import { take, tap } from 'rxjs';
 
-import { WorkoutDetailsDto } from '../models/WorkoutDetailsDto';
-import { ExerciseEntry } from '../models/ExerciseEntry';
-import { WorkoutService } from '../services/workout-service';
-import { ExerciseType } from '../models/ExerciseType';
-import { CardioType } from '../models/CardioType';
-import { Modal } from "../../../layout/utilities/modal/modal";
-import { NotificationService } from '../../../core/services/notification-service';
-import { ModalData } from '../../../core/models/ModalData';
-import { ModalType } from '../../../core/models/ModalType';
+import { WorkoutDetailsDto } from '../../models/WorkoutDetailsDto';
+import { ExerciseEntry } from '../../models/ExerciseEntry';
+import { WorkoutService } from '../../services/workout-service';
+import { ExerciseType } from '../../models/ExerciseType';
+import { CardioType } from '../../models/CardioType';
+import { Modal } from "../../../../layout/utilities/modal/modal";
+import { NotificationService } from '../../../../core/services/notification-service';
+import { ModalData } from '../../../../core/models/ModalData';
+import { ModalType } from '../../../../core/models/ModalType';
 
 @Component({
     selector: 'app-workout-details',

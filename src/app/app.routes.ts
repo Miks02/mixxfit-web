@@ -4,12 +4,12 @@ import { Login } from './features/auth/pages/login/login';
 import { Register } from './features/auth/pages/register/register';
 import { Dashboard } from './features/dashboard/dashboard';
 import { AppLayout } from './layout/app-layout/app-layout';
-import { WorkoutList } from './features/workout/workout-list/workout-list';
+import { WorkoutList } from './features/workout/pages/workout-list/workout-list';
 import { authGuard } from './core/guards/auth-guard';
 import { guestGuard } from './core/guards/guest-guard';
-import { WorkoutForm } from './features/workout/workout-form/workout-form';
+import { WorkoutForm } from './features/workout/pages/workout-form/workout-form';
 import { ProfilePage } from './features/profile/pages/profile-page/profile-page';
-import { WorkoutDetails } from './features/workout/workout-details/workout-details';
+import { WorkoutDetails } from './features/workout/pages/workout-details/workout-details';
 import { WeightPage } from './features/weight/pages/weight-page/weight-page';
 
 export const routes: Routes = [

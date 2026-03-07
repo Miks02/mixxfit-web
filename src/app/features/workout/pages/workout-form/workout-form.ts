@@ -13,16 +13,16 @@ import {
     faSolidPersonRunning,
     faSolidChildReaching
 } from "@ng-icons/font-awesome/solid";
-import { LayoutState } from '../../../layout/services/layout-state';
+import { LayoutState } from '../../../../layout/services/layout-state';
 import { FormBuilder, FormsModule, ReactiveFormsModule, FormArray, AbstractControl,} from '@angular/forms';
-import { ExerciseForm } from "../exercise-form/exercise-form";
-import { ExerciseType } from '../models/ExerciseType';
-import { CardioType } from '../models/CardioType';
-import { createWorkoutForm, createWorkoutObject } from '../../../core/helpers/Factories';
-import { WorkoutService } from '../services/workout-service';
+import { ExerciseForm } from "../../exercise-form/exercise-form";
+import { ExerciseType } from '../../models/ExerciseType';
+import { CardioType } from '../../models/CardioType';
+import { createWorkoutForm, createWorkoutObject } from '../../../../core/helpers/Factories';
+import { WorkoutService } from '../../services/workout-service';
 import { Router } from '@angular/router';
-import { NotificationService } from '../../../core/services/notification-service';
-import { handleValidationErrors, isControlValid } from '../../../core/helpers/FormHelpers';
+import { NotificationService } from '../../../../core/services/notification-service';
+import { handleValidationErrors, isControlValid } from '../../../../core/helpers/FormHelpers';
 import { DatePipe } from '@angular/common';
 import { finalize, tap } from 'rxjs';
 
