@@ -24,12 +24,12 @@ import {
     faSolidXmark
 } from "@ng-icons/font-awesome/solid";
 import { Subject, takeUntil } from 'rxjs';
-import { createExerciseForm } from '../../../core/helpers/Factories';
-import { addValidators, clearFormInputs, clearValidators, isControlValid, minArrayLength, onlyNumbersCheck } from '../../../core/helpers/FormHelpers';
-import { NotificationService } from '../../../core/services/notification-service';
-import { UserState } from '../../../core/states/user-state';
-import { CardioType } from '../models/CardioType';
-import { ExerciseType } from '../models/ExerciseType';
+import { addValidators, clearFormInputs, clearValidators, isControlValid, minArrayLength, onlyNumbersCheck } from '../../../../core/helpers/FormHelpers';
+import { NotificationService } from '../../../../core/services/notification-service';
+import { UserState } from '../../../../core/states/user-state';
+import { createExerciseForm } from '../../factories/workout-factories';
+import { CardioType } from '../../models/cardio-type';
+import { ExerciseType } from '../../models/exercise-type';
 
 
 @Component({

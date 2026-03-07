@@ -1,4 +1,4 @@
-import { ExerciseType } from "./ExerciseType"
+import { ExerciseType } from "./exercise-type"
 
 export type WorkoutSummaryDto = {
     workoutCount: number,

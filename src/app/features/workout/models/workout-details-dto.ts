@@ -1,4 +1,4 @@
-import { ExerciseEntry } from "./ExerciseEntry"
+import { ExerciseEntry } from "./exercise-entry"
 
 export type WorkoutDetailsDto = {
     id: number,

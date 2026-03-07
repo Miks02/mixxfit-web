@@ -1,26 +1,26 @@
-import { Component, inject, OnInit, signal, WritableSignal } from '@angular/core';
 import { DatePipe, DecimalPipe } from '@angular/common';
+import { Component, inject, signal, WritableSignal } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
-  faSolidDumbbell,
-  faSolidPersonRunning,
-  faSolidChildReaching,
-  faSolidCalendarDay,
-  faSolidNoteSticky,
-  faSolidTag
+    faSolidCalendarDay,
+    faSolidChildReaching,
+    faSolidDumbbell,
+    faSolidNoteSticky,
+    faSolidPersonRunning,
+    faSolidTag
 } from "@ng-icons/font-awesome/solid";
-import { ActivatedRoute, Router } from '@angular/router';
 import { take, tap } from 'rxjs';
 
-import { WorkoutDetailsDto } from '../models/WorkoutDetailsDto';
-import { ExerciseEntry } from '../models/ExerciseEntry';
-import { WorkoutService } from '../services/workout-service';
-import { ExerciseType } from '../models/ExerciseType';
-import { CardioType } from '../models/CardioType';
-import { Modal } from "../../../layout/utilities/modal/modal";
-import { NotificationService } from '../../../core/services/notification-service';
-import { ModalData } from '../../../core/models/ModalData';
-import { ModalType } from '../../../core/models/ModalType';
+import { ModalData } from '../../../../core/models/ModalData';
+import { ModalType } from '../../../../core/models/ModalType';
+import { NotificationService } from '../../../../core/services/notification-service';
+import { Modal } from "../../../../layout/utilities/modal/modal";
+import { CardioType } from '../../models/cardio-type';
+import { ExerciseEntry } from '../../models/exercise-entry';
+import { ExerciseType } from '../../models/exercise-type';
+import { WorkoutDetailsDto } from '../../models/workout-details-dto';
+import { WorkoutService } from '../../services/workout-service';
 
 @Component({
     selector: 'app-workout-details',

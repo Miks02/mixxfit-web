@@ -1,9 +1,8 @@
-import { Component, computed, effect, inject, signal, WritableSignal } from '@angular/core';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { FormsModule } from '@angular/forms';
 import { DatePipe } from '@angular/common';
-import { debounceTime, distinctUntilChanged, map, Subject, take, takeUntil, tap } from 'rxjs';
+import { Component, computed, effect, inject, signal, WritableSignal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { FormsModule } from '@angular/forms';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
     faSolidChevronLeft,
@@ -12,11 +11,12 @@ import {
     faSolidDumbbell,
     faSolidPersonRunning
 } from '@ng-icons/font-awesome/solid';
-import { LayoutState } from '../../../layout/services/layout-state';
-import { WorkoutService } from '../services/workout-service';
-import { WorkoutListItemDto } from '../models/WorkoutListItemDto';
-import { NotificationService } from '../../../core/services/notification-service';
 import { NgxSkeletonLoaderComponent } from 'ngx-skeleton-loader';
+import { debounceTime, distinctUntilChanged, Subject, take, takeUntil } from 'rxjs';
+import { NotificationService } from '../../../../core/services/notification-service';
+import { LayoutState } from '../../../../layout/services/layout-state';
+import { WorkoutListItemDto } from '../../models/workout-list-item-dto';
+import { WorkoutService } from '../../services/workout-service';
 
 @Component({
     selector: 'app-workout-list',
