@@ -1,4 +1,4 @@
-import { WorkoutListItemDto } from "../../workout/models/WorkoutListItemDto"
+import { WorkoutListItemDto } from "../../workout/models/workout-list-item-dto"
 
 export type DashboardDto = {
     dailyCalories: number,

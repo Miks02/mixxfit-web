@@ -1,12 +1,10 @@
-import { CardioType } from "./CardioType"
-import { ExerciseType } from "./ExerciseType"
-import { SetEntry } from "./SetEntry"
+import { CardioType } from "./cardio-type"
+import { ExerciseType } from "./exercise-type"
+import { SetEntry } from "./set-entry"
 
 
-export type ExerciseEntry = {
-    id?: number,
+export type CreateExerciseEntry = {
     name: string,
-    workoutId?: number,
 
     exerciseType: ExerciseType,
     cardioType?: CardioType,

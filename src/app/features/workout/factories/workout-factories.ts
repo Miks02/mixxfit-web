@@ -1,9 +1,9 @@
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { minArrayLength } from "../../../core/helpers/FormHelpers";
-import { CardioType } from "../models/CardioType";
-import { CreateWorkoutDto } from "../models/CreateWorkoutDto";
-import { ExerciseEntryFormValue } from "../models/ExerciseEntryFormValue";
-import { ExerciseType } from "../models/ExerciseType";
+import { CardioType } from "../models/cardio-type";
+import { CreateWorkoutDto } from "../models/create-workout-dto";
+import { ExerciseEntryFormValue } from "../models/exercise-entry-form-value";
+import { ExerciseType } from "../models/exercise-type";
 
 export function createExerciseForm(fb: FormBuilder): FormGroup {
     return fb.group({

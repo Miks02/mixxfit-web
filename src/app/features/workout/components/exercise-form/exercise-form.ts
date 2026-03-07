@@ -28,8 +28,8 @@ import { addValidators, clearFormInputs, clearValidators, isControlValid, minArr
 import { NotificationService } from '../../../../core/services/notification-service';
 import { UserState } from '../../../../core/states/user-state';
 import { createExerciseForm } from '../../factories/workout-factories';
-import { CardioType } from '../../models/CardioType';
-import { ExerciseType } from '../../models/ExerciseType';
+import { CardioType } from '../../models/cardio-type';
+import { ExerciseType } from '../../models/exercise-type';
 
 
 @Component({

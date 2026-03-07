@@ -12,11 +12,11 @@ import {
 import { ActivatedRoute, Router } from '@angular/router';
 import { take, tap } from 'rxjs';
 
-import { WorkoutDetailsDto } from '../../models/WorkoutDetailsDto';
-import { ExerciseEntry } from '../../models/ExerciseEntry';
+import { WorkoutDetailsDto } from '../../models/workout-details-dto';
+import { ExerciseEntry } from '../../models/exercise-entry';
 import { WorkoutService } from '../../services/workout-service';
-import { ExerciseType } from '../../models/ExerciseType';
-import { CardioType } from '../../models/CardioType';
+import { ExerciseType } from '../../models/exercise-type';
+import { CardioType } from '../../models/cardio-type';
 import { Modal } from "../../../../layout/utilities/modal/modal";
 import { NotificationService } from '../../../../core/services/notification-service';
 import { ModalData } from '../../../../core/models/ModalData';

@@ -15,7 +15,7 @@ import { NgxSkeletonLoaderComponent } from 'ngx-skeleton-loader';
 import { debounceTime, distinctUntilChanged, Subject, take, takeUntil } from 'rxjs';
 import { NotificationService } from '../../../../core/services/notification-service';
 import { LayoutState } from '../../../../layout/services/layout-state';
-import { WorkoutListItemDto } from '../../models/WorkoutListItemDto';
+import { WorkoutListItemDto } from '../../models/workout-list-item-dto';
 import { WorkoutService } from '../../services/workout-service';
 
 @Component({

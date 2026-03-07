@@ -21,8 +21,8 @@ import { NotificationService } from '../../../../core/services/notification-serv
 import { LayoutState } from '../../../../layout/services/layout-state';
 import { ExerciseForm } from '../../components/exercise-form/exercise-form';
 import { createWorkoutForm, createWorkoutObject } from '../../factories/workout-factories';
-import { CardioType } from '../../models/CardioType';
-import { ExerciseType } from '../../models/ExerciseType';
+import { CardioType } from '../../models/cardio-type';
+import { ExerciseType } from '../../models/exercise-type';
 import { WorkoutService } from '../../services/workout-service';
 
 @Component({

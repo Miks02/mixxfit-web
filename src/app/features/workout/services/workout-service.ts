@@ -1,14 +1,14 @@
 import { inject, Injectable, } from '@angular/core';
 import { BehaviorSubject, map, Observable, tap } from 'rxjs';
-import { CreateWorkoutDto } from '../models/CreateWorkoutDto';
+import { CreateWorkoutDto } from '../models/create-workout-dto';
 import { PagedResult } from '../../../core/models/PagedResult';
-import { WorkoutDetailsDto } from '../models/WorkoutDetailsDto';
+import { WorkoutDetailsDto } from '../models/workout-details-dto';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { WorkoutListItemDto } from '../models/WorkoutListItemDto';
-import { WorkoutPageDto } from '../models/WorkoutPageDto';
-import { WorkoutSummaryDto } from '../models/WorkoutSummaryDto';
+import { WorkoutListItemDto } from '../models/workout-list-item-dto';
+import { WorkoutPageDto } from '../models/workout-page-dto';
+import { WorkoutSummaryDto } from '../models/workout-summary-dto';
 import { QueryParams } from '../../../core/models/QueryParams';
-import { WorkoutsPerMonthDto } from '../models/WorkoutsPerMonthDto';
+import { WorkoutsPerMonthDto } from '../models/workouts-per-month-dto';
 import { environment } from '../../../../environments/environment';
 
 @Injectable({
