@@ -1,6 +1,7 @@
 import { DatePipe, DecimalPipe, SlicePipe } from "@angular/common";
-import { afterNextRender, Component, computed, effect, ElementRef, inject, signal, untracked, viewChildren, WritableSignal } from '@angular/core';
+import { afterNextRender, Component, computed, effect, ElementRef, inject, signal, viewChildren, WritableSignal } from '@angular/core';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ActivatedRoute, Router } from "@angular/router";
 import { NgIcon, provideIcons } from "@ng-icons/core";
 import {
     faSolidBullseye,
@@ -15,7 +16,7 @@ import {
     faSolidWeightScale
 } from "@ng-icons/font-awesome/solid";
 import { NgxSkeletonLoaderComponent } from 'ngx-skeleton-loader';
-import { take } from 'rxjs';
+import { map, take } from 'rxjs';
 import { createTargetWeightForm, createWeightEntryForm } from '../../../core/helpers/Factories';
 import { isControlValid } from '../../../core/helpers/FormHelpers';
 import { formatDate } from '../../../core/helpers/Utility';
@@ -29,6 +30,7 @@ import { Modal } from "../../../layout/utilities/modal/modal";
 import { WeightChart } from "../../misc/weight-chart/weight-chart";
 import { WeightEntryDetails } from '../models/weight-entry-details';
 import { WeightEntryService } from '../services/weight-entry-service';
+import { toSignal } from "@angular/core/rxjs-interop";
 
 @Component({
     selector: 'app-weight-page',
@@ -46,6 +48,8 @@ export class WeightPage  {
     private userState = inject(UserState);
     private fb = inject(FormBuilder);
     private notificationService = inject(NotificationService);
+    private router = inject(Router);
+    private activatedroute = inject(ActivatedRoute);
 
     isModalOpen = signal(false);
     selectedWeightEntry: WritableSignal<WeightEntryDetails | null> = signal(null);
@@ -68,11 +72,25 @@ export class WeightPage  {
     currentWeight = computed(() => this.weightSummary()?.currentWeight);
     progress = computed(() => this.weightSummary()?.progress);
     targetWeight = computed(() => this.user()?.targetWeight);
-    weightChart = computed(() => this.weightSummary()?.weightChart!);
+    weightChart = computed(() => this.weightSummary()?.weightChart);
     typewriterElements = viewChildren<ElementRef>('typewriter');
 
     constructor() {
         this.layoutState.setTitle("Weight Tracking");
+
+        effect(() => {
+            const month = this.selectedMonth()
+            const year = this.selectedYear()
+
+            this.router.navigate([], {
+                relativeTo: this.activatedroute,
+                queryParams: {
+                    month: month,
+                    year: year
+                },
+                queryParamsHandling: 'merge'
+            });
+        })
 
         afterNextRender(() => {
             this.typewriterElements().forEach((el: ElementRef) => {
@@ -82,7 +100,14 @@ export class WeightPage  {
     }
 
     ngOnInit() {
-        this.loadWeightSummary();
+        this.activatedroute.queryParams
+        .pipe(take(1))
+        .subscribe((params) => {
+            this.selectedMonth.set(params['month'] ? +params['month'] : null)
+            this.selectedYear.set(params['year'] ? +params['year'] : null)
+            this.loadWeightSummary();
+
+        })
     }
 
     loadWeightSummary() {
@@ -167,10 +192,11 @@ export class WeightPage  {
     }
 
     deleteWeightEntry() {
-        if(!this.selectedWeightEntry())
+        let selected = this.selectedWeightEntry();
+        if(!selected)
             return;
 
-        this.weightService.deleteWeightEntry(this.selectedWeightEntry()?.id!)
+        this.weightService.deleteWeightEntry(selected.id)
         .pipe(take(1))
         .subscribe(() => {
             this.loadWeightSummary()
@@ -188,7 +214,7 @@ export class WeightPage  {
             return "You have reached your goal, well done!";
         return "Keep going you can do it!";
     })
-    
+
     buildModal = computed((): ModalData => {
         const entry = this.selectedWeightEntry();
         const entryDate = formatDate(entry?.createdAt!)
@@ -205,9 +231,12 @@ export class WeightPage  {
         };
     })
 
-    convertMonthNumberToString(month: number): string {
-        return new Intl.DateTimeFormat('en-US', { month: 'long' }).format(new Date(2000, month - 1));
-    }
-
+    convertedMonths = computed(() => {
+        const months = this.months();
+        return months?.map(m => ({
+            value: m,
+            label:  new Intl.DateTimeFormat('en-US', { month: 'long' }).format(new Date(2000, m - 1))
+        }))
+    })
 
 }
