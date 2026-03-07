@@ -1,67 +1,7 @@
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { CardioType } from "../../features/workout/models/CardioType";
-import { ExerciseType } from "../../features/workout/models/ExerciseType";
-import { minArrayLength, onlyNumbersCheck } from "./FormHelpers";
-import { ExerciseEntryFormValue } from "../../features/workout/models/ExerciseEntryFormValue";
-import { CreateWorkoutDto } from "../../features/workout/models/CreateWorkoutDto";
+import { onlyNumbersCheck } from "./FormHelpers";
 import { UnitSystem } from "../../features/nutrition/models/unit-system";
 import { ActivityLevel } from "../../features/nutrition/models/activity-level";
-import { Gender } from "../models/Gender";
-
-export function createExerciseForm(fb: FormBuilder): FormGroup {
-    return fb.group({
-        exerciseName: ['', Validators.required],
-        exerciseType: [ExerciseType.Weights, Validators.required],
-        cardioType: [CardioType.SteadyState as null | CardioType],
-        durationMinutes: [null as number | null],
-        durationSeconds: [null as number | null],
-        distance: [null as number | null],
-        avgHeartRate: [null as number | null],
-        maxHeartRate: [null as number | null],
-        caloriesBurned: [null as number | null],
-        pace: [null as number | null],
-        workInterval: [null as number | null],
-        restInterval: [null as number | null],
-        intervalsCount: [null as number | null],
-        tempWeight: null as number | null,
-        tempReps: null as number | null,
-        sets: fb.array([], [minArrayLength(1)])
-    })
-}
-
-export function createWorkoutForm(fb: FormBuilder): FormGroup {
-    const today = new Date().toISOString().substring(0, 10);
-    return fb.group({
-        name: ['', Validators.required],
-        workoutDate: [today, Validators.required],
-        exercises: fb.array([], [minArrayLength(1)]),
-        notes: ['', [Validators.maxLength(150)]]
-    })
-}
-
-export function createWorkoutObject(form: FormGroup): CreateWorkoutDto {
-    return {
-        name: form.get('name')?.value,
-        workoutDate: form.get('workoutDate')?.value,
-        notes: form.get('notes')?.value,
-        exerciseEntries: (form.get('exercises')?.value as ExerciseEntryFormValue[]).map(exercise => ({
-            name: exercise.exerciseName,
-            exerciseType: exercise.exerciseType,
-            cardioType: exercise.cardioType,
-            durationMinutes: exercise.durationMinutes,
-            durationSeconds: exercise.durationSeconds,
-            distanceKm: exercise.distance,
-            avgHeartRate: exercise.avgHeartRate,
-            maxHeartRate: exercise.maxHeartRate,
-            caloriesBurned: exercise.caloriesBurned,
-            paceMinPerKm: exercise.pace,
-            workIntervalSec: exercise.workInterval,
-            restIntervalSec: exercise.restInterval,
-            intervalsCount: exercise.intervalsCount,
-            sets: exercise.sets
-        }))
-    }
-}
 
 export function createFullNameForm(fb: FormBuilder, firstName: string = '', lastName: string = ''): FormGroup {
     return fb.group({
