@@ -7,7 +7,7 @@ import {
 import { WorkoutsChart } from "../misc/workouts-chart/workouts-chart";
 import { LayoutState } from '../../layout/services/layout-state';
 import { take } from 'rxjs';
-import { WeightChart } from "../misc/weight-chart/weight-chart";
+import { WeightChart } from '../weight/components/weight-chart/weight-chart';
 import { Router, RouterLink } from "@angular/router";
 import { DashboardState } from './services/dashboard-state';
 import { toSignal } from '@angular/core/rxjs-interop';
