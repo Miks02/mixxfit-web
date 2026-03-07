@@ -5,7 +5,7 @@ import {
     ChartOptions,
     Chart, registerables
 } from 'chart.js';
-import { WorkoutsPerMonthDto } from '../../workout/models/WorkoutsPerMonthDto';
+import { WorkoutsPerMonthDto } from '../../models/WorkoutsPerMonthDto';
 Chart.register(...registerables)
 
 @Component({

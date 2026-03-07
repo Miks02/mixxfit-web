@@ -4,7 +4,7 @@ import { faSolidDumbbell, faSolidFireFlameCurved, faSolidGlassWater, faSolidMoon
 import {
     Chart, registerables
 } from 'chart.js';
-import { WorkoutsChart } from "../misc/workouts-chart/workouts-chart";
+import { WorkoutsChart } from '../workout/components/workouts-chart/workouts-chart';
 import { LayoutState } from '../../layout/services/layout-state';
 import { take } from 'rxjs';
 import { WeightChart } from '../weight/components/weight-chart/weight-chart';
