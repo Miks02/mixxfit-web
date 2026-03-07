@@ -167,7 +167,7 @@
 <div class="bg-slate-200 rounded-2xl shadow-xl transition-shadow duration-200 hover:shadow-2xl grow flex flex-col ">
     <div class="flex justify-between items-center bg-linear-to-br from-violet-500 to-violet-400 w-full rounded-t-2xl px-4 py-2 flex-wrap gap-2">
         <h1 class="font-bold text-xl text-slate-200">Weight Logs</h1>
-        @if(weightLogs()?.length! > 0) {
+        @if(years()?.length! > 0) {
             <div class="flex gap-2 flex-wrap items-center">
                 <select
                 [(ngModel)]="selectedMonth"
@@ -209,7 +209,7 @@
         </ngx-skeleton-loader>
 
     }
-    @if(weightLogs()?.length! === 0) {
+    @else if(weightLogs()?.length! === 0) {
         <div class="flex flex-col gap-2 grow  justify-center items-center h-full py-20">
             <ng-icon name="faSolidScaleUnbalanced" class="text-4xl sm:text-6xl opacity-50 text-slate-600!"></ng-icon>
             <h1 class="text-xl sm:text-2xl font-semibold text-center text-slate-600">No weight logs found</h1>

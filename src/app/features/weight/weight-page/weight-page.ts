@@ -34,7 +34,7 @@ import { toSignal } from "@angular/core/rxjs-interop";
 
 @Component({
     selector: 'app-weight-page',
-    imports: [WeightChart, NgIcon, ReactiveFormsModule, ReactiveFormsModule, DatePipe, DecimalPipe, SlicePipe, Modal, FormsModule, NgxSkeletonLoaderComponent],
+    imports: [WeightChart, NgIcon, ReactiveFormsModule, DatePipe, DecimalPipe, SlicePipe, Modal, FormsModule, NgxSkeletonLoaderComponent],
     templateUrl: './weight-page.html',
     styleUrl: './weight-page.css',
     providers: [provideIcons({faSolidScaleUnbalanced, faSolidBullseye, faSolidMagnifyingGlassChart, faSolidClock, faSolidWeightScale, faSolidNoteSticky, faSolidGhost, faSolidChevronLeft, faSolidChevronRight, faSolidChartLine})]
@@ -106,14 +106,37 @@ export class WeightPage  {
             this.selectedMonth.set(params['month'] ? +params['month'] : null)
             this.selectedYear.set(params['year'] ? +params['year'] : null)
             this.loadWeightSummary();
-
         })
     }
 
     loadWeightSummary() {
         this.weightService.getMyWeightSummary(this.selectedMonth(), this.selectedYear(), this.targetWeight())
         .pipe(take(1))
-        .subscribe()
+        .subscribe(() => {
+            this.syncFilters();
+        })
+    }
+
+    private syncFilters() {
+        const availableMonths = this.months();
+        const availableYears = this.years();
+        const currentMonth = this.selectedMonth();
+        const currentYear = this.selectedYear();
+        let filtersChanged = false;
+
+        if (currentYear !== null && availableYears && !availableYears.includes(currentYear)) {
+            this.selectedYear.set(availableYears.length > 0 ? availableYears[0] : null);
+            filtersChanged = true;
+        }
+
+        if (currentMonth !== null && availableMonths && !availableMonths.includes(currentMonth)) {
+            this.selectedMonth.set(availableMonths.length > 0 ? availableMonths[0] : null);
+            filtersChanged = true;
+        }
+
+        if (filtersChanged) {
+            this.loadWeightLogs();
+        }
     }
 
     loadWeightLogs() {
