@@ -112,20 +112,6 @@ export function createProfilePictureForm(fb: FormBuilder): FormGroup {
     });
 }
 
-export function createWeightEntryForm(fb: FormBuilder): FormGroup {
-    return fb.group({
-        weight: ['', [Validators.required, Validators.min(24), Validators.max(399), onlyNumbersCheck()]],
-        time: ['', Validators.required],
-        notes: ['', Validators.maxLength(100)]
-    });
-}
-
-export function createTargetWeightForm(fb: FormBuilder): FormGroup {
-    return fb.group({
-        targetWeight: ['', [Validators.required, Validators.min(24), Validators.max(399), onlyNumbersCheck()]]
-    })
-}
-
 export function createChangePasswordForm(fb: FormBuilder): FormGroup {
     return fb.group({
         currentPassword: ['', [Validators.required, Validators.minLength(6)]],
