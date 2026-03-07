@@ -10,7 +10,7 @@ import { guestGuard } from './core/guards/guest-guard';
 import { WorkoutForm } from './features/workout/workout-form/workout-form';
 import { ProfilePage } from './features/profile/pages/profile-page/profile-page';
 import { WorkoutDetails } from './features/workout/workout-details/workout-details';
-import { WeightPage } from './features/weight/weight-page/weight-page';
+import { WeightPage } from './features/weight/pages/weight-page/weight-page';
 
 export const routes: Routes = [
     {

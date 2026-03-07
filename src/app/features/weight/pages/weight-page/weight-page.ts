@@ -17,19 +17,19 @@ import {
 } from "@ng-icons/font-awesome/solid";
 import { NgxSkeletonLoaderComponent } from 'ngx-skeleton-loader';
 import { take } from 'rxjs';
-import { createTargetWeightForm, createWeightEntryForm } from '../../../core/helpers/Factories';
-import { isControlValid } from '../../../core/helpers/FormHelpers';
-import { formatDate } from '../../../core/helpers/Utility';
-import { ModalData } from '../../../core/models/ModalData';
-import { ModalType } from '../../../core/models/ModalType';
-import { NotificationService } from '../../../core/services/notification-service';
-import { UserService } from '../../../core/services/user-service';
-import { UserState } from '../../../core/states/user-state';
-import { LayoutState } from '../../../layout/services/layout-state';
-import { Modal } from "../../../layout/utilities/modal/modal";
-import { WeightChart } from "../components/weight-chart/weight-chart";
-import { WeightEntryDetails } from '../models/weight-entry-details';
-import { WeightEntryService } from '../services/weight-entry-service';
+import { createTargetWeightForm, createWeightEntryForm } from "../../factories/weight-form-factories";
+import { isControlValid } from '../../../../core/helpers/FormHelpers';
+import { formatDate } from '../../../../core/helpers/Utility';
+import { ModalData } from '../../../../core/models/ModalData';
+import { ModalType } from '../../../../core/models/ModalType';
+import { NotificationService } from '../../../../core/services/notification-service';
+import { UserService } from '../../../../core/services/user-service';
+import { UserState } from '../../../../core/states/user-state';
+import { LayoutState } from '../../../../layout/services/layout-state';
+import { Modal } from "../../../../layout/utilities/modal/modal";
+import { WeightChart } from "../../components/weight-chart/weight-chart";
+import { WeightEntryDetails } from '../../models/weight-entry-details';
+import { WeightEntryService } from '../../services/weight-entry-service';
 
 @Component({
     selector: 'app-weight-page',
