@@ -51,6 +51,8 @@ export class Dashboard {
     userDetails = this.userState.userDetails;
 
     constructor() {
+        this.layoutState.setTitle("Dashboard")
+
         effect(() => {
             const years = this.years();
             if (years && years.length > 0 && !this.yearInitialized) {
@@ -60,7 +62,6 @@ export class Dashboard {
         });
     }
     ngOnInit() {
-        this.layoutState.setTitle("Dashboard")
         this.loadDashboard();
         this.loadCounts();
         this.loadWeightChart();
@@ -98,31 +99,31 @@ export class Dashboard {
         this.router.navigate(['/workouts/', id])
     }
 
-    getUserWeight() {
+    getUserWeight = computed(() => {
         const weight = this.userDetails()?.currentWeight;
         if(weight)
             return weight + " KG"
         return "N/A"
-    }
+    })
 
-    getUserHeight() {
+    getUserHeight = computed(() => {
         const height = this.userDetails()?.height;
 
         if(height)
             return height + " CM"
         return "N/A"
-    }
+    })
 
-    getUserAge() {
+    getUserAge = computed(() => {
         const age = this.userDetails()?.age;
         if(age)
             return age
         return "N/A"
-    }
+    })
 
-    getProfileImageSrc(): string {
+    getProfileImageSrc = computed(() => {
         if (this.userDetails()?.imagePath && this.userDetails()?.imagePath !== null) return this.userDetails()!.imagePath as string;
         return this.userDetails()?.gender === 1 ? 'user_male.png' : (this.userDetails()?.gender === 2 ? 'user_female.png' : 'user_other.png');
-    }
+    })
 
 }
