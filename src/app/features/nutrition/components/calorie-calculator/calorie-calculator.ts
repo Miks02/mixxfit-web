@@ -26,10 +26,11 @@ import { SetDailyCaloriesRequest } from '../../models/set-daily-calories-request
 import { UnitSystem } from '../../models/unit-system';
 import { NutritionService } from '../../services/nutrition-service';
 import { CaloriesSummary } from '../calories-summary/calories-summary';
+import { Button } from '../../../../shared/button/button';
 
 @Component({
     selector: 'app-calorie-calculator',
-    imports: [NgIcon, ReactiveFormsModule, FormsModule, CaloriesSummary],
+    imports: [NgIcon, ReactiveFormsModule, FormsModule, CaloriesSummary, Button],
     templateUrl: './calorie-calculator.html',
     styleUrl: './calorie-calculator.css',
     providers: [provideIcons({

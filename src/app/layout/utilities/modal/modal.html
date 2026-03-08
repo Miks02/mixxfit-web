@@ -37,19 +37,11 @@
             <div class="flex justify-center gap-4 sm:gap-6 flex-wrap w-full mt-4">
 
                 @if(data?.primaryActionLabel) {
-                    <button
-                    (click)="data?.primaryAction()"
-                    class="transition-all flex justify-center items-center duration-200 cursor-pointer bg-emerald-500 hover:opacity-70 text-yellow-100 shadow-lg font-bold py-2 px-4 rounded text-lg disabled:opacity-70 disabled:pointer-events-none active:opacity-70 min-w-25 sm:min-w-25">
-                    <p class="font-semibold self-center">{{data?.primaryActionLabel}}</p>
-                </button>
+                    <app-button [label]="data?.primaryActionLabel!" buttonType="primary" (clicked)="data?.primaryAction()"></app-button>
             }
 
             @if(data?.secondaryActionLabel) {
-                <button
-                (click)="data?.secondaryAction()"
-                class="transition-all flex justify-center items-center duration-200 cursor-pointer bg-red-500 hover:opacity-70 text-yellow-100 shadow-lg font-bold py-2 px-4 rounded text-lg disabled:opacity-70 disabled:pointer-events-none active:opacity-70 min-w-25 sm:min-w-25">
-                <p class="font-semibold self-center">{{data?.secondaryActionLabel}}</p>
-            </button>
+                <app-button [label]="data?.secondaryActionLabel!" buttonType="danger" (clicked)="data?.secondaryAction()"></app-button>
         }
 
 

@@ -30,10 +30,11 @@ import { Modal } from "../../../../layout/utilities/modal/modal";
 import { WeightChart } from "../../components/weight-chart/weight-chart";
 import { WeightEntryDetails } from '../../models/weight-entry-details';
 import { WeightEntryService } from '../../services/weight-entry-service';
+import { Button } from '../../../../shared/button/button';
 
 @Component({
     selector: 'app-weight-page',
-    imports: [WeightChart, NgIcon, ReactiveFormsModule, DatePipe, DecimalPipe, SlicePipe, Modal, FormsModule, NgxSkeletonLoaderComponent],
+    imports: [WeightChart, NgIcon, ReactiveFormsModule, DatePipe, DecimalPipe, SlicePipe, Modal, FormsModule, NgxSkeletonLoaderComponent, Button],
     templateUrl: './weight-page.html',
     styleUrl: './weight-page.css',
     providers: [provideIcons({faSolidScaleUnbalanced, faSolidBullseye, faSolidMagnifyingGlassChart, faSolidClock, faSolidWeightScale, faSolidNoteSticky, faSolidGhost, faSolidChevronLeft, faSolidChevronRight, faSolidChartLine})]

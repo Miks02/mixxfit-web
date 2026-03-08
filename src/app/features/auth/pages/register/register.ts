@@ -7,10 +7,11 @@ import { faSolidEnvelope, faSolidLock, faSolidUser, faSolidUserTag } from '@ng-i
 import { finalize, take } from 'rxjs';
 import { RegisterRequest } from '../../models/register-request';
 import { AuthService } from '../../../../core/services/auth-service';
+import { Button } from '../../../../shared/button/button';
 
 @Component({
     selector: 'app-register',
-    imports: [NgIcon, RouterLink, ReactiveFormsModule],
+    imports: [NgIcon, RouterLink, ReactiveFormsModule, Button],
     templateUrl: './register.html',
     styleUrl: './register.css',
     providers: [provideIcons({faSolidUser, faSolidLock, faSolidEnvelope, faSolidUserTag})]

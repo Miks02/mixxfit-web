@@ -153,14 +153,9 @@
 </div>
 
 <div class="flex justify-center pt-1">
-    <button
-    type="button"
-    [disabled]="this.form.invalid"
-    (click)="calculate()"
-    class="bg-linear-to-br from-amber-500 to-amber-600 hover:opacity-80 active:opacity-60 text-white font-bold px-10 py-3 rounded-xl shadow-lg cursor-pointer transition-all duration-200 flex items-center gap-2 text-lg disabled:opacity-70 disabled:cursor-not-allowed">
-    <ng-icon name="faSolidCalculator" class="text-xl"></ng-icon>
-    Calculate
-</button>
+    <app-button label="Calculate" buttonType="secondary" [disabled]="form.invalid" (clicked)="calculate()" fontSize="lg">
+        <ng-icon name="faSolidCalculator" class="text-xl" slot="icon"></ng-icon>
+    </app-button>
 </div>
 
 </form>
