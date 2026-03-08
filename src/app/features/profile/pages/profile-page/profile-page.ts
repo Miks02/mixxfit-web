@@ -1,43 +1,41 @@
 import { DatePipe } from '@angular/common';
-import { Component, computed, inject, signal, WritableSignal } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { Component, computed, effect, inject, signal, WritableSignal } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { NgIcon, provideIcons } from "@ng-icons/core";
 import {
-  faSolidAt,
-  faSolidCalendarDay,
-  faSolidCamera,
-  faSolidCheck,
-  faSolidClock,
-  faSolidEnvelope,
-  faSolidKey,
-  faSolidLock,
-  faSolidPencil,
-  faSolidRulerVertical,
-  faSolidShieldHalved,
-  faSolidTrash,
-  faSolidTriangleExclamation,
-  faSolidUser,
-  faSolidVenusMars,
-  faSolidWeightScale,
-  faSolidWrench,
-  faSolidXmark
+    faSolidAt,
+    faSolidCalendarDay,
+    faSolidCamera,
+    faSolidCheck,
+    faSolidClock,
+    faSolidEnvelope,
+    faSolidKey,
+    faSolidLock,
+    faSolidPencil,
+    faSolidRulerVertical,
+    faSolidShieldHalved,
+    faSolidTrash,
+    faSolidTriangleExclamation,
+    faSolidUser,
+    faSolidVenusMars,
+    faSolidWeightScale,
+    faSolidWrench,
+    faSolidXmark
 } from "@ng-icons/font-awesome/solid";
 import { take } from 'rxjs';
 import { createDateOfBirthForm, createEmailForm, createFullNameForm, createGenderForm, createHeightForm, createUsernameForm } from '../../../../core/helpers/Factories';
-import { handleValidationErrors } from '../../../../core/helpers/FormHelpers';
+import { handleValidationErrors, isControlValid } from '../../../../core/helpers/FormHelpers';
 import { AccountStatus } from '../../../../core/models/AccountStatus';
-import { ModalData } from '../../../../core/models/ModalData';
 import { ModalType } from '../../../../core/models/ModalType';
 import { AuthService } from '../../../../core/services/auth-service';
 import { NotificationService } from '../../../../core/services/notification-service';
 import { UserService } from '../../../../core/services/user-service';
+import { UserState } from '../../../../core/states/user-state';
 import { LayoutState } from '../../../../layout/services/layout-state';
 import { Modal } from '../../../../layout/utilities/modal/modal';
 import { PasswordForm } from '../../components/password-form/password-form';
 import { ProfileService } from '../../services/profile-service';
-import { UserState } from '../../../../core/states/user-state';
 
 
 @Component({
@@ -77,8 +75,7 @@ export class ProfilePage {
     private router = inject(Router)
 
     userData = this.userState.userDetails;
-
-    profileDetailsSource = toSignal(this.profileService.profilePage$, {initialValue: null})
+    isControlValid = isControlValid;
 
     fullNameForm: FormGroup = createFullNameForm(this.fb);
     dateOfBirthForm: FormGroup = createDateOfBirthForm(this.fb);
@@ -93,9 +90,13 @@ export class ProfilePage {
     isModalOpen = signal(false);
     isPasswordFormOpen = signal(false);
 
-    ngOnInit() {
+    constructor() {
         this.layoutState.setTitle("My Profile");
-        this.initForms();
+
+        effect(() => {
+            this.userData();
+            this.initForms();
+        })
     }
 
     genderLabel = computed(() => {
@@ -145,7 +146,7 @@ export class ProfilePage {
     initForms() {
         const user = this.userData();
         if (!user) return;
-
+        
         const fullName = user.fullName || '';
         const [firstName, lastName] = fullName.includes(' ')
         ? fullName.split(' ', 2)
@@ -180,14 +181,6 @@ export class ProfilePage {
         return this.editingField === field;
     }
 
-    isControlValid(form: FormGroup | null | undefined, controlName?: string): boolean {
-        if (!form) return true;
-        if (controlName) {
-            const ctl = form.get(controlName);
-            return !!ctl && ctl.valid;
-        }
-        return form.valid;
-    }
 
     onSubmitFullName() {
         const form = this.fullNameForm;
@@ -204,7 +197,7 @@ export class ProfilePage {
             .subscribe({
                 next: () => {
                     this.editingField = null;
-                    this.notificationService.showSuccess("Profile updated successfully")
+                    this.notificationService.showSuccess("Profile has been updated successfully")
                 },
                 error: (err) => {
                     handleValidationErrors(err, form);
@@ -221,12 +214,12 @@ export class ProfilePage {
             if (this.cancelIfUnchangedValue(dateOfBirth, this.userData()?.dateOfBirth ?? ''))
                 return;
 
-            this.userService.updateDateOfBirth({dateOfBirth: dateOfBirth})
+            this.profileService.updateDateOfBirth({dateOfBirth: dateOfBirth})
             .pipe(take(1))
             .subscribe({
                 next: () => {
                     this.editingField = null;
-                    this.notificationService.showSuccess("Profile updated successfully")
+                    this.notificationService.showSuccess("Date of birth has been updated successfully")
                 },
                 error: (err) => {
                     handleValidationErrors(err, form);
@@ -249,7 +242,7 @@ export class ProfilePage {
             .subscribe({
                 next: () => {
                     this.editingField = null;
-                    this.notificationService.showSuccess("Profile updated successfully")
+                    this.notificationService.showSuccess("Username has been updated successfully")
                 },
                 error: (err) => {
                     handleValidationErrors(err, form);
@@ -277,7 +270,7 @@ export class ProfilePage {
             .subscribe({
                 next: () => {
                     this.editingField = null;
-                    this.notificationService.showSuccess("Profile updated successfully")
+                    this.notificationService.showSuccess("Email updated successfully")
                 },
                 error: (err) => {
                     handleValidationErrors(err, form);
@@ -299,12 +292,12 @@ export class ProfilePage {
             if (this.cancelIfUnchangedValue(Number(gender), Number(this.userData()?.gender ?? null)))
                 return;
 
-            this.userService.updateGender({gender: gender})
+            this.profileService.updateGender({gender: gender})
             .pipe(take(1))
             .subscribe({
                 next: () => {
                     this.editingField = null;
-                    this.notificationService.showSuccess("Profile updated successfully")
+                    this.notificationService.showSuccess("Gender updated successfully")
                 },
                 error: (err) => {
                     handleValidationErrors(err, form);
@@ -320,10 +313,13 @@ export class ProfilePage {
             if (this.cancelIfUnchangedValue(Number(height), Number(this.userData()?.height ?? null)))
                 return;
 
-            this.userService.updateHeight({height: height})
+            this.profileService.updateHeight({height: height})
             .pipe(take(1))
             .subscribe({
-                next: () => {},
+                next: () => {
+                    this.editingField = null;
+                    this.notificationService.showSuccess("Profile updated successfully");
+                },
                 error: (err) => {
                     handleValidationErrors(err, form);
                 }
@@ -354,10 +350,10 @@ export class ProfilePage {
             this.userService.updateProfilePicture(this.selectedProfileImageFile()!)
             .pipe(take(1))
             .subscribe({
-                next: (imagePath) => {
+                next: () => {
                     this.previewImage.set("");
                     this.selectedProfileImageFile.set(null);
-                    this.notificationService.showSuccess("Profile picture updated successfully");
+                    this.notificationService.showSuccess("Profile picture has been updated successfully");
                 },
                 error: (err) => {
                     console.error('Error uploading profile picture:', err);
@@ -377,7 +373,7 @@ export class ProfilePage {
         .pipe(take(1))
         .subscribe({
             next: () => {
-                this.notificationService.showSuccess("Profile picture removed successfully");
+                this.notificationService.showSuccess("Profile picture has been removed successfully");
             },
             error: (err) => {
                 console.error('Error uploading profile picture:', err);
@@ -406,7 +402,7 @@ export class ProfilePage {
         })
     }
 
-    buildModal(): ModalData {
+    buildModal = computed(() => {
         return {
             title: 'Delete Account',
             subtitle: 'You are about to permanently delete your account. This action cannot be undone and all your data will be lost.',
@@ -416,5 +412,5 @@ export class ProfilePage {
             primaryAction: () => this.deleteProfile(),
             secondaryAction: () => this.isModalOpen.set(false)
         };
-    }
+    })
 }
