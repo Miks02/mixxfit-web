@@ -43,7 +43,6 @@ export class WeightPage  {
 
     private layoutState = inject(LayoutState);
     private weightService = inject(WeightEntryService);
-    private userService = inject(UserService);
     private userState = inject(UserState);
     private fb = inject(FormBuilder);
     private notificationService = inject(NotificationService);
@@ -187,13 +186,13 @@ export class WeightPage  {
         if(this.targetWeightForm.invalid)
             return;
 
-        this.userService.updateTargetWeight(this.targetWeightForm.value)
+        this.weightService.updateTargetWeight(this.targetWeightForm.value)
         .pipe(take(1))
         .subscribe({
             next: (res) => {
                 this.notificationService.showSuccess("Target weight updated successfully");
                 this.isTargetFormOpen.set(false);
-                this.loadWeightChart(res);
+                this.loadWeightChart(res.targetWeight);
             }
         });
     }
