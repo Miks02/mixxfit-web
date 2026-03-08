@@ -1,14 +1,14 @@
 import { Component, EventEmitter, inject, Output } from '@angular/core';
-import { NgIcon, provideIcons } from "@ng-icons/core";
-import { faSolidCircleInfo, faSolidInfo, faSolidKey, faSolidLock, faSolidXmark } from "@ng-icons/font-awesome/solid";
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { createChangePasswordForm } from '../../../../core/helpers/Factories';
-import { isControlValid, handleValidationErrors } from '../../../../core/helpers/FormHelpers';
-import { NotificationService } from '../../../../core/services/notification-service';
-import { AuthService } from '../../../../core/services/auth-service';
-import { UpdatePasswordDto } from '../../../../core/models/User/UpdatePasswordDto';
-import { take } from 'rxjs';
 import { Router } from '@angular/router';
+import { NgIcon, provideIcons } from "@ng-icons/core";
+import { faSolidCircleInfo, faSolidKey, faSolidLock, faSolidXmark } from "@ng-icons/font-awesome/solid";
+import { take } from 'rxjs';
+import { createChangePasswordForm } from '../../../../core/helpers/Factories';
+import { handleValidationErrors, isControlValid } from '../../../../core/helpers/FormHelpers';
+import { NotificationService } from '../../../../core/services/notification-service';
+import { ProfileService } from '../../services/profile-service';
+import { AuthService } from '../../../../core/services/auth-service';
 
 @Component({
     selector: 'app-password-form',
@@ -22,6 +22,7 @@ export class PasswordForm {
     close = new EventEmitter<void>();
 
     private router = inject(Router);
+    private profileService = inject(ProfileService);
     private authService = inject(AuthService);
     private fb = inject(FormBuilder);
     private notificationService = inject(NotificationService);
@@ -47,7 +48,7 @@ export class PasswordForm {
             return;
         }
 
-        this.authService.changePassword(this.form.value)
+        this.profileService.changePassword(this.form.value)
         .pipe(take(1))
         .subscribe({
             next: () => {

@@ -68,9 +68,9 @@ export class ProfilePage {
     private fb = inject(FormBuilder);
     private profileService = inject(ProfileService);
     private userState = inject(UserState);
-    private authService = inject(AuthService)
+    private authService = inject(AuthService);
     private notificationService = inject(NotificationService);
-    private router = inject(Router)
+    private router = inject(Router);
 
     userData = this.userState.userDetails;
     isControlValid = isControlValid;
@@ -178,7 +178,6 @@ export class ProfilePage {
     isEditing(field: string): boolean {
         return this.editingField === field;
     }
-
 
     onSubmitFullName() {
         const form = this.fullNameForm;

@@ -10,6 +10,7 @@ import { UserState } from '../../../core/states/user-state';
 import { FullNameDto } from '../models/full-name-dto';
 import { EmailDto } from '../models/email-dto';
 import { UserNameDto } from '../models/username-dto';
+import { PasswordDto } from '../models/password-dto';
 
 @Injectable({
     providedIn: 'root',
@@ -32,6 +33,10 @@ export class ProfileService {
                 this.userState.updateUserDetails({imagePath: null});
             })
         )
+    }
+
+    changePassword(model: PasswordDto){
+        return this.http.post<void>(`${this.api}/auth/password`, model)
     }
 
     updateFullName(fullName: FullNameDto) {
