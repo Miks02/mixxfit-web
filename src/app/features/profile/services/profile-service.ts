@@ -44,24 +44,24 @@ export class ProfileService {
     }
 
     updateUserName(username: UserNameDto) {
-        return this.http.patch(`${this.api}/users/username`, username, {responseType: 'text'})
+        return this.http.patch<UserNameDto>(`${this.api}/users/username`, username,)
         .pipe(
             tap(res => {
-                this.userState.updateUserDetails({userName: res});
+                this.userState.updateUserDetails({userName: res.userName});
             })
         );
     }
 
     updateEmail(email: EmailDto) {
-        return this.http.patch(`${this.api}/users/email`, email, {responseType: 'text'})
+        return this.http.patch<EmailDto>(`${this.api}/users/email`, email,)
         .pipe(
             tap(res => {
-                this.userState.updateUserDetails({email: res});
+                this.userState.updateUserDetails({email: res.email});
             })
         );
 
     }
-    
+
     updateProfilePicture(imageFile: File) {
         const formData = new FormData();
         formData.append('imageFile', imageFile, imageFile.name);
