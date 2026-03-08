@@ -24,7 +24,6 @@ import {
     faSolidXmark
 } from "@ng-icons/font-awesome/solid";
 import { take } from 'rxjs';
-import { createDateOfBirthForm, createEmailForm, createFullNameForm, createGenderForm, createHeightForm, createUsernameForm } from '../../factories/profile-factories';
 import { handleValidationErrors, isControlValid } from '../../../../core/helpers/FormHelpers';
 import { AccountStatus } from '../../../../core/models/AccountStatus';
 import { ModalType } from '../../../../core/models/ModalType';
@@ -34,6 +33,7 @@ import { UserState } from '../../../../core/states/user-state';
 import { LayoutState } from '../../../../layout/services/layout-state';
 import { Modal } from '../../../../layout/utilities/modal/modal';
 import { PasswordForm } from '../../components/password-form/password-form';
+import { createDateOfBirthForm, createEmailForm, createFullNameForm, createGenderForm, createHeightForm, createUsernameForm } from '../../factories/profile-factories';
 import { ProfileService } from '../../services/profile-service';
 
 
@@ -97,50 +97,6 @@ export class ProfilePage {
         })
     }
 
-    genderLabel = computed(() => {
-        switch(this.userData()?.gender) {
-            case 1:
-            return "Male";
-            case 2:
-            return "Female";
-            case 3:
-            return "Other";
-            default:
-            return "Not specified";
-        }
-    })
-
-    weightLabel = computed(() => {
-        const weight = this.userData()?.currentWeight;
-
-        if(!weight)
-            return "Not specified";
-        return `${weight} KG`
-    })
-
-    heightLabel = computed(() => {
-        const height = this.userData()?.height;
-
-        if(!height)
-            return "Not specified";
-        return `${height} CM`
-    })
-
-    accountStatusLabel = computed(() => {
-        const accountStatus = this.userData()?.accountStatus;
-
-        switch(accountStatus) {
-            case AccountStatus.Active:
-            return "Active";
-            case AccountStatus.Suspended:
-            return "Suspended";
-            case AccountStatus.Banned:
-            return "Banned";
-            default:
-            return "";
-        }
-    })
-
     initForms() {
         const user = this.userData();
         if (!user) return;
@@ -165,14 +121,6 @@ export class ProfilePage {
     cancelEditing() {
         this.editingField = null;
         this.initForms();
-    }
-
-    private cancelIfUnchangedValue(newValue: any, currentValue: any): boolean {
-        if (newValue === currentValue) {
-            this.editingField = null;
-            return true;
-        }
-        return false;
     }
 
     isEditing(field: string): boolean {
@@ -399,6 +347,14 @@ export class ProfilePage {
         })
     }
 
+    private cancelIfUnchangedValue(newValue: any, currentValue: any): boolean {
+        if (newValue === currentValue) {
+            this.editingField = null;
+            return true;
+        }
+        return false;
+    }
+
     buildModal = computed(() => {
         return {
             title: 'Delete Account',
@@ -409,5 +365,36 @@ export class ProfilePage {
             primaryAction: () => this.deleteProfile(),
             secondaryAction: () => this.isModalOpen.set(false)
         };
+    })
+
+    weightLabel = computed(() => {
+        const weight = this.userData()?.currentWeight;
+
+        if(!weight)
+            return "Not specified";
+        return `${weight} KG`
+    })
+
+    heightLabel = computed(() => {
+        const height = this.userData()?.height;
+
+        if(!height)
+            return "Not specified";
+        return `${height} CM`
+    })
+
+    accountStatusLabel = computed(() => {
+        const accountStatus = this.userData()?.accountStatus;
+
+        switch(accountStatus) {
+            case AccountStatus.Active:
+            return "Active";
+            case AccountStatus.Suspended:
+            return "Suspended";
+            case AccountStatus.Banned:
+            return "Banned";
+            default:
+            return "";
+        }
     })
 }
