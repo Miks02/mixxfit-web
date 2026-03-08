@@ -59,6 +59,8 @@ export class WorkoutService {
     }
 
     getUserWorkoutCountsByMonth(year: number | null = null) {
+        this.workoutCountsSubject.next(null);
+
         let params = new HttpParams();
 
         if (year !== null && year !== undefined) {
@@ -82,7 +84,7 @@ export class WorkoutService {
     private getHttpQueryParams(): HttpParams {
         const queryParams = this.getQueryParams();
         let params = new HttpParams();
-        
+
         if(queryParams === undefined)
             return params;
 
