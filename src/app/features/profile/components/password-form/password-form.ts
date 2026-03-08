@@ -9,10 +9,11 @@ import { handleValidationErrors, isControlValid } from '../../../../core/helpers
 import { NotificationService } from '../../../../core/services/notification-service';
 import { ProfileService } from '../../services/profile-service';
 import { AuthService } from '../../../../core/services/auth-service';
+import { Button } from '../../../../shared/button/button';
 
 @Component({
     selector: 'app-password-form',
-    imports: [NgIcon, FormsModule, ReactiveFormsModule],
+    imports: [NgIcon, FormsModule, ReactiveFormsModule, Button],
     templateUrl: './password-form.html',
     styleUrl: './password-form.css',
     providers: [provideIcons({faSolidKey, faSolidLock, faSolidXmark, faSolidCircleInfo})]

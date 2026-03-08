@@ -125,9 +125,7 @@
         }
 
         <div class="flex justify-center pt-2">
-    <button
-    (click)="openDeleteModal()"
-    type="submit" class="bg-linear-to-br from-red-600 to-red-700/90  disabled:opacity-50 text-white px-6 py-2 rounded-lg font-semibold shadow-all cursor-pointer transition-all duration-200 hover:shadow-md hover:opacity-70 active:opacity-50">Delete Workout</button>
+    <app-button label="Delete Workout" buttonType="danger" (clicked)="openDeleteModal()"></app-button>
 </div>
 
     </div>

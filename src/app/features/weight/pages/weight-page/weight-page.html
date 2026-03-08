@@ -284,10 +284,7 @@
 </label>
 
 <div class="flex justify-center pt-2">
-    <button
-    [disabled]="form.invalid"
-    type="submit"
-    class="bg-emerald-500 text-white px-6 py-2 rounded-lg font-semibold shadow-all cursor-pointer transition-all duration-200 disabled:opacity-50 hover:shadow-md hover:opacity-70 active:opacity-50 disabled:pointer-events-none">Save Entry</button>
+    <app-button buttonSize="sm" htmlType="submit" label="Save Entry" buttonType="primary" [disabled]="form.invalid"></app-button>
 </div>
 </form>
 </div>

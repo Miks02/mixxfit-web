@@ -35,11 +35,12 @@ import { Modal } from '../../../../layout/utilities/modal/modal';
 import { PasswordForm } from '../../components/password-form/password-form';
 import { createDateOfBirthForm, createEmailForm, createFullNameForm, createGenderForm, createHeightForm, createUsernameForm } from '../../factories/profile-factories';
 import { ProfileService } from '../../services/profile-service';
+import { Button } from '../../../../shared/button/button';
 
 
 @Component({
     selector: 'app-profile-page',
-    imports: [NgIcon, FormsModule, ReactiveFormsModule, DatePipe, RouterLink, Modal, PasswordForm],
+    imports: [NgIcon, FormsModule, ReactiveFormsModule, DatePipe, RouterLink, Modal, PasswordForm, Button],
     templateUrl: './profile-page.html',
     styleUrl: './profile-page.css',
     providers: [provideIcons({

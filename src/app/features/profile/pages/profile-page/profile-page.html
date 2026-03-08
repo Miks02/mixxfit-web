@@ -26,27 +26,18 @@
 
                     @if(previewImage() != "") {
                         <div class="flex gap-3">
-                            <button
-                            (click)="saveProfilePicture()"
-                            class="min-w-25 bg-linear-to-br from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-semibold py-2 px-3 rounded-lg shadow-md hover:shadow-lg transition duration-200 flex items-center justify-center gap-2 active:scale-95 cursor-pointer shadow-all">
-                            <ng-icon name="faSolidCheck"></ng-icon>
-                            <span>Save</span>
-                        </button>
-                        <button
-                        (click)="cancelProfilePicture()"
-                        class="min-w-25 bg-linear-to-br from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold py-2 px-3 rounded-lg shadow-md hover:shadow-lg transition duration-200 flex items-center justify-center gap-2 active:scale-95 cursor-pointer shadow-all">
-                        <ng-icon name="faSolidXmark"></ng-icon>
-                        <span>Cancel</span>
-                    </button>
-                </div>
+                            <app-button label="Save" buttonType="primary" (clicked)="saveProfilePicture()">
+                                <ng-icon name="faSolidCheck" slot="icon"></ng-icon>
+                            </app-button>
+                            <app-button label="Cancel" buttonType="danger" (clicked)="cancelProfilePicture()">
+                                <ng-icon name="faSolidXmark" slot="icon"></ng-icon>
+                            </app-button>
+                        </div>
             }
             @if(userData()?.imagePath !== null && previewImage() === "") {
-                <button
-                (click)="removeProfilePicture()"
-                class="bg-linear-to-br from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-semibold py-2 px-3 rounded-lg shadow-md hover:shadow-lg transition duration-200 flex items-center justify-center gap-2 active:scale-95 cursor-pointer shadow-all">
-                    <ng-icon name="faSolidTrash"></ng-icon>
-                    <span>Remove picture</span>
-                </button>
+                <app-button label="Remove picture" buttonType="secondary" (clicked)="removeProfilePicture()">
+                    <ng-icon name="faSolidTrash" slot="icon"></ng-icon>
+                </app-button>
             }
         </div>
     </div>
@@ -352,14 +343,12 @@
                     </div>
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <button [disabled]="true" class="bg-linear-to-br from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 text-slate-800 font-semibold py-3 px-4 rounded-lg shadow-md hover:shadow-lg transition duration-200 flex items-center justify-center gap-2 active:scale-95 disabled:ponter-events-none disabled:opacity-50">
-                        <ng-icon name="faSolidShieldHalved"></ng-icon>
-                        <span title="Coming Soon">Enable 2FA</span>
-                    </button>
-                    <button (click)="isPasswordFormOpen.set(true)" class="bg-linear-to-br from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 text-slate-800 font-semibold py-3 px-4 rounded-lg shadow-all hover:shadow-lg transition duration-200 flex items-center justify-center gap-2 active:scale-95 cursor-pointer">
-                        <ng-icon name="faSolidKey"></ng-icon>
-                        <span>Change Password</span>
-                    </button>
+                    <app-button label="Enable 2FA" [isFullWidth]="true" [disabled]="true">
+                        <ng-icon class="self-center!" name="faSolidShieldHalved" slot="icon"></ng-icon>
+                    </app-button>
+                    <app-button label="Change Password" [isFullWidth]="true" (clicked)="isPasswordFormOpen.set(true)">
+                        <ng-icon class="self-center!" name="faSolidKey" slot="icon"></ng-icon>
+                    </app-button>
                 </div>
             </div>
 
@@ -373,12 +362,9 @@
                         <p class="text-sm text-slate-500">Irreversible account actions</p>
                     </div>
                 </div>
-                <button
-                (click)="openDeleteAccountModal()"
-                class="w-full bg-linear-to-br from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold py-3 px-4 rounded-lg shadow-md hover:shadow-lg transition duration-200 flex items-center justify-center gap-2 active:scale-95 cursor-pointer shadow-all">
-                    <ng-icon name="faSolidTrash"></ng-icon>
-                    <span>Delete Account</span>
-                </button>
+                <app-button label="Delete Account" buttonType="danger" [isFullWidth]="true" (clicked)="openDeleteAccountModal()">
+                    <ng-icon class="self-center!" name="faSolidTrash" slot="icon"></ng-icon>
+                </app-button>
             </div>
 
         </div>
