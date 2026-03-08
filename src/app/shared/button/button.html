@@ -1,0 +1,17 @@
+<button
+[type]="htmlType()"
+(click)="onClick()"
+[class.w-full]="isFullWidth()"
+class="transition-opacity w-full duration-200 cursor-pointer {{getColors()}} {{getFontSize()}} hover:opacity-70 shadow-all font-semibold {{getSize()}} rounded-md text-lg active:opacity-50 disabled:opacity-50 disabled:cursor-not-allowed"
+[disabled]="disabled() || isLoading()"
+>
+<div class="flex gap-2 text-center items-center mx-auto w-full">
+    @if(isLoading()) {
+        <span class="small-spinner"></span>
+    }
+    <div class="flex gap-2 text-center mx-auto">
+        <ng-content select="[slot=icon]"></ng-content>
+        <span>{{label()}}</span>
+    </div>
+</div>
+</button>
