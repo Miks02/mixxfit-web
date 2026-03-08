@@ -30,11 +30,12 @@ import { UserState } from '../../../../core/states/user-state';
 import { createExerciseForm } from '../../factories/workout-factories';
 import { CardioType } from '../../models/cardio-type';
 import { ExerciseType } from '../../models/exercise-type';
+import { Button } from '../../../../shared/button/button';
 
 
 @Component({
     selector: 'app-exercise-form',
-    imports: [NgIcon, FormsModule, ReactiveFormsModule],
+    imports: [NgIcon, FormsModule, ReactiveFormsModule, Button],
     templateUrl: './exercise-form.html',
     styleUrl: './exercise-form.css',
     providers: [provideIcons({faSolidTag, faSolidCalendarDay, faSolidCheck, faSolidFireFlameCurved, faSolidBookOpen, faSolidBars, faSolidPencil, faSolidNoteSticky, faSolidXmark, faSolidCircle, faSolidScaleUnbalanced, faSolidRotate, faSolidFilter, faSolidPersonRunning, faSolidClock, faSolidHeartCircleBolt, faSolidHeartPulse, faSolidRoute, faSolidStopwatch, faSolidForwardStep})]

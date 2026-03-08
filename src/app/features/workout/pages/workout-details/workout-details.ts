@@ -21,11 +21,12 @@ import { ExerciseEntry } from '../../models/exercise-entry';
 import { ExerciseType } from '../../models/exercise-type';
 import { WorkoutDetailsDto } from '../../models/workout-details-dto';
 import { WorkoutService } from '../../services/workout-service';
+import { Button } from '../../../../shared/button/button';
 
 @Component({
     selector: 'app-workout-details',
     standalone: true,
-    imports: [DatePipe, NgIcon, Modal, DecimalPipe],
+    imports: [DatePipe, NgIcon, Modal, DecimalPipe, Button],
     templateUrl: './workout-details.html',
     styleUrl: './workout-details.css',
     providers: [

@@ -24,10 +24,11 @@ import { createWorkoutForm, createWorkoutObject } from '../../factories/workout-
 import { CardioType } from '../../models/cardio-type';
 import { ExerciseType } from '../../models/exercise-type';
 import { WorkoutService } from '../../services/workout-service';
+import { Button } from '../../../../shared/button/button';
 
 @Component({
     selector: 'app-workout-form',
-    imports: [NgIcon, FormsModule, ExerciseForm, ReactiveFormsModule, DatePipe],
+    imports: [NgIcon, FormsModule, ExerciseForm, ReactiveFormsModule, DatePipe, Button],
     templateUrl: './workout-form.html',
     styleUrl: './workout-form.css',
     providers: [provideIcons({faSolidTag, faSolidCalendarDay, faSolidDumbbell, faSolidFireFlameCurved, faSolidBookOpen, faSolidBars, faSolidNoteSticky, faSolidXmark, faSolidCircle, faSolidPersonRunning, faSolidChildReaching})]

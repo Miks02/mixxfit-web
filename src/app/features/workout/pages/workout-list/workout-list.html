@@ -138,44 +138,33 @@
 
 </div>
 @if(workoutList()?.length! > 0) {
-  <div class="border-b-2 border-yellow-500 my-4 w-[80%] mx-auto mt-auto"></div>
+  <div class="border-b-2 border-amber-500 my-4 w-[80%] mx-auto mt-auto"></div>
 
   <div class="bg-slate-300/60 rounded-xl shadow-md mx-4 my-3 px-6 py-3">
     <div class="flex flex-col sm:flex-row gap-4 justify-between items-center">
 
       <div class="hidden md:flex items-center">
-        <span class="font-semibold text-slate-800 bg-yellow-500 px-3 py-1.5 rounded-lg shadow-sm
-        transition-colors">
+        <span class="font-semibold text-slate-800 bg-linear-to-br from-amber-400 to-amber-500 px-3 py-1.5 rounded-lg shadow-sm">
         Page {{page}} of {{totalPages()}}
       </span>
     </div>
 
     <div class="flex flex-row gap-3 items-center order-first sm:order-0">
-      <button
-      [disabled]="page == 1"
-      (click)="getPreviousPage()"
-      class="transition-all flex justify-center items-center duration-200 cursor-pointer bg-yellow-500 hover:opacity-70 hover:scale-105 text-gray-700 shadow-lg font-bold py-2 px-4 rounded-lg disabled:opacity-50 disabled:pointer-events-none">
-      <div class="flex items-center">
-        <ng-icon name="faSolidChevronLeft" class="text-xl"></ng-icon>
-      </div>
-    </button>
+      <app-button buttonType="secondary" buttonSize="sm" [disabled]="page == 1" (clicked)="getPreviousPage()">
+        <ng-icon name="faSolidChevronLeft" class="text-xl" slot="icon"></ng-icon>
+      </app-button>
 
-    <button
-    [disabled]="page == totalPages()"
-    (click)="getNextPage()"
-    class="transition-all flex justify-center items-center duration-200 cursor-pointer bg-yellow-500 hover:opacity-70 hover:scale-105 text-gray-700 shadow-lg font-bold py-2 px-4 rounded-lg disabled:opacity-50 disabled:pointer-events-none">
-    <div class="flex items-center justify-center content-center">
-      <ng-icon name="faSolidChevronRight" class="text-xl"></ng-icon>
+      <app-button buttonType="secondary" buttonSize="sm" [disabled]="page == totalPages()" (clicked)="getNextPage()">
+        <ng-icon name="faSolidChevronRight" class="text-xl" slot="icon"></ng-icon>
+      </app-button>
     </div>
-  </button>
-</div>
 
-<div class="hidden md:flex items-center">
-  <span class="font-semibold text-slate-800 bg-yellow-500 px-3 py-1.5 rounded-lg shadow-sm transition-colors">
-    Workouts: {{workoutList()?.length}} of {{totalCount()}}
-  </span>
-</div>
-</div>
+    <div class="hidden md:flex items-center">
+      <span class="font-semibold text-slate-800 bg-linear-to-br from-amber-400 to-amber-500 px-3 py-1.5 rounded-lg shadow-sm">
+        Workouts: {{workoutList()?.length}} of {{totalCount()}}
+      </span>
+    </div>
+  </div>
 </div>
 }
 </div>
@@ -238,9 +227,14 @@
           </p>
         </div>
 
-        <a routerLink="/workout-form" class="transition-all flex justify-center items-center duration-200 cursor-pointer bg-yellow-500 hover:opacity-70 text-gray-700 shadow-all font-bold py-3 px-6 rounded-xl text-xl mt-2">
-          <p class="font-semibold self-center">Add New Workout</p>
-        </a>
+        <app-button
+        routerLink="/workout-form"
+        [isFullWidth]="true"
+        label="Add New Workout"
+        buttonType="secondary"
+        fontSize="xl">
+            <ng-icon class="self-center! shrink-0 leading-none" name="faSolidDumbbell" slot="icon"></ng-icon>
+        </app-button>
       </div>
     </div>
   </div>

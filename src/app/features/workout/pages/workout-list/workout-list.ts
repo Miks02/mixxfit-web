@@ -17,10 +17,11 @@ import { NotificationService } from '../../../../core/services/notification-serv
 import { LayoutState } from '../../../../layout/services/layout-state';
 import { WorkoutListItemDto } from '../../models/workout-list-item-dto';
 import { WorkoutService } from '../../services/workout-service';
+import { Button } from "../../../../shared/button/button";
 
 @Component({
     selector: 'app-workout-list',
-    imports: [RouterLink, DatePipe, FormsModule, NgIcon, NgxSkeletonLoaderComponent],
+    imports: [RouterLink, DatePipe, FormsModule, NgIcon, NgxSkeletonLoaderComponent, Button],
     templateUrl: './workout-list.html',
     styleUrl: './workout-list.css',
     providers: [
@@ -148,6 +149,10 @@ export class WorkoutList {
         };
 
         this.updateQueryParams(params);
+    }
+
+    toWorkoutForm() {
+        this.router.navigate(['/workout-form']);
     }
 
     onSearchChange(value: string) {
