@@ -24,7 +24,7 @@ import {
     faSolidXmark
 } from "@ng-icons/font-awesome/solid";
 import { take } from 'rxjs';
-import { createDateOfBirthForm, createEmailForm, createFullNameForm, createGenderForm, createHeightForm, createUsernameForm } from '../../../../core/helpers/Factories';
+import { createDateOfBirthForm, createEmailForm, createFullNameForm, createGenderForm, createHeightForm, createUsernameForm } from '../../factories/profile-factories';
 import { handleValidationErrors, isControlValid } from '../../../../core/helpers/FormHelpers';
 import { AccountStatus } from '../../../../core/models/AccountStatus';
 import { ModalType } from '../../../../core/models/ModalType';
