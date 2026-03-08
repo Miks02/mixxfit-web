@@ -3,10 +3,11 @@ import { ModalData } from '../../../core/models/ModalData';
 import { NgIcon, provideIcons } from "@ng-icons/core";
 import { faSolidCheck, faSolidCircleCheck, faSolidCircleExclamation, faSolidCircleInfo, faSolidCircleQuestion, faSolidTriangleExclamation, faSolidXmark } from '@ng-icons/font-awesome/solid';
 import { ModalType } from '../../../core/models/ModalType';
+import { Button } from '../../../shared/button/button';
 
 @Component({
   selector: 'app-modal',
-  imports: [NgIcon],
+  imports: [NgIcon, Button],
   templateUrl: './modal.html',
   styleUrl: './modal.css',
   providers: [provideIcons({faSolidXmark, faSolidCircleQuestion, faSolidCircleExclamation, faSolidCircleCheck, faSolidCircleInfo, faSolidTriangleExclamation})]
