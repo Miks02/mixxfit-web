@@ -30,7 +30,6 @@ import { AccountStatus } from '../../../../core/models/AccountStatus';
 import { ModalType } from '../../../../core/models/ModalType';
 import { AuthService } from '../../../../core/services/auth-service';
 import { NotificationService } from '../../../../core/services/notification-service';
-import { UserService } from '../../../../core/services/user-service';
 import { UserState } from '../../../../core/states/user-state';
 import { LayoutState } from '../../../../layout/services/layout-state';
 import { Modal } from '../../../../layout/utilities/modal/modal';
@@ -68,7 +67,6 @@ export class ProfilePage {
     private layoutState = inject(LayoutState);
     private fb = inject(FormBuilder);
     private profileService = inject(ProfileService);
-    private userService = inject(UserService);
     private userState = inject(UserState);
     private authService = inject(AuthService)
     private notificationService = inject(NotificationService);
@@ -146,7 +144,7 @@ export class ProfilePage {
     initForms() {
         const user = this.userData();
         if (!user) return;
-        
+
         const fullName = user.fullName || '';
         const [firstName, lastName] = fullName.includes(' ')
         ? fullName.split(' ', 2)
@@ -192,7 +190,7 @@ export class ProfilePage {
             if (this.cancelIfUnchangedValue(fullName, this.userData()?.fullName ?? ''))
                 return;
 
-            this.userService.updateFullName({firstName: firstName, lastName: lastName})
+            this.profileService.updateFullName({firstName: firstName, lastName: lastName})
             .pipe(take(1))
             .subscribe({
                 next: () => {
@@ -237,7 +235,7 @@ export class ProfilePage {
 
         if (form.valid) {
 
-            this.userService.updateUserName({userName: username?.value})
+            this.profileService.updateUserName({userName: username?.value})
             .pipe(take(1))
             .subscribe({
                 next: () => {
@@ -265,7 +263,7 @@ export class ProfilePage {
             if (this.cancelIfUnchangedValue(email?.value, this.userData()?.email))
                 return;
 
-            this.userService.updateEmail({email: email?.value})
+            this.profileService.updateEmail({email: email?.value})
             .pipe(take(1))
             .subscribe({
                 next: () => {
@@ -347,7 +345,7 @@ export class ProfilePage {
 
     saveProfilePicture() {
         if (this.selectedProfileImageFile()) {
-            this.userService.updateProfilePicture(this.selectedProfileImageFile()!)
+            this.profileService.updateProfilePicture(this.selectedProfileImageFile()!)
             .pipe(take(1))
             .subscribe({
                 next: () => {
@@ -369,7 +367,7 @@ export class ProfilePage {
     }
 
     removeProfilePicture() {
-        this.userService.deleteProfilePicture()
+        this.profileService.deleteProfilePicture()
         .pipe(take(1))
         .subscribe({
             next: () => {
@@ -391,7 +389,7 @@ export class ProfilePage {
     }
 
     deleteProfile() {
-        this.userService.deleteAccount()
+        this.profileService.deleteAccount()
         .pipe(take(1))
         .subscribe({
             next: () => {
