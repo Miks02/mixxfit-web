@@ -44,13 +44,4 @@ export class ProfileService {
             })
         );
     }
-
-    updateTargetWeight(targetWeight: UpdateTargetWeightDto) {
-        return this.http.patch<number>(`${this.api}/fitness-profile/target-weight`, targetWeight)
-        .pipe(
-            tap(res => {
-                this.userState.updateUserDetails({targetWeight: res});
-            })
-        );
-    }
 }
