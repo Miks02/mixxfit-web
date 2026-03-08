@@ -1,5 +1,5 @@
 
-export type UpdateFullNameDto = {
+export type FullNameDto = {
 	firstName: string;
 	lastName: string;
 };
