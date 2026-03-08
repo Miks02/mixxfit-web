@@ -383,6 +383,19 @@ export class ProfilePage {
         return `${height} CM`
     })
 
+     genderLabel = computed(() => {
+        switch(this.userData()?.gender) {
+            case 1:
+            return "Male";
+            case 2:
+            return "Female";
+            case 3:
+            return "Other";
+            default:
+            return "Not specified";
+        }
+    })
+
     accountStatusLabel = computed(() => {
         const accountStatus = this.userData()?.accountStatus;
 
