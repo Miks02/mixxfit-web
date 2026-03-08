@@ -6,7 +6,6 @@ import { RegisterRequest } from '../../features/auth/models/register-request';
 import { AuthResponse } from '../../features/auth/models/auth-response';
 import { Observable, map, tap } from 'rxjs';
 import { LoginRequest } from '../../features/auth/models/login-request';
-import { UpdatePasswordDto } from '../models/User/UpdatePasswordDto';
 import { environment } from '../../../environments/environment';
 import { UserState } from '../states/user-state';
 
@@ -53,10 +52,6 @@ export class AuthService {
                 this.userState.setUserDetails(res.user);
             })
         )
-    }
-
-    changePassword(model: UpdatePasswordDto): Observable<void> {
-        return this.http.post<void>(`${this.api}/auth/password`, model)
     }
 
     logout(): Observable<void> {

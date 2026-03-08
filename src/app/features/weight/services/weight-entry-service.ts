@@ -1,13 +1,14 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable, signal, WritableSignal } from '@angular/core';
-import { BehaviorSubject, tap } from 'rxjs';
+import {  tap } from 'rxjs';
 import { environment } from '../../../../environments/environment';
-import { UserService } from '../../../core/services/user-service';
 import { WeightChartDto } from '../models/weight-chart';
 import { CreateWeightRequest } from '../models/weight-create-request';
 import { WeightEntryDetails } from '../models/weight-entry-details';
 import { WeightListDetails } from '../models/weight-list-details';
 import { WeightSummary } from '../models/weight-summary';
+import {UserState} from '../../../core/states/user-state';
+import {TargetWeightDto} from '../models/target-weight-dto';
 
 @Injectable({
     providedIn: 'root',
@@ -16,6 +17,7 @@ export class WeightEntryService {
     private api = environment.apiUrl;
 
     private http = inject(HttpClient);
+    private userState = inject(UserState);
 
     private _weightSummary: WritableSignal<WeightSummary | undefined> = signal(undefined);
     private _weightListDetails: WritableSignal<WeightListDetails | undefined> = signal(undefined);
@@ -89,7 +91,7 @@ export class WeightEntryService {
     getMyWeightChart(targetWeight: number | null = null) {
         let params = new HttpParams();
 
-        if(targetWeight != null && targetWeight != undefined) {
+        if(targetWeight != null) {
             params = params.set('targetWeight', targetWeight as number)
         }
 
@@ -110,6 +112,15 @@ export class WeightEntryService {
 
     deleteWeightEntry(id: number) {
         return this.http.delete<void>(`${this.api}/weight-entries/${id}`);
+    }
+
+    updateTargetWeight(targetWeight: TargetWeightDto) {
+        return this.http.patch<TargetWeightDto>(`${this.api}/fitness-profile/target-weight`, targetWeight)
+            .pipe(
+                tap((res) => {
+                    this.userState.updateUserDetails({targetWeight: res.targetWeight})
+                })
+            );
     }
 
 }

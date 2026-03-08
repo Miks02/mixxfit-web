@@ -61,7 +61,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 overflow-y-auto max-h-80">
 
 
-            <div [class]="!isControlValid(fullNameForm) && isEditing('name') ? 'ring-inset ring-1 ring-red-500' : ''" class="bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-all duration-200">
+            <div [class]="(!isControlValid('firstName', fullNameForm) || !isControlValid('lastName', fullNameForm))  && isEditing('name') ? 'ring-inset ring-1 ring-red-500' : ''" class="bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-all duration-200">
                 <div class="flex justify-between items-center mb-2">
                     <div class="flex items-center gap-2">
                         <ng-icon class="text-emerald-600! text-lg" name="faSolidUser"></ng-icon>
@@ -103,7 +103,7 @@
             </div>
 
 
-            <div [class]="!isControlValid(usernameForm, 'userName') && isEditing('username') ? 'ring-inset ring-1 ring-red-500' : ''" class="bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-all duration-200">
+            <div [class]="!isControlValid('userName', usernameForm) && isEditing('username') ? 'ring-inset ring-1 ring-red-500' : ''" class="bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-all duration-200">
                 <div class="flex justify-between items-center mb-2">
                     <div class="flex items-center gap-2">
                         <ng-icon class="text-emerald-600! text-lg" name="faSolidAt"></ng-icon>
@@ -140,7 +140,7 @@
             </div>
 
 
-            <div [class]="!isControlValid(emailForm, 'email') && isEditing('email') ? 'ring-inset ring-1 ring-red-500' : ''" class="bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-all duration-200">
+            <div [class]="!isControlValid('email', emailForm) && isEditing('email') ? 'ring-inset ring-1 ring-red-500' : ''" class="bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-all duration-200">
                 <div class="flex justify-between items-center mb-2">
                     <div class="flex items-center gap-2">
                         <ng-icon class="text-emerald-600! text-lg" name="faSolidEnvelope"></ng-icon>
@@ -177,7 +177,7 @@
             </div>
 
 
-            <div [class]="!isControlValid(dateOfBirthForm, 'dateOfBirth') && isEditing('dateOfBirth') ? 'ring-inset ring-1 ring-red-500' : ''" class="bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-all duration-200">
+            <div [class]="!isControlValid('dateOfBirth', dateOfBirthForm) && isEditing('dateOfBirth') ? 'ring-inset ring-1 ring-red-500' : ''" class="bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-all duration-200">
                 <div class="flex justify-between items-center mb-2">
                     <div class="flex items-center gap-2">
                         <ng-icon class="text-emerald-600! text-lg" name="faSolidCalendarDay"></ng-icon>
@@ -208,7 +208,7 @@
             </div>
 
 
-            <div [class]="!isControlValid(genderForm) && isEditing('gender') ? 'ring-inset ring-1 ring-red-500' : ''" class="bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-all duration-200">
+            <div [class]="!isControlValid('gender', genderForm) && isEditing('gender') ? 'ring-inset ring-1 ring-red-500' : ''" class="bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-all duration-200">
                 <div class="flex justify-between items-center mb-2">
                     <div class="flex items-center gap-2">
                         <ng-icon class="text-emerald-600! text-lg" name="faSolidVenusMars"></ng-icon>
@@ -285,7 +285,7 @@
             </div>
 
 
-            <div [class]="!isControlValid(heightForm, 'height') && isEditing('height') ? 'ring-inset ring-1 ring-red-500' : ''" class="bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-all duration-200">
+            <div [class]="!isControlValid('height', heightForm) && isEditing('height') ? 'ring-inset ring-1 ring-red-500' : ''" class="bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-all duration-200">
                 <div class="flex justify-between items-center mb-2">
                     <div class="flex items-center gap-2">
                         <ng-icon class="text-emerald-600! text-lg" name="faSolidRulerVertical"></ng-icon>
