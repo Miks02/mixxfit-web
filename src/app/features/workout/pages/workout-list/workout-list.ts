@@ -1,6 +1,5 @@
 import { DatePipe } from '@angular/common';
 import { Component, computed, effect, inject, signal, WritableSignal } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
@@ -47,9 +46,8 @@ export class WorkoutList {
     isLoaded: WritableSignal<boolean> = signal(false);
     selectedWorkout: WorkoutListItemDto | null = null;
 
-    queryParams = toSignal(this.activatedRoute.queryParams);
-    workoutSummarySource = toSignal(this.workoutService.workoutSummary$, {initialValue: null});
-    workoutsSource = toSignal(this.workoutService.pagedWorkouts$,{ initialValue: null });
+    workoutSummarySource = this.workoutService.workoutSummary;
+    workoutsSource = this.workoutService.pagedWorkouts;
 
     page: number = 1;
     search: string | null= null;

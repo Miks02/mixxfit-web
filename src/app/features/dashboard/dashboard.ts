@@ -40,7 +40,7 @@ export class Dashboard {
     isCalorieCalculatorOpen: WritableSignal<boolean> = signal(false);
 
     dashboardSource = toSignal(this.dashboardState.dashboard$, {initialValue: null})
-    workoutsPerMonth = toSignal(this.workoutService.workoutCounts$, {initialValue: null});
+    workoutsPerMonth = this.workoutService.workoutCounts;
     weightChart = this.weightService.weightChart;
 
     years = computed(() => this.workoutsPerMonth()?.years)
