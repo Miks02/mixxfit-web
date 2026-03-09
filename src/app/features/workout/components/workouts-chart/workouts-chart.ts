@@ -1,10 +1,11 @@
-import { Component, computed, Input, signal, Signal, WritableSignal } from '@angular/core';
-import { BaseChartDirective } from 'ng2-charts';
+import { Component, computed, Input, signal, Signal } from '@angular/core';
 import {
+    Chart,
     ChartConfiguration,
     ChartOptions,
-    Chart, registerables
+    registerables
 } from 'chart.js';
+import { BaseChartDirective } from 'ng2-charts';
 import { WorkoutsPerMonthDto } from '../../models/workouts-per-month-dto';
 Chart.register(...registerables)
 

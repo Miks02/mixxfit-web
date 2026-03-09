@@ -33,8 +33,6 @@ export class WeightEntryService {
     }
 
     getMyWeightSummary(month: number | null = null, year: number | null = null, targetWeight: number | null = null) {
-        this._weightChart.set(undefined);
-
         let params = new HttpParams()
 
         if(month !== null && month !== undefined) {
@@ -91,8 +89,6 @@ export class WeightEntryService {
     }
 
     getMyWeightChart(targetWeight: number | null = null) {
-        this._weightChart.set(undefined);
-
         let params = new HttpParams();
 
         if(targetWeight != null) {
