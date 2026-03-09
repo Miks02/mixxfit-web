@@ -20,7 +20,7 @@ export class WorkoutService {
     private _pagedWorkouts: WritableSignal<PagedResult<WorkoutListItemDto> | undefined> = signal(undefined);
     private _workoutSummary: WritableSignal<WorkoutSummaryDto | undefined> = signal(undefined);
     private _queryParams: WritableSignal<QueryParams | undefined> = signal(undefined);
-    private _workoutCounts: WritableSignal<WorkoutsPerMonthDto | null> = signal(null);
+    private _workoutCounts: WritableSignal<WorkoutsPerMonthDto | undefined> = signal(undefined);
 
     readonly pagedWorkouts = this._pagedWorkouts.asReadonly();
     readonly workoutSummary = this._workoutSummary.asReadonly();
@@ -58,7 +58,7 @@ export class WorkoutService {
     }
 
     getUserWorkoutCountsByMonth(year: number | null = null) {
-
+        this._workoutCounts.set(undefined);
         let params = new HttpParams();
 
         if (year !== null && year !== undefined) {

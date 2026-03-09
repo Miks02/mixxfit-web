@@ -89,6 +89,7 @@ export class WeightEntryService {
     }
 
     getMyWeightChart(targetWeight: number | null = null) {
+        this._weightChart.set(undefined);
         let params = new HttpParams();
 
         if(targetWeight != null) {
