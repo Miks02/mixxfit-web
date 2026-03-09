@@ -19,7 +19,7 @@ export class WorkoutsChart {
     public barChartType: 'bar' = "bar";
 
     @Input()
-    workoutCountsSource: Signal<WorkoutsPerMonthDto | null> = signal(null)
+    workoutCountsSource: Signal<WorkoutsPerMonthDto | undefined> = signal(undefined)
 
     public barChartData = computed<ChartConfiguration<'bar'>['data']>(() => {
         const data = this.workoutCountsSource();
