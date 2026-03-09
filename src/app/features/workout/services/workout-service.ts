@@ -1,5 +1,5 @@
-import { inject, Injectable, } from '@angular/core';
-import { BehaviorSubject, map, Observable, tap } from 'rxjs';
+import { inject, Injectable, signal, WritableSignal } from '@angular/core';
+import { Observable, tap } from 'rxjs';
 import { CreateWorkoutDto } from '../models/create-workout-dto';
 import { PagedResult } from '../../../core/models/PagedResult';
 import { WorkoutDetailsDto } from '../models/workout-details-dto';
@@ -16,29 +16,29 @@ import { environment } from '../../../../environments/environment';
 })
 export class WorkoutService {
     private readonly api: string = environment.apiUrl;
-    private pagedWorkoutsSubject = new BehaviorSubject<PagedResult<WorkoutListItemDto> | undefined>(undefined)
-    private workoutSummarySubject = new BehaviorSubject<WorkoutSummaryDto | undefined>(undefined)
-    private queryParams = new BehaviorSubject<QueryParams | undefined>(undefined)
-    private workoutCountsSubject = new BehaviorSubject<WorkoutsPerMonthDto | null>(null)
 
-    pagedWorkouts$ = this.pagedWorkoutsSubject.asObservable();
-    workoutSummary$ = this.workoutSummarySubject.asObservable();
-    workoutCounts$ = this.workoutCountsSubject.asObservable();
+    private _pagedWorkouts: WritableSignal<PagedResult<WorkoutListItemDto> | undefined> = signal(undefined);
+    private _workoutSummary: WritableSignal<WorkoutSummaryDto | undefined> = signal(undefined);
+    private _queryParams: WritableSignal<QueryParams | undefined> = signal(undefined);
+    private _workoutCounts: WritableSignal<WorkoutsPerMonthDto | null> = signal(null);
+
+    readonly pagedWorkouts = this._pagedWorkouts.asReadonly();
+    readonly workoutSummary = this._workoutSummary.asReadonly();
+    readonly workoutCounts = this._workoutCounts.asReadonly();
 
     private http = inject(HttpClient)
 
-    getQueryParams() {return this.queryParams.value}
-    setQueryParams(queryParams: QueryParams) {this.queryParams.next(queryParams)}
+    getQueryParams() { return this._queryParams(); }
+    setQueryParams(queryParams: QueryParams) { this._queryParams.set(queryParams); }
 
     getUserWorkoutsPage(): Observable<WorkoutPageDto> {
         const params = this.getHttpQueryParams();
 
         return this.http.get<WorkoutPageDto>(`${this.api}/workouts/overview`, {params}).pipe(
             tap(res => {
-                this.pagedWorkoutsSubject.next(res.pagedWorkouts)
-                this.workoutSummarySubject.next(res.workoutSummary)
-            }),
-            map(res => res)
+                this._pagedWorkouts.set(res.pagedWorkouts);
+                this._workoutSummary.set(res.workoutSummary);
+            })
         );
     }
 
@@ -48,9 +48,8 @@ export class WorkoutService {
         return this.http.get<PagedResult<WorkoutListItemDto>>(`${this.api}/workouts`, {params})
         .pipe(
             tap(res => {
-                this.pagedWorkoutsSubject.next(res)
-            }),
-            map(res => res)
+                this._pagedWorkouts.set(res);
+            })
         )
     }
 
@@ -59,7 +58,6 @@ export class WorkoutService {
     }
 
     getUserWorkoutCountsByMonth(year: number | null = null) {
-        this.workoutCountsSubject.next(null);
 
         let params = new HttpParams();
 
@@ -69,7 +67,7 @@ export class WorkoutService {
 
         return this.http.get<WorkoutsPerMonthDto>(`${this.api}/workouts/workout-chart`, { params })
         .pipe(
-            tap(res => this.workoutCountsSubject.next(res))
+            tap(res => this._workoutCounts.set(res))
         );
     }
 
