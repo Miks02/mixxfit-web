@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { NgIcon, provideIcons } from "@ng-icons/core";
 import {
   faSolidUser,
@@ -7,13 +7,12 @@ import {
   faSolidGear,
   faSolidDumbbell,
   faSolidBowlRice,
-  faSolidArrowUpRightDots,
   faSolidMoon,
   faSolidCircleChevronLeft,
   faSolidRightToBracket,
   faSolidScaleUnbalanced
 } from "@ng-icons/font-awesome/solid";
-import { RouterLink } from "@angular/router";
+import { Router, RouterLink } from "@angular/router";
 
 @Component({
     selector: 'app-sidebar',
@@ -31,8 +30,17 @@ export class Sidebar {
     @Output()
     logout = new EventEmitter<void>();
 
-    onSidebarClose() {
+    private router = inject(Router)
+
+    onSidebarClose(route: string | null = null) {
         this.close.emit();
+        if(!route)
+            return;
+
+        setTimeout(() => {
+            this.router.navigate([route])
+        }, 100);
+
     }
 
     onLogout() {
