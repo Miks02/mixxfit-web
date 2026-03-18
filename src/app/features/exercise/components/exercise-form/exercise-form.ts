@@ -42,13 +42,12 @@ export class ExerciseForm {
     filteredExercises = computed(() => {
         const exercises = this.exercises();
         const searchTerm = this.searchTerm().toLowerCase();
-        const muscleGroup = this.selectedMuscleGroup().toLowerCase();
-        const category = this.selectedCategory().toLowerCase();
+        const muscleGroup = this.selectedMuscleGroup()
+        const category = this.selectedCategory()
 
         return exercises
-        ?.filter(e => e.name.toLowerCase().includes(searchTerm))
-        .filter(e => e.muscleGroupName.toLowerCase().includes(muscleGroup))
-        .filter(e => e.exerciseCategoryName.toLowerCase().includes(category));
+        ?.filter(e => e.name.toLowerCase().includes(searchTerm)
+        && e.muscleGroupName.includes(muscleGroup) && e.exerciseCategoryName.includes(category));
     })
 
     ngOnInit() {
