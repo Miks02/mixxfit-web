@@ -21,11 +21,11 @@ import { ExerciseFilterType } from '../../models/exercise-filter-type';
 @Component({
     selector: 'app-exercise-form',
     imports: [NgIcon, NgxSkeletonLoaderComponent, FormsModule],
-    templateUrl: './exercise-form.html',
-    styleUrl: './exercise-form.css',
+    templateUrl: './exercise-list.html',
+    styleUrl: './exercise-list.css',
     providers: [provideIcons({ faSolidDumbbell, faSolidMagnifyingGlass, faSolidFilter, faSolidPlus, faSolidXmark, faSolidPersonRunning, faSolidChildReaching, faSolidChevronRight, faSolidPersonWalkingArrowLoopLeft })]
 })
-export class ExerciseForm {
+export class ExerciseList {
     isLoading: WritableSignal<boolean> = signal(false);
     isSearchOpen: WritableSignal<boolean> = signal(false);
     isFilterOpen: WritableSignal<boolean> = signal(false);
