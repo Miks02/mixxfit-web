@@ -11,7 +11,7 @@ import { WorkoutForm } from './features/workout/pages/workout-form/workout-form'
 import { ProfilePage } from './features/profile/pages/profile-page/profile-page';
 import { WorkoutDetails } from './features/workout/pages/workout-details/workout-details';
 import { WeightPage } from './features/weight/pages/weight-page/weight-page';
-import { ExerciseList } from './features/exercise/components/exercise-form/exercise-list';
+import { ExerciseList } from './features/exercise/components/exercise-list/exercise-list';
 
 export const routes: Routes = [
     {
