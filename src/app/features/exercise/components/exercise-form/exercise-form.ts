@@ -15,6 +15,7 @@ import {
 } from '@ng-icons/font-awesome/solid';
 import { NgxSkeletonLoaderComponent } from 'ngx-skeleton-loader';
 import { FormsModule } from '@angular/forms';
+import { ExerciseFilterType } from '../../models/exercise-filter-type';
 
 
 @Component({
@@ -38,12 +39,25 @@ export class ExerciseForm {
     searchTerm: WritableSignal<string> = signal("");
     selectedMuscleGroup: WritableSignal<string> = signal("");
     selectedCategory: WritableSignal<string> = signal("");
+    selectedFilterType: WritableSignal<ExerciseFilterType> = signal(0);
 
     filteredExercises = computed(() => {
-        const exercises = this.exercises();
+        let exercises = this.exercises();
         const searchTerm = this.searchTerm().toLowerCase();
         const muscleGroup = this.selectedMuscleGroup()
         const category = this.selectedCategory()
+        const exerciseFilter = this.selectedFilterType();
+
+        switch (exerciseFilter) {
+            case ExerciseFilterType.system:
+                exercises = exercises?.filter(e => !e.isUserDefined);
+                break;
+            case ExerciseFilterType.user:
+                exercises = exercises?.filter(e => e.isUserDefined);
+                break;
+            default:
+        }
+
 
         return exercises
         ?.filter(e => e.name.toLowerCase().includes(searchTerm)
