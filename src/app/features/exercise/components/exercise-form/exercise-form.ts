@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal, WritableSignal } from '@angular/core';
+import { Component, inject, signal, WritableSignal } from '@angular/core';
 import { ExerciseService } from '../../services/exercise-service';
 import { take, tap } from 'rxjs';
 import { NgIcon, provideIcons } from '@ng-icons/core';
@@ -9,18 +9,20 @@ import {
     faSolidFilter,
     faSolidMagnifyingGlass,
     faSolidPersonRunning,
+    faSolidPersonWalkingArrowLoopLeft,
     faSolidPlus,
     faSolidXmark,
 } from '@ng-icons/font-awesome/solid';
 import { NgxSkeletonLoaderComponent } from 'ngx-skeleton-loader';
-import { ExerciseType } from '../../../workout/models/exercise-type';
+import { FormsModule } from '@angular/forms';
+
 
 @Component({
     selector: 'app-exercise-form',
-    imports: [NgIcon, NgxSkeletonLoaderComponent],
+    imports: [NgIcon, NgxSkeletonLoaderComponent, FormsModule],
     templateUrl: './exercise-form.html',
     styleUrl: './exercise-form.css',
-    providers: [provideIcons({ faSolidDumbbell, faSolidMagnifyingGlass, faSolidFilter, faSolidPlus, faSolidXmark, faSolidPersonRunning, faSolidChildReaching, faSolidChevronRight })]
+    providers: [provideIcons({ faSolidDumbbell, faSolidMagnifyingGlass, faSolidFilter, faSolidPlus, faSolidXmark, faSolidPersonRunning, faSolidChildReaching, faSolidChevronRight, faSolidPersonWalkingArrowLoopLeft })]
 })
 export class ExerciseForm {
     isLoading: WritableSignal<boolean> = signal(false);
@@ -32,30 +34,6 @@ export class ExerciseForm {
     exercises = this.exerciseService.exercises;
     categories = this.exerciseService.exerciseCategories;
     muscleGroups = this.exerciseService.muscleGroups;
-
-    private typeLabels: Record<number, string> = {
-        [ExerciseType.Weights]: 'Weights',
-        [ExerciseType.Bodyweight]: 'Bodyweight',
-        [ExerciseType.Cardio]: 'Cardio',
-    };
-
-    groupedExercises = computed(() => {
-        const all = this.exercises();
-        if (!all) return [];
-
-        const groups = new Map<number, typeof all>();
-        for (const ex of all) {
-            const list = groups.get(ex.exerciseType) ?? [];
-            list.push(ex);
-            groups.set(ex.exerciseType, list);
-        }
-
-        return Array.from(groups.entries()).map(([type, exercises]) => ({
-            type,
-            label: this.typeLabels[type] ?? 'Other',
-            exercises,
-        }));
-    });
 
     ngOnInit() {
         this.loadExercises();
