@@ -1,4 +1,4 @@
-import { Component, inject, signal, WritableSignal } from '@angular/core';
+import { Component, computed, inject, signal, WritableSignal } from '@angular/core';
 import { ExerciseService } from '../../services/exercise-service';
 import { take, tap } from 'rxjs';
 import { NgIcon, provideIcons } from '@ng-icons/core';
@@ -35,6 +35,22 @@ export class ExerciseForm {
     categories = this.exerciseService.exerciseCategories;
     muscleGroups = this.exerciseService.muscleGroups;
 
+    searchTerm: WritableSignal<string> = signal("");
+    selectedMuscleGroup: WritableSignal<string> = signal("");
+    selectedCategory: WritableSignal<string> = signal("");
+
+    filteredExercises = computed(() => {
+        const exercises = this.exercises();
+        const searchTerm = this.searchTerm().toLowerCase();
+        const muscleGroup = this.selectedMuscleGroup().toLowerCase();
+        const category = this.selectedCategory().toLowerCase();
+
+        return exercises
+        ?.filter(e => e.name.toLowerCase().includes(searchTerm))
+        .filter(e => e.muscleGroupName.toLowerCase().includes(muscleGroup))
+        .filter(e => e.exerciseCategoryName.toLowerCase().includes(category));
+    })
+
     ngOnInit() {
         this.loadExercises();
     }
@@ -44,6 +60,10 @@ export class ExerciseForm {
         this.exerciseService.getExercises()
         .pipe(take(1), tap(() => this.isLoading.set(false)))
         .subscribe();
+    }
+
+    onSearchChange(searchTerm: string) {
+        this.searchTerm.set(searchTerm);
     }
 
 }

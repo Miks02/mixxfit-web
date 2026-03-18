@@ -33,7 +33,7 @@
     <div class="flex-none bg-slate-300/80 border-b border-slate-400/50 px-4 py-3">
         <div class="flex items-center gap-3 bg-white rounded-xl px-4 py-2.5 shadow-md focus-within:ring-2 focus-within:ring-amber-400 transition-all">
             <ng-icon name="faSolidMagnifyingGlass" class="text-slate-400 text-base shrink-0"></ng-icon>
-            <input type="text" placeholder="Search exercises..."
+            <input (input)="onSearchChange($event.target.value)" type="text" placeholder="Search exercises..."
             class="flex-1 bg-transparent outline-none text-sm text-slate-800 placeholder-slate-400 font-medium">
             <button (click)="isSearchOpen.set(false)" class="cursor-pointer text-slate-400 hover:text-red-500 transition-colors shrink-0">
                 <ng-icon name="faSolidXmark" class="text-base"></ng-icon>
@@ -47,23 +47,37 @@
         <div class="flex flex-col sm:flex-row gap-3">
             <div class="flex-1">
                 <label class="text-xs font-bold text-slate-600 uppercase tracking-wide mb-1.5 block">Category</label>
-                <select class="w-full bg-white rounded-xl px-3 py-2.5 text-sm font-semibold text-slate-700 shadow-md outline-none focus:ring-2 focus:ring-amber-400 transition-all appearance-none cursor-pointer">
-                    <option value="">All Categories</option>
+                <select
+                [(ngModel)]="selectedCategory"
+                class="w-full bg-white rounded-xl px-3 py-2.5 text-sm font-semibold text-slate-700 shadow-md outline-none focus:ring-2 focus:ring-amber-400 transition-all appearance-none cursor-pointer">
+                    <option selected [ngValue]="''">All Categories</option>
                     @for(category of categories(); track category.id) {
-                        <option [value]="category.id">{{ category.name }}</option>
+                        <option [ngValue]="category.name">{{ category.name }}</option>
                     }
                 </select>
             </div>
             <div class="flex-1">
                 <label class="text-xs font-bold text-slate-600 uppercase tracking-wide mb-1.5 block">Muscle Group</label>
-                <select class="w-full bg-white rounded-xl px-3 py-2.5 text-sm font-semibold text-slate-700 shadow-md outline-none focus:ring-2 focus:ring-amber-400 transition-all appearance-none cursor-pointer">
-                    <option value="">All Muscle Groups</option>
+                <select
+                [(ngModel)]="selectedMuscleGroup"
+                class="w-full bg-white rounded-xl px-3 py-2.5 text-sm font-semibold text-slate-700 shadow-md outline-none focus:ring-2 focus:ring-amber-400 transition-all appearance-none cursor-pointer">
+                    <option [ngValue]="''">All Muscle Groups</option>
                     @for(group of muscleGroups(); track group.id) {
-                        <option [value]="group.id">{{ group.name }}</option>
+                        <option [value]="group.name">{{ group.name }}</option>
                     }
                 </select>
             </div>
+              <!-- <div class="flex-1">
+                <label class="text-xs font-bold text-slate-600 uppercase tracking-wide mb-1.5 block">Exercises</label>
+                <select
+                [(ngModel)]="exercisesFilter"
+                class="w-full bg-white rounded-xl px-3 py-2.5 text-sm font-semibold text-slate-700 shadow-md outline-none focus:ring-2 focus:ring-amber-400 transition-all appearance-none cursor-pointer">
+                <option [ngValue]="0">Default</option>
+                <option [ngValue]="1">System exercises</option>
+                <option [ngValue]="2">My exercises</option>
 
+            </select>
+        </div> -->
 
     </div>
 </div>
@@ -71,7 +85,7 @@
 
 <div class="flex-1 overflow-y-auto p-4">
 
-    @if(isLoading() || exercises() === undefined) {
+    @if(isLoading() || filteredExercises() === undefined) {
         <ngx-skeleton-loader
         count="8"
         [theme]="{
@@ -84,7 +98,7 @@
         appearance="line">
     </ngx-skeleton-loader>
 }
-@else if(exercises()?.length === 0) {
+@else if(filteredExercises()?.length === 0) {
     <div class="flex flex-col gap-3 justify-center items-center h-full min-h-80">
         <ng-icon name="faSolidDumbbell" class="text-6xl sm:text-7xl md:text-8xl opacity-40 text-slate-500!"></ng-icon>
         <h2 class="text-2xl md:text-3xl font-bold text-slate-600 text-center">No exercises found</h2>
@@ -93,7 +107,7 @@
 }
 @else {
     <div class="flex flex-col gap-2">
-        @for(exercise of exercises(); track exercise.id) {
+        @for(exercise of filteredExercises(); track exercise.id) {
             <div class="flex items-center bg-slate-300 rounded-xl px-4 py-3.5 hover:bg-amber-300/70 transition-all duration-200 cursor-pointer group shadow-md active:bg-amber-300 active:scale-[0.99]">
 
                 <div
