@@ -33,7 +33,7 @@
     <div class="flex-none bg-slate-300/80 border-b border-slate-400/50 px-4 py-3">
         <div class="flex items-center gap-3 bg-white rounded-xl px-4 py-2.5 shadow-md focus-within:ring-2 focus-within:ring-amber-400 transition-all">
             <ng-icon name="faSolidMagnifyingGlass" class="text-slate-400 text-base shrink-0"></ng-icon>
-            <input (input)="onSearchChange($event.target.value)" type="text" placeholder="Search exercises..."
+            <input (input)="onSearchChange($event.target.value)" value="{{searchTerm()}}" type="text" placeholder="Search exercises..."
             class="flex-1 bg-transparent outline-none text-sm text-slate-800 placeholder-slate-400 font-medium">
             <button (click)="isSearchOpen.set(false)" class="cursor-pointer text-slate-400 hover:text-red-500 transition-colors shrink-0">
                 <ng-icon name="faSolidXmark" class="text-base"></ng-icon>
