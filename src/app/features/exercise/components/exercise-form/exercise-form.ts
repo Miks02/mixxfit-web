@@ -41,7 +41,7 @@ export class ExerciseForm {
 
     filteredExercises = computed(() => {
         const exercises = this.exercises();
-        const searchTerm = this.searchTerm().toLowerCase();
+        const searchTerm = this.isSearchOpen() ? this.searchTerm().toLowerCase() : "";
         const muscleGroup = this.selectedMuscleGroup()
         const category = this.selectedCategory()
 
