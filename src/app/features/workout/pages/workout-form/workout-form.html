@@ -58,7 +58,7 @@
             <div class="flex items-center justify-between gap-3 mb-2">
                 <h3 class="hidden md:block text-lg font-semibold text-slate-800">Exercises</h3>
                 @if(exercises.length > 0) {
-                    <app-button buttonSize="sm" label="Add Exercise" [buttonType]="'secondary'" (clicked)="isModalFormOpen = true"></app-button>
+                    <app-button buttonSize="sm" label="Add Exercise" [buttonType]="'secondary'" (clicked)="openExerciseList()"></app-button>
             }
 
         </div>
@@ -68,7 +68,7 @@
                 <div class="text-center text-slate-600 py-6 bg-slate-50  rounded-xl border border-slate-200 ">
                     <p class="font-semibold text-slate-700 text-lg">No exercises added yet</p>
                     <p class="text-sm text-slate-500 mt-1 mb-4">Add your first exercise to continue</p>
-                    <app-button [buttonType]="'secondary'" buttonSize="sm" label="Add Exercise" (clicked)="isModalFormOpen = true"></app-button>
+                    <app-button [buttonType]="'secondary'" buttonSize="sm" label="Add Exercise" (click)="openExerciseList()"></app-button>
             </div>
         }
 
@@ -238,10 +238,7 @@
 
 </div>
 
-@if(isModalFormOpen)
-{
-    <app-exercise-form [exercises]="exercises" (close)="closeModalForm()"></app-exercise-form>
-}
+<router-outlet></router-outlet>
 
 <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
     <div class="bg-slate-200 rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-shadow duration-200">

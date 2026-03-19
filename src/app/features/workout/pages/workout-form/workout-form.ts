@@ -1,7 +1,7 @@
 import { DatePipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormsModule, ReactiveFormsModule, } from '@angular/forms';
-import { Router } from '@angular/router';
+import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { NgIcon, provideIcons } from "@ng-icons/core";
 import {
     faSolidBars,
@@ -19,23 +19,23 @@ import {
 import { handleValidationErrors, isControlValid } from '../../../../core/helpers/FormHelpers';
 import { NotificationService } from '../../../../core/services/notification-service';
 import { LayoutState } from '../../../../layout/services/layout-state';
-import { ExerciseForm } from '../../components/exercise-form/exercise-form';
 import { createWorkoutForm, createWorkoutObject } from '../../factories/workout-factories';
 import { CardioType } from '../../models/cardio-type';
 import { ExerciseType } from '../../models/exercise-type';
 import { WorkoutService } from '../../services/workout-service';
 import { Button } from '../../../../shared/button/button';
+import { filter, take } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
     selector: 'app-workout-form',
-    imports: [NgIcon, FormsModule, ExerciseForm, ReactiveFormsModule, DatePipe, Button],
+    imports: [NgIcon, FormsModule, ReactiveFormsModule, DatePipe, Button, RouterOutlet],
     templateUrl: './workout-form.html',
     styleUrl: './workout-form.css',
     providers: [provideIcons({faSolidTag, faSolidCalendarDay, faSolidDumbbell, faSolidFireFlameCurved, faSolidBookOpen, faSolidBars, faSolidNoteSticky, faSolidXmark, faSolidCircle, faSolidPersonRunning, faSolidChildReaching})]
 })
 export class WorkoutForm {
     isControlValid = isControlValid
-    isModalFormOpen: boolean = false;
 
     layoutState = inject(LayoutState)
     fb = inject(FormBuilder)
@@ -116,16 +116,25 @@ export class WorkoutForm {
         return this.exercises.removeAt(index);
     }
 
-    ngOnInit() {
+    constructor() {
         this.layoutState.setTitle("Workout Form")
+
+        this.router.events.pipe(
+            takeUntilDestroyed(),
+            filter(event => event instanceof NavigationEnd)
+        ).subscribe((event: NavigationEnd) => {
+            if (event.urlAfterRedirects === '/workout-form' && this.exercises.length === 0) {
+                this.notificationService.showWarning("Add at least 1 exercise entry");
+            }
+        });
     }
 
-    closeModalForm() {
-        this.isModalFormOpen = false;
+    ngOnInit() {
 
-        if(this.exercises.length === 0) {
-            this.notificationService.showWarning("Add at least 1 exercise entry");
-        }
+    }
+
+    openExerciseList() {
+        this.router.navigate(['/workout-form/exercises']);
     }
 
     onSubmit() {
