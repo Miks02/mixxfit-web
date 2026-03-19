@@ -12,6 +12,7 @@ import { ProfilePage } from './features/profile/pages/profile-page/profile-page'
 import { WorkoutDetails } from './features/workout/pages/workout-details/workout-details';
 import { WeightPage } from './features/weight/pages/weight-page/weight-page';
 import { ExerciseList } from './features/exercise/components/exercise-list/exercise-list';
+import { ExerciseModalLayout } from './features/exercise/layouts/exercise-modal-layout/exercise-modal-layout';
 
 export const routes: Routes = [
     {
@@ -38,7 +39,19 @@ export const routes: Routes = [
             },
             {
                 path: "workout-form",
-                component: WorkoutForm
+                component: WorkoutForm,
+                children: [
+                    {
+                        path: "exercises",
+                        component: ExerciseModalLayout,
+                        children: [
+                            {
+                                path: "",
+                                component: ExerciseList
+                            }
+                        ]
+                    }
+                ]
             },
             {
                 path: "weight",
@@ -47,10 +60,6 @@ export const routes: Routes = [
             {
                 path: "profile",
                 component: ProfilePage
-            },
-            {
-                path: "exercise-list",
-                component: ExerciseList
             }
         ]
     },

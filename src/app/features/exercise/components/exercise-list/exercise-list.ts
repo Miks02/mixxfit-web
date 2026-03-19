@@ -16,10 +16,11 @@ import {
 import { NgxSkeletonLoaderComponent } from 'ngx-skeleton-loader';
 import { FormsModule } from '@angular/forms';
 import { ExerciseFilterType } from '../../models/exercise-filter-type';
+import { ExerciseModalLayoutService } from '../../services/exercise-modal-layout-service';
 
 
 @Component({
-    selector: 'app-exercise-form',
+    selector: 'app-exercise-list',
     imports: [NgIcon, NgxSkeletonLoaderComponent, FormsModule],
     templateUrl: './exercise-list.html',
     styleUrl: './exercise-list.css',
@@ -30,6 +31,7 @@ export class ExerciseList {
     isSearchOpen: WritableSignal<boolean> = signal(false);
     isFilterOpen: WritableSignal<boolean> = signal(false);
 
+    exerciseModal = inject(ExerciseModalLayoutService);
     private exerciseService = inject(ExerciseService);
 
     exercises = this.exerciseService.exercises;
@@ -50,11 +52,11 @@ export class ExerciseList {
 
         switch (exerciseFilter) {
             case ExerciseFilterType.system:
-                exercises = exercises?.filter(e => !e.isUserDefined);
-                break;
+            exercises = exercises?.filter(e => !e.isUserDefined);
+            break;
             case ExerciseFilterType.user:
-                exercises = exercises?.filter(e => e.isUserDefined);
-                break;
+            exercises = exercises?.filter(e => e.isUserDefined);
+            break;
             default:
         }
 
@@ -63,6 +65,16 @@ export class ExerciseList {
         ?.filter(e => e.name.toLowerCase().includes(searchTerm)
         && e.muscleGroupName.includes(muscleGroup) && e.exerciseCategoryName.includes(category));
     })
+
+    constructor() {
+        this.exerciseModal.setConfig({
+            title: 'Exercises',
+            action: [
+                { icon: 'faSolidMagnifyingGlass', action: this.isSearchOpen },
+                { icon: 'faSolidFilter', action: this.isFilterOpen }
+            ]
+        });
+    }
 
     ngOnInit() {
         this.loadExercises();
