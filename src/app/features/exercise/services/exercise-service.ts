@@ -1,7 +1,7 @@
 import { inject, Injectable, Signal, signal, WritableSignal } from '@angular/core';
 import { ExerciseDto } from '../models/exercise-dto';
 import { environment } from '../../../../environments/environment';
-import { Observable, tap, map, catchError } from 'rxjs';
+import { Observable, tap, map, catchError, of } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { MuscleGroupDto } from '../models/muscle-group-dto';
 import { ExerciseCategoryDto } from '../models/exercise-category-dto';
@@ -23,22 +23,15 @@ export class ExerciseService {
     private http = inject(HttpClient);
 
     getExercises(): Observable<ExerciseDto[]> {
-        if(!this._exercises()) {
-            return this.http.get<ExercisePage>(`${this.apiUrl}/exercises-page`)
-            .pipe(
-                tap((res) => {
-                    this._exercises.set(res.exercises);
-                    this._excerciseCategories.set(res.exerciseCategories);
-                    this._muscleGroups.set(res.muscleGroups);
-                }),
-                map((res) => res.exercises)
-            )
+        if(this._exercises()) return of(this._exercises()!)
 
-        }
-
-        return this.http.get<{exercises: ExerciseDto[]}>(`${this.apiUrl}/exercises`)
+        return this.http.get<ExercisePage>(`${this.apiUrl}/exercises-page`)
         .pipe(
-            tap((res) => this._exercises.set(res.exercises)),
+            tap((res) => {
+                this._exercises.set(res.exercises);
+                this._excerciseCategories.set(res.exerciseCategories);
+                this._muscleGroups.set(res.muscleGroups);
+            }),
             map((res) => res.exercises)
         )
     }
