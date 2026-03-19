@@ -20,19 +20,25 @@
                 </button>
             }
 
-    <button (click)="onCreateExercise()" class="flex items-center justify-center cursor-pointer p-2 rounded-lg text-emerald-800 hover:bg-yellow-600/30 active:opacity-70 transition-colors">
-        <ng-icon name="faSolidPlus" class="text-xl"></ng-icon>
-    </button>
+            @if(config()?.showBackButton) {
+                <button (click)="onBack()" class="flex items-center justify-center cursor-pointer p-2 rounded-lg text-blue-800 hover:bg-yellow-600/30 active:opacity-70 transition-colors">
+                    <ng-icon name="faSolidLeftLong" class="text-xl"></ng-icon>
+                </button>
+            }
 
-    <button (click)="onClose()" class="flex items-center justify-center cursor-pointer p-2 rounded-lg text-red-700 hover:bg-yellow-600/30 active:opacity-70 transition-colors">
-        <ng-icon name="faSolidXmark" class="text-xl"></ng-icon>
-    </button>
-</div>
-</div>
+            <button (click)="onCreateExercise()" class="flex items-center justify-center cursor-pointer p-2 rounded-lg text-emerald-800 hover:bg-yellow-600/30 active:opacity-70 transition-colors">
+                <ng-icon name="faSolidPlus" class="text-xl"></ng-icon>
+            </button>
 
-<div class="overflow-y-auto">
-    <router-outlet></router-outlet>
-</div>
+            <button (click)="onClose()" class="flex items-center justify-center cursor-pointer p-2 rounded-lg text-red-700 hover:bg-yellow-600/30 active:opacity-70 transition-colors">
+                <ng-icon name="faSolidXmark" class="text-xl"></ng-icon>
+            </button>
+        </div>
+    </div>
+
+    <div class="overflow-y-auto">
+        <router-outlet></router-outlet>
+    </div>
 
 
 </div>

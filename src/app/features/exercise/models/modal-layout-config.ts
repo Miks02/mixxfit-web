@@ -2,5 +2,6 @@ import { ModalAction } from "./modal-action"
 
 export type ModalLayoutConfig = {
     title: string,
-    action: ModalAction[]
+    action: ModalAction[],
+    showBackButton: boolean
 }

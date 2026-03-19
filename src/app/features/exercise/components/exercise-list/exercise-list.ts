@@ -72,8 +72,10 @@ export class ExerciseList {
             title: 'Exercises',
             action: [
                 { icon: 'faSolidMagnifyingGlass', action: this.isSearchOpen },
-                { icon: 'faSolidFilter', action: this.isFilterOpen }
-            ]
+                { icon: 'faSolidFilter', action: this.isFilterOpen },
+
+            ],
+            showBackButton: false
         });
     }
 

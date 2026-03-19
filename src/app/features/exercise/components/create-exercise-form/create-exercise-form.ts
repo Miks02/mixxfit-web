@@ -13,6 +13,6 @@ export class CreateExerciseForm {
     config = this.modalLayout.config;
 
     constructor() {
-        this.modalLayout.setConfig({title: "Create Exercise", action: []})
+        this.modalLayout.setConfig({title: "Create Exercise", action: [], showBackButton: true})
     }
 }
