@@ -13,6 +13,7 @@ import { WorkoutDetails } from './features/workout/pages/workout-details/workout
 import { WeightPage } from './features/weight/pages/weight-page/weight-page';
 import { ExerciseList } from './features/exercise/components/exercise-list/exercise-list';
 import { ExerciseModalLayout } from './features/exercise/layouts/exercise-modal-layout/exercise-modal-layout';
+import { CreateExerciseForm } from './features/exercise/components/create-exercise-form/create-exercise-form';
 
 export const routes: Routes = [
     {
@@ -48,6 +49,10 @@ export const routes: Routes = [
                             {
                                 path: "",
                                 component: ExerciseList
+                            },
+                            {
+                                path: "create",
+                                component: CreateExerciseForm
                             }
                         ]
                     }

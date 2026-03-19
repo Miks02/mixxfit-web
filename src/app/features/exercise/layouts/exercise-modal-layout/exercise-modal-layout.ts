@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { Router, RouterOutlet } from '@angular/router';
+import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { ExerciseModalLayoutService } from '../../services/exercise-modal-layout-service';
 import { NgIcon, provideIcons } from "@ng-icons/core";
 import { faSolidDumbbell, faSolidFilter, faSolidMagnifyingGlass, faSolidPlus, faSolidXmark } from '@ng-icons/font-awesome/solid';
@@ -14,10 +14,16 @@ import { faSolidDumbbell, faSolidFilter, faSolidMagnifyingGlass, faSolidPlus, fa
 export class ExerciseModalLayout {
     private modalLayout = inject(ExerciseModalLayoutService);
     private router = inject(Router);
+    private route = inject(ActivatedRoute);
 
     config = this.modalLayout.config;
 
     onClose() {
         this.router.navigate(['/workout-form']);
     }
+
+    onCreateExercise() {
+        this.router.navigate(['/workout-form/exercises/create'])
+    }
+
 }

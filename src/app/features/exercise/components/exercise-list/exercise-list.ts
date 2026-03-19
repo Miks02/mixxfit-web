@@ -17,11 +17,12 @@ import { NgxSkeletonLoaderComponent } from 'ngx-skeleton-loader';
 import { FormsModule } from '@angular/forms';
 import { ExerciseFilterType } from '../../models/exercise-filter-type';
 import { ExerciseModalLayoutService } from '../../services/exercise-modal-layout-service';
+import { Button } from "../../../../shared/button/button";
 
 
 @Component({
     selector: 'app-exercise-list',
-    imports: [NgIcon, NgxSkeletonLoaderComponent, FormsModule],
+    imports: [NgIcon, NgxSkeletonLoaderComponent, FormsModule, Button],
     templateUrl: './exercise-list.html',
     styleUrl: './exercise-list.css',
     providers: [provideIcons({ faSolidDumbbell, faSolidMagnifyingGlass, faSolidFilter, faSolidPlus, faSolidXmark, faSolidPersonRunning, faSolidChildReaching, faSolidChevronRight, faSolidPersonWalkingArrowLoopLeft })]
