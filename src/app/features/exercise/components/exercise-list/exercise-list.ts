@@ -22,7 +22,7 @@ import { Button } from "../../../../shared/button/button";
 
 @Component({
     selector: 'app-exercise-list',
-    imports: [NgIcon, NgxSkeletonLoaderComponent, FormsModule, Button],
+    imports: [NgIcon, NgxSkeletonLoaderComponent, FormsModule],
     templateUrl: './exercise-list.html',
     styleUrl: './exercise-list.css',
     providers: [provideIcons({ faSolidDumbbell, faSolidMagnifyingGlass, faSolidFilter, faSolidPlus, faSolidXmark, faSolidPersonRunning, faSolidChildReaching, faSolidChevronRight, faSolidPersonWalkingArrowLoopLeft })]
