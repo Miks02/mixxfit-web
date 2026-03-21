@@ -1,7 +1,7 @@
 import { DatePipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormsModule, ReactiveFormsModule, } from '@angular/forms';
-import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
+import { Router, RouterOutlet } from '@angular/router';
 import { NgIcon, provideIcons } from "@ng-icons/core";
 import {
     faSolidBars,
@@ -19,13 +19,11 @@ import {
 import { handleValidationErrors, isControlValid } from '../../../../core/helpers/FormHelpers';
 import { NotificationService } from '../../../../core/services/notification-service';
 import { LayoutState } from '../../../../layout/services/layout-state';
+import { Button } from '../../../../shared/button/button';
 import { createWorkoutForm, createWorkoutObject } from '../../factories/workout-factories';
 import { CardioType } from '../../models/cardio-type';
 import { ExerciseType } from '../../models/exercise-type';
 import { WorkoutService } from '../../services/workout-service';
-import { Button } from '../../../../shared/button/button';
-import { filter, take } from 'rxjs';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
     selector: 'app-workout-form',
@@ -118,19 +116,6 @@ export class WorkoutForm {
 
     constructor() {
         this.layoutState.setTitle("Workout Form")
-
-        this.router.events.pipe(
-            takeUntilDestroyed(),
-            filter(event => event instanceof NavigationEnd)
-        ).subscribe((event: NavigationEnd) => {
-            if (event.urlAfterRedirects === '/workout-form' && this.exercises.length === 0) {
-                this.notificationService.showWarning("Add at least 1 exercise entry");
-            }
-        });
-    }
-
-    ngOnInit() {
-
     }
 
     openExerciseList() {
