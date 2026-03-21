@@ -1,11 +1,12 @@
-import { inject, Injectable, Signal, signal, WritableSignal } from '@angular/core';
-import { ExerciseDto } from '../models/exercise-dto';
-import { environment } from '../../../../environments/environment';
-import { Observable, tap, map, catchError, of } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { MuscleGroupDto } from '../models/muscle-group-dto';
+import { inject, Injectable, Signal, signal, WritableSignal } from '@angular/core';
+import { map, Observable, of, tap } from 'rxjs';
+import { environment } from '../../../../environments/environment';
+import { CreateExerciseDto } from '../models/create-exercise-dto';
 import { ExerciseCategoryDto } from '../models/exercise-category-dto';
+import { ExerciseDto } from '../models/exercise-dto';
 import { ExercisePage } from '../models/exercise-page';
+import { MuscleGroupDto } from '../models/muscle-group-dto';
 
 @Injectable({
     providedIn: 'root',
@@ -34,6 +35,13 @@ export class ExerciseService {
             }),
             map((res) => res.exercises)
         )
+    }
+
+    createExercise(request: CreateExerciseDto): Observable<ExerciseDto> {
+        return this.http.post<ExerciseDto>(`${this.apiUrl}/exercises`, request)
+        .pipe(
+            tap((exercise) => this._exercises.update(exercises => [...exercises ?? [], exercise])
+        ));
     }
 
 }
