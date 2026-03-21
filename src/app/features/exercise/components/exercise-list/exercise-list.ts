@@ -50,7 +50,7 @@ export class ExerciseList {
         const muscleGroup = this.selectedMuscleGroup()
         const category = this.selectedCategory()
         const exerciseFilter = this.selectedFilterType();
-
+        alert("Coban!")
         switch (exerciseFilter) {
             case ExerciseFilterType.system:
             exercises = exercises?.filter(e => !e.isUserDefined);
