@@ -28,7 +28,6 @@ import { Button } from "../../../../shared/button/button";
     providers: [provideIcons({ faSolidDumbbell, faSolidMagnifyingGlass, faSolidFilter, faSolidPlus, faSolidXmark, faSolidPersonRunning, faSolidChildReaching, faSolidChevronRight, faSolidPersonWalkingArrowLoopLeft })]
 })
 export class ExerciseList {
-    isLoading: WritableSignal<boolean> = signal(false);
     isSearchOpen: WritableSignal<boolean> = signal(false);
     isFilterOpen: WritableSignal<boolean> = signal(false);
 
@@ -43,6 +42,18 @@ export class ExerciseList {
     selectedMuscleGroup: WritableSignal<string> = signal("");
     selectedCategory: WritableSignal<string> = signal("");
     selectedFilterType: WritableSignal<ExerciseFilterType> = signal(0);
+
+    constructor() {
+        this.exerciseModal.setConfig({
+            title: 'Exercises',
+            action: [
+                { icon: 'faSolidMagnifyingGlass', action: this.isSearchOpen },
+                { icon: 'faSolidFilter', action: this.isFilterOpen },
+
+            ],
+            showBackButton: false
+        });
+    }
 
     filteredExercises = computed(() => {
         let exercises = this.exercises();
@@ -61,34 +72,18 @@ export class ExerciseList {
             default:
         }
 
-
         return exercises
         ?.filter(e => e.name.toLowerCase().includes(searchTerm)
         && e.muscleGroupName.includes(muscleGroup) && e.exerciseCategoryName.includes(category));
     })
 
-    constructor() {
-        this.exerciseModal.setConfig({
-            title: 'Exercises',
-            action: [
-                { icon: 'faSolidMagnifyingGlass', action: this.isSearchOpen },
-                { icon: 'faSolidFilter', action: this.isFilterOpen },
+    isLoading = computed(() => {
+        const exercises = this.exercises();
 
-            ],
-            showBackButton: false
-        });
-    }
-
-    ngOnInit() {
-        this.loadExercises();
-    }
-
-    loadExercises() {
-        this.isLoading.set(true);
-        this.exerciseService.getExercises()
-        .pipe(take(1), tap(() => this.isLoading.set(false)))
-        .subscribe();
-    }
+        if(!exercises)
+            return true;
+        return false;
+    })
 
     onSearchChange(searchTerm: string) {
         this.searchTerm.set(searchTerm);

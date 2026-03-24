@@ -3,6 +3,8 @@ import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { ExerciseModalLayoutService } from '../../services/exercise-modal-layout-service';
 import { NgIcon, provideIcons } from "@ng-icons/core";
 import { faSolidDumbbell, faSolidFilter, faSolidLeftLong, faSolidMagnifyingGlass, faSolidPlus, faSolidXmark } from '@ng-icons/font-awesome/solid';
+import { ExerciseService } from '../../services/exercise-service';
+import { take } from 'rxjs';
 
 @Component({
     selector: 'app-exercise-modal-layout',
@@ -14,11 +16,22 @@ import { faSolidDumbbell, faSolidFilter, faSolidLeftLong, faSolidMagnifyingGlass
 export class ExerciseModalLayout {
     private modalLayout = inject(ExerciseModalLayoutService);
     private router = inject(Router);
+    private exerciseSerivec = inject(ExerciseService);
 
     config = this.modalLayout.config;
 
     constructor() {
         console.log(history.state)
+    }
+
+    ngOnInit() {
+        this.loadExercises();
+    }
+
+    loadExercises() {
+        this.exerciseSerivec.getExercises()
+        .pipe(take(1))
+        .subscribe();
     }
 
     onClose() {
