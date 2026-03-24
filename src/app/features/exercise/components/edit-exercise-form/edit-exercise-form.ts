@@ -86,6 +86,10 @@ export class EditExerciseForm {
         const exercise = this.exercise();
         if(!exercise) return;
 
+        const categoryIndex = exercise?.name.lastIndexOf('(')!;
+        if(categoryIndex === -1)
+            return exercise.name;
+
         return exercise.name.substring(0, exercise.name.lastIndexOf('(')).trim();
     })
 
