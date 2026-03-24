@@ -1,21 +1,23 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, inject, signal, WritableSignal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgIcon, provideIcons } from "@ng-icons/core";
 import { faSolidPersonWalkingArrowLoopLeft } from '@ng-icons/font-awesome/solid';
+import { finalize, take } from 'rxjs';
 import { isControlValid } from '../../../../core/helpers/FormHelpers';
+import { NotificationService } from '../../../../core/services/notification-service';
 import { Button } from "../../../../shared/button/button";
 import { ExerciseType } from '../../../workout/models/exercise-type';
 import { createExerciseFormFactory } from '../../factories/exercise-factories';
 import { ExerciseModalLayoutService } from '../../services/exercise-modal-layout-service';
 import { ExerciseService } from '../../services/exercise-service';
-import { NotificationService } from '../../../../core/services/notification-service';
-import { take } from 'rxjs';
+import { NgxSkeletonLoaderComponent } from 'ngx-skeleton-loader';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-create-exercise-form',
-    imports: [NgIcon, FormsModule, CommonModule, FormsModule, ReactiveFormsModule, Button],
+    imports: [NgIcon, FormsModule, CommonModule, FormsModule, ReactiveFormsModule, Button, NgxSkeletonLoaderComponent],
     providers: [provideIcons({faSolidPersonWalkingArrowLoopLeft})],
     templateUrl: './create-exercise-form.html',
     styleUrl: './create-exercise-form.css',
@@ -25,6 +27,7 @@ export class CreateExerciseForm {
     fb = inject(FormBuilder);
     exerciseService = inject(ExerciseService);
     notification = inject(NotificationService);
+    router = inject(Router);
 
     config = this.modalLayout.config;
     form = createExerciseFormFactory(this.fb);
@@ -36,6 +39,8 @@ export class CreateExerciseForm {
     exerciseCategoryId = toSignal(this.form.get("categoryId")?.valueChanges!);
     muscleGroupId = toSignal(this.form.get("muscleGroupId")?.valueChanges!);
 
+    isLoading: WritableSignal<boolean> = signal(false);
+
     constructor() {
         this.modalLayout.setConfig({title: "Create Exercise", action: [], showBackButton: true})
     }
@@ -44,11 +49,16 @@ export class CreateExerciseForm {
         if(this.form.invalid)
             return;
 
+        this.isLoading.set(true);
+
         this.exerciseService.createExercise(this.form.value)
-        .pipe(take(1))
+        .pipe(take(1), finalize(() => this.isLoading.set(false)))
         .subscribe({
-            next: () => this.notification.showSuccess("Exercise created successfully"),
-            error: () => this.notification.showError("An error occurred while creating an exercise")
+            next: () => {
+                this.notification.showSuccess("Exercise created successfully")
+                this.router.navigate(['workout-form/exercises'])
+            },
+            error: () => this.notification.showError("An error occurred while creating an exercise"),
         })
     }
 
