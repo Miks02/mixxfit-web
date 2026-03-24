@@ -31,7 +31,7 @@
             </div>
             <select
             formControlName="muscleGroupId"
-            class="flex-1 bg-transparent outline-none text-lg font-semibold appearance-none {{!form.get('muscleGroupId')?.value ? 'text-slate-700 font-normal!' : ''}}"
+            class="flex-1 bg-transparent outline-none text-lg font-semibold appearance-none {{!form.get('muscleGroupId')?.value ? 'text-slate-700 font-normal!' : 'text-slate-800'}}"
             >
             <option [ngValue]="null" disabled hidden >Select Muscle Group</option>
             @for (muscleGroup of muscleGroups()!; track muscleGroup.id) {
@@ -70,7 +70,7 @@
     </div>
     <select
     formControlName="categoryId"
-    class="flex-1 bg-transparent outline-none text-lg font-semibold appearance-none {{!form.get('categoryId')?.value ? 'text-slate-700 font-normal!' : ''}}"
+    class="flex-1 bg-transparent outline-none text-lg font-semibold appearance-none {{!form.get('categoryId')?.value ? 'text-slate-700 font-normal!' : 'text-slate-800'}}"
     >
     <option [ngValue]="null" disabled hidden>Select Category</option>
     @for (category of exerciseCategories()!; track category.id) {
@@ -94,7 +94,7 @@
     </div>
     <input
     formControlName="name"
-    class="flex-1 bg-transparent outline-none text-lg"
+    class="flex-1 text-slate-800 font-semibold bg-transparent outline-none text-lg"
     type="text"
     placeholder="Enter exercise name..."
     >

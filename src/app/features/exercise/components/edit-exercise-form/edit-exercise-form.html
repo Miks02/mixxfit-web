@@ -33,140 +33,141 @@
             @if(isUserDefined()) {
                 <select
                 formControlName="muscleGroupId"
-                class="flex-1 bg-transparent outline-none text-lg font-semibold appearance-none {{!form.get('muscleGroupId')?.value ? 'text-slate-700 font-normal!' : ''}}"
+                class="flex-1 bg-transparent outline-none text-lg font-semibold appearance-none {{!form.get('muscleGroupId')?.value ? 'text-slate-700 font-normal!' : 'text-slate-800'}}"
                 >
                 <option [ngValue]="null" disabled hidden >Select Muscle Group</option>
                 @for (muscleGroup of muscleGroups()!; track muscleGroup.id) {
                     <option [ngValue]="muscleGroup.id">{{muscleGroup.name}}</option>
                 }
-            </select>
-        } @else {
-            <span class="flex-1 text-lg font-semibold">{{ exercise()?.muscleGroupName }}</span>
-        }
-    </div>
-}
-</label>
-
-<label class="flex flex-col gap-2 w-full md:w-[40%]">
-    <span class="text-sm font-medium text-slate-700">Exercise Category <span class="text-red-600">*</span></span>
-    @if(!exerciseCategories()) {
-        <ngx-skeleton-loader
-        count="1"
-        [theme]="{
-            'height': '60px',
-            'border-radius': '12px',
-            'background': '#cbd5e199',
-        }"
-        class="w-full"
-        appearance="line">
-    </ngx-skeleton-loader>
-}
-@else {
-    <div
-    class="flex items-center gap-4 justify-between shadow-md bg-linear-to-br from-white to-slate-50 rounded-lg px-4 py-4 transition-colors duration-200 border focus-within:outline outline-amber-400"
-    [class.border-red-500]="!isControlValid('categoryId', form) && isUserDefined()"
-    [class.border-transparent]="isControlValid('categoryId', form) || !isUserDefined()"
-    [class.opacity-60]="!isUserDefined()"
-    >
-    <div class="flex justify-center">
-        <ng-icon name="faSolidFilter" class="text-emerald-700! text-xl"></ng-icon>
-    </div>
-    @if(isUserDefined()) {
-        <select
-        formControlName="categoryId"
-        class="flex-1 bg-transparent outline-none text-lg font-semibold appearance-none {{!form.get('categoryId')?.value ? 'text-slate-700 font-normal!' : ''}}"
-        >
-        <option [ngValue]="null" disabled hidden>Select Category</option>
-        @for (category of exerciseCategories()!; track category.id) {
-            <option [ngValue]="category.id">{{category.name}}</option>
-        }
-    </select>
-} @else {
-    <span class="flex-1 text-lg font-semibold">{{ exercise()?.exerciseCategoryName }}</span>
-}
-</div>
-}
-</label>
-
-<label class="flex flex-col gap-2 w-full md:w-[50%] md:mx-auto">
-    <span class="text-sm font-medium text-slate-700">Exercise name <span class="text-red-600">*</span></span>
-    <div
-    class="flex items-center gap-4 justify-between shadow-md bg-linear-to-br from-white to-slate-50 rounded-lg px-4 py-4 transition-colors duration-200 border focus-within:outline outline-amber-400"
-    [class.border-red-500]="!isControlValid('name', form) && isUserDefined()"
-    [class.border-transparent]="isControlValid('name', form) || !isUserDefined()"
-    [class.opacity-60]="!isUserDefined()"
-    >
-    <div class="flex justify-center">
-        <ng-icon name="faSolidTag" class="text-emerald-700! text-xl"></ng-icon>
-    </div>
-    @if(isUserDefined()) {
-        <input
-        formControlName="name"
-        class="flex-1 bg-transparent outline-none text-lg"
-        type="text"
-        placeholder="Enter exercise name..."
-        >
-    } @else {
-        <span class="flex-1 text-lg font-semibold">{{ exercise()?.name }}</span>
-    }
-</div>
-</label>
-</div>
-
-<div class="w-full mt-10 pt-6 border-t border-slate-200 flex items-center flex-col gap-3">
-    <p class="text-sm font-medium text-slate-700">Preview</p>
-
-    <div class="flex flex-col w-full items-center justify-center">
-        <div class="flex w-full md:w-[80%] items-center bg-slate-300 rounded-xl px-4 py-3.5 hover:bg-amber-300/70 transition-all duration-200 cursor-pointer group shadow-md active:bg-amber-300 active:scale-[0.99]">
-            <div
-            [class.from-yellow-400]="getExerciseType() === 1"
-            [class.to-amber-500]="getExerciseType() === 1"
-            [class.from-indigo-400]="getExerciseType() === 2"
-            [class.to-indigo-600]="getExerciseType() === 2"
-            [class.from-red-400]="getExerciseType() === 3"
-            [class.to-rose-500]="getExerciseType() === 3"
-            [class.from-violet-400]="getExerciseType() === 4"
-            [class.to-violet-500]="getExerciseType() === 4"
-            class="bg-linear-to-br w-11 h-11 rounded-xl shadow-lg flex items-center justify-center mr-4 shrink-0 group-hover:scale-110 transition-transform duration-200"
-            >
-            @switch(getExerciseType()) {
-                @case(4) { <ng-icon name="faSolidPersonWalkingArrowLoopLeft" class="text-white! text-lg"></ng-icon> }
-                @case(3) { <ng-icon name="faSolidPersonRunning" class="text-white! text-lg"></ng-icon> }
-                @case(2) { <ng-icon name="faSolidChildReaching" class="text-white! text-lg"></ng-icon> }
-                @default { <ng-icon name="faSolidDumbbell" class="text-white! text-lg"></ng-icon> }
+                </select>
+            } @else {
+                <span class="flex-1 text-lg font-semibold">{{ exercise()?.muscleGroupName }}</span>
             }
         </div>
+        }
+        </label>
 
-        <div class="flex flex-col flex-1 min-w-0">
-            <p class="font-semibold text-slate-900 truncate">{{ form.get("name")?.value }} {{ getExerciseCategoryName() }}</p>
-            <p class="text-xs text-slate-600 font-medium truncate mt-0.5">{{ getMuscleGroupName() }}</p>
+        <label class="flex flex-col gap-2 w-full md:w-[40%]">
+            <span class="text-sm font-medium text-slate-700">Exercise Category <span class="text-red-600">*</span></span>
+            @if(!exerciseCategories()) {
+                <ngx-skeleton-loader
+                count="1"
+                [theme]="{
+                    'height': '60px',
+                    'border-radius': '12px',
+                    'background': '#cbd5e199',
+                }"
+                class="w-full"
+                appearance="line">
+            </ngx-skeleton-loader>
+        }
+        @else {
+            <div
+            class="flex items-center gap-4 justify-between shadow-md bg-linear-to-br from-white to-slate-50 rounded-lg px-4 py-4 transition-colors duration-200 border focus-within:outline outline-amber-400"
+            [class.border-red-500]="!isControlValid('categoryId', form) && isUserDefined()"
+            [class.border-transparent]="isControlValid('categoryId', form) || !isUserDefined()"
+            [class.opacity-60]="!isUserDefined()"
+            >
+            <div class="flex justify-center">
+                <ng-icon name="faSolidFilter" class="text-emerald-700! text-xl"></ng-icon>
+            </div>
+            @if(isUserDefined()) {
+                <select
+                formControlName="categoryId"
+                class="flex-1 bg-transparent outline-none text-lg font-semibold appearance-none {{!form.get('categoryId')?.value ? 'text-slate-700 font-normal!' : 'text-slate-800'}}"
+                >
+                <option [ngValue]="null" disabled hidden>Select Category</option>
+                @for (category of exerciseCategories()!; track category.id) {
+                    <option [ngValue]="category.id">{{category.name}}</option>
+                }
+                </select>
+            } @else {
+                <span class="flex-1 text-lg font-semibold">{{ exercise()?.exerciseCategoryName }}</span>
+            }
         </div>
+        }
+        </label>
 
-        <ng-icon name="faSolidChevronRight" class="text-slate-400 text-sm shrink-0 group-hover:text-slate-700 transition-colors"></ng-icon>
+        <label class="flex flex-col gap-2 w-full md:w-[50%] md:mx-auto">
+            <span class="text-sm font-medium text-slate-700">Exercise name <span class="text-red-600">*</span></span>
+            <div
+            class="flex items-center gap-4 justify-between shadow-md bg-linear-to-br from-white to-slate-50 rounded-lg px-4 py-4 transition-colors duration-200 border focus-within:outline outline-amber-400"
+            [class.border-red-500]="!isControlValid('name', form) && isUserDefined()"
+            [class.border-transparent]="isControlValid('name', form) || !isUserDefined()"
+            [class.opacity-60]="!isUserDefined()"
+            >
+            <div class="flex justify-center">
+                <ng-icon name="faSolidTag" class="text-emerald-700! text-xl"></ng-icon>
+            </div>
+            @if(isUserDefined()) {
+                <input
+                formControlName="name"
+                class="flex-1 bg-transparent outline-none font-semibold text-slate-800 text-lg"
+                type="text"
+                placeholder="Enter exercise name..."
+                >
+            } @else {
+                <span class="flex-1 text-lg font-semibold">{{ exercise()?.name }}</span>
+            }
+        </div>
+        </label>
     </div>
-</div>
-</div>
 
-@if(isUserDefined()) {
-    <div class="mt-15 pb-2 flex justify-center gap-4">
-        <app-button
-        label="Save Changes"
-        buttonSize="sm"
-        [buttonType]="'primary'"
-        [htmlType]="'submit'"
-        [isLoading]="isLoading()"
-        [disabled]="!form.valid || isLoading()"
-        ></app-button>
-        <app-button
-        label="Delete"
-        buttonSize="sm"
-        [buttonType]="'danger'"
-        [htmlType]="'button'"
-        [isLoading]="isLoading()"
-        [disabled]="isLoading()"
-        (clicked)="onDelete()"
-        ></app-button>
+    <div class="w-full mt-10 pt-6 border-t border-slate-200 flex items-center flex-col gap-3">
+        <p class="text-sm font-medium text-slate-700">Preview</p>
+
+        <div class="flex flex-col w-full items-center justify-center">
+            <div class="flex w-full md:w-[80%] items-center bg-slate-300 rounded-xl px-4 py-3.5 hover:bg-amber-300/70 transition-all duration-200 cursor-pointer group shadow-md active:bg-amber-300 active:scale-[0.99]">
+                <div
+                [class.from-yellow-400]="getExerciseType() === 1"
+                [class.to-amber-500]="getExerciseType() === 1"
+                [class.from-indigo-400]="getExerciseType() === 2"
+                [class.to-indigo-600]="getExerciseType() === 2"
+                [class.from-red-400]="getExerciseType() === 3"
+                [class.to-rose-500]="getExerciseType() === 3"
+                [class.from-violet-400]="getExerciseType() === 4"
+                [class.to-violet-500]="getExerciseType() === 4"
+                class="bg-linear-to-br w-11 h-11 rounded-xl shadow-lg flex items-center justify-center mr-4 shrink-0 group-hover:scale-110 transition-transform duration-200"
+                >
+                @switch(getExerciseType()) {
+                    @case(4) { <ng-icon name="faSolidPersonWalkingArrowLoopLeft" class="text-white! text-lg"></ng-icon> }
+                    @case(3) { <ng-icon name="faSolidPersonRunning" class="text-white! text-lg"></ng-icon> }
+                    @case(2) { <ng-icon name="faSolidChildReaching" class="text-white! text-lg"></ng-icon> }
+                    @default { <ng-icon name="faSolidDumbbell" class="text-white! text-lg"></ng-icon> }
+                }
+            </div>
+
+            <div class="flex flex-col flex-1 min-w-0">
+                <p class="font-semibold text-slate-900 truncate">{{ form.get("name")?.value }} {{ getExerciseCategoryName() }}</p>
+                <p class="text-xs text-slate-600 font-medium truncate mt-0.5">{{ getMuscleGroupName() }}</p>
+            </div>
+
+            <ng-icon name="faSolidChevronRight" class="text-slate-400 text-sm shrink-0 group-hover:text-slate-700 transition-colors"></ng-icon>
+        </div>
     </div>
-}
-</form>
+    </div>
+
+    @if(isUserDefined()) {
+        <div class="mt-15 pb-2 flex justify-center gap-4">
+             <app-button
+            label="Save Changes"
+            buttonSize="sm"
+            [buttonType]="'primary'"
+            [htmlType]="'submit'"
+            [isLoading]="isLoading()"
+            [disabled]="!form.valid || isLoading() || isDeleting()"
+            ></app-button>
+            <app-button
+            label="Delete"
+            buttonSize="sm"
+            [buttonType]="'danger'"
+            [htmlType]="'button'"
+            [isLoading]="isDeleting()"
+            [disabled]="isDeleting() || isLoading()"
+            (clicked)="onDelete()"
+            ></app-button>
+
+        </div>
+    }
+    </form>
 </div>

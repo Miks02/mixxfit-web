@@ -2,8 +2,10 @@ import { CommonModule } from '@angular/common';
 import { Component, computed, inject, signal, WritableSignal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { NgIcon, provideIcons } from "@ng-icons/core";
 import { faSolidPersonWalkingArrowLoopLeft } from '@ng-icons/font-awesome/solid';
+import { NgxSkeletonLoaderComponent } from 'ngx-skeleton-loader';
 import { finalize, take } from 'rxjs';
 import { isControlValid } from '../../../../core/helpers/FormHelpers';
 import { NotificationService } from '../../../../core/services/notification-service';
@@ -12,8 +14,6 @@ import { ExerciseType } from '../../../workout/models/exercise-type';
 import { createExerciseFormFactory } from '../../factories/exercise-factories';
 import { ExerciseModalLayoutService } from '../../services/exercise-modal-layout-service';
 import { ExerciseService } from '../../services/exercise-service';
-import { NgxSkeletonLoaderComponent } from 'ngx-skeleton-loader';
-import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-create-exercise-form',

@@ -44,6 +44,7 @@ export class EditExerciseForm {
 
     exercise: WritableSignal<ExerciseDto | undefined> = signal(undefined);
     isLoading: WritableSignal<boolean> = signal(false);
+    isDeleting: WritableSignal<boolean> = signal(false);
 
     isUserDefined = computed(() => this.exercise()?.isUserDefined ?? false);
 
@@ -110,10 +111,10 @@ export class EditExerciseForm {
     }
 
     onDelete() {
-        this.isLoading.set(true);
+        this.isDeleting.set(true);
 
         this.exerciseService.deleteExercise(this.exercise()!.id)
-        .pipe(take(1), finalize(() => this.isLoading.set(false)))
+        .pipe(take(1), finalize(() => this.isDeleting.set(false)))
         .subscribe({
             next: () => {
                 this.notification.showSuccess('Exercise deleted successfully');
