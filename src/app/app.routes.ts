@@ -14,6 +14,7 @@ import { WeightPage } from './features/weight/pages/weight-page/weight-page';
 import { ExerciseList } from './features/exercise/components/exercise-list/exercise-list';
 import { ExerciseModalLayout } from './features/exercise/layouts/exercise-modal-layout/exercise-modal-layout';
 import { CreateExerciseForm } from './features/exercise/components/create-exercise-form/create-exercise-form';
+import { EditExerciseForm } from './features/exercise/components/edit-exercise-form/edit-exercise-form';
 
 export const routes: Routes = [
     {
@@ -53,6 +54,10 @@ export const routes: Routes = [
                             {
                                 path: "create",
                                 component: CreateExerciseForm
+                            },
+                            {
+                                path: "edit/:id",
+                                component: EditExerciseForm
                             }
                         ]
                     }
