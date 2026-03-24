@@ -7,6 +7,7 @@ import { ExerciseCategoryDto } from '../models/exercise-category-dto';
 import { ExerciseDto } from '../models/exercise-dto';
 import { ExercisePage } from '../models/exercise-page';
 import { MuscleGroupDto } from '../models/muscle-group-dto';
+import { EditExerciseDto } from '../models/edit-exercise-dto';
 
 @Injectable({
     providedIn: 'root',
@@ -34,6 +35,23 @@ export class ExerciseService {
                 this._muscleGroups.set(res.muscleGroups);
             }),
             map((res) => res.exercises)
+        )
+    }
+
+    updateExercise(request: EditExerciseDto): Observable<ExerciseDto> {
+        return this.http.put<ExerciseDto>(`${this.apiUrl}/exercises`, request)
+        .pipe(
+            tap((updatedExercise) => {
+                this._exercises.update(exercises =>
+                    exercises?.map((e) => e.id === request.id ? updatedExercise : e) ?? [])
+            })
+        )
+    }
+
+    deleteExercise(exerciseId: number): Observable<void> {
+        return this.http.delete<void>(`${this.apiUrl}/exercises/${exerciseId}`)
+        .pipe(
+            tap(() => this._exercises.update(() => this.exercises()?.filter(e => e.id !== exerciseId)))
         )
     }
 
