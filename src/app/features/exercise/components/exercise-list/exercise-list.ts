@@ -1,23 +1,22 @@
 import { Component, computed, inject, signal, WritableSignal } from '@angular/core';
-import { ExerciseService } from '../../services/exercise-service';
-import { take, tap } from 'rxjs';
+import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
-    faSolidChevronRight,
     faSolidChildReaching,
     faSolidDumbbell,
     faSolidFilter,
+    faSolidGear,
     faSolidMagnifyingGlass,
     faSolidPersonRunning,
     faSolidPersonWalkingArrowLoopLeft,
     faSolidPlus,
-    faSolidXmark,
+    faSolidXmark
 } from '@ng-icons/font-awesome/solid';
 import { NgxSkeletonLoaderComponent } from 'ngx-skeleton-loader';
-import { FormsModule } from '@angular/forms';
 import { ExerciseFilterType } from '../../models/exercise-filter-type';
 import { ExerciseModalLayoutService } from '../../services/exercise-modal-layout-service';
-import { Button } from "../../../../shared/button/button";
+import { ExerciseService } from '../../services/exercise-service';
 
 
 @Component({
@@ -25,14 +24,15 @@ import { Button } from "../../../../shared/button/button";
     imports: [NgIcon, NgxSkeletonLoaderComponent, FormsModule],
     templateUrl: './exercise-list.html',
     styleUrl: './exercise-list.css',
-    providers: [provideIcons({ faSolidDumbbell, faSolidMagnifyingGlass, faSolidFilter, faSolidPlus, faSolidXmark, faSolidPersonRunning, faSolidChildReaching, faSolidChevronRight, faSolidPersonWalkingArrowLoopLeft })]
+    providers: [provideIcons({ faSolidDumbbell, faSolidMagnifyingGlass, faSolidFilter, faSolidPlus, faSolidXmark, faSolidPersonRunning, faSolidChildReaching, faSolidGear, faSolidPersonWalkingArrowLoopLeft })]
 })
 export class ExerciseList {
     isSearchOpen: WritableSignal<boolean> = signal(false);
     isFilterOpen: WritableSignal<boolean> = signal(false);
 
-    exerciseModal = inject(ExerciseModalLayoutService);
+    private exerciseModal = inject(ExerciseModalLayoutService);
     private exerciseService = inject(ExerciseService);
+    private router = inject(Router);
 
     exercises = this.exerciseService.exercises;
     categories = this.exerciseService.exerciseCategories;
@@ -84,6 +84,10 @@ export class ExerciseList {
             return true;
         return false;
     })
+
+    getExerciseDetails(exerciseId: number) {
+        this.router.navigate([`workout-form/exercises/edit/${exerciseId}`])
+    }
 
     onSearchChange(searchTerm: string) {
         this.searchTerm.set(searchTerm);
