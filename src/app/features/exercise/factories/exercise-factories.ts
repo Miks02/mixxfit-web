@@ -19,21 +19,21 @@ export function exerciseEntryFormFactory(fb: FormBuilder, name: string, type: Ex
     })
 };
 
-export function createWeightSet(fb: FormBuilder): FormGroup {
+export function weightSetFactory(fb: FormBuilder): FormGroup {
     return fb.group({
         weight: [null as number | null, Validators.required, Validators.min(1), Validators.max(1000), onlyNumbersCheck()],
         reps: [null as number | null, Validators.required, Validators.min(1), Validators.max(1000), onlyNumbersCheck()]
     })
 }
 
-export function createCardioSet(fb: FormBuilder): FormGroup {
+export function cardioSetFactory(fb: FormBuilder): FormGroup {
     return fb.group({
         duration: ["", Validators.required],
         distance: [null as number | null, Validators.required, Validators.min(1), Validators.max(1000), onlyNumbersCheck()]
     })
 }
 
-export function createStretchingSet(fb: FormBuilder): FormGroup {
+export function stretchingSetFactory(fb: FormBuilder): FormGroup {
     return fb.group({
         duration: ["", Validators.required]
     })
