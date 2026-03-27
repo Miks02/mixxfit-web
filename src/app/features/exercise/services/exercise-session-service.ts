@@ -1,8 +1,8 @@
 import { inject, Injectable } from '@angular/core';
-import { FormArray, FormBuilder, FormControl } from '@angular/forms';
+import { FormArray, FormBuilder } from '@angular/forms';
 import { ExerciseEntryItem } from '../models/exercise-entry-item';
 import { ExerciseType } from '../../workout/models/exercise-type';
-import { cardioSetFactory, createExerciseFormFactory, weightSetFactory, exerciseEntryFormFactory } from '../factories/exercise-factories';
+import { cardioSetFactory, weightSetFactory, exerciseEntryFormFactory, stretchingSetFactory } from '../factories/exercise-factories';
 
 @Injectable({
     providedIn: 'root',
@@ -21,12 +21,12 @@ export class ExerciseSessionService {
     getExerciseDetails(index: number | null = null): FormArray {
         const exercises = this.getExercises();
 
-        return index
+        return index != null
         ? exercises.at(index).get("details") as FormArray
         : exercises.at(exercises.length - 1).get("details") as FormArray
     }
 
-    getExerciseType(index: number): FormControl {
+    getExerciseType(index: number): ExerciseType {
         return this.getExercises().at(index).get("exerciseType")?.value;
     }
 
@@ -35,19 +35,26 @@ export class ExerciseSessionService {
         this.addDetails(exercise.exerciseType)
     }
 
-
     addDetails(type: ExerciseType, index: number | null = null) {
         switch(type) {
             case ExerciseType.Weights:
-            this.getExerciseDetails(index).push(weightSetFactory(this.fb));
-            return;
             case ExerciseType.Bodyweight:
-            this.getExerciseDetails(index).push(weightSetFactory(this.fb));
-            return;
+                this.getExerciseDetails(index).push(weightSetFactory(this.fb));
+                return;
             case ExerciseType.Cardio:
-            this.getExerciseDetails(index).push(cardioSetFactory(this.fb));
-            return;
+                this.getExerciseDetails(index).push(cardioSetFactory(this.fb));
+                return;
+            case ExerciseType.Stretching:
+                this.getExerciseDetails(index).push(stretchingSetFactory(this.fb));
+                return;
         }
     }
 
+    removeDetails(exerciseIndex: number, setIndex: number) {
+        this.getExerciseDetails(exerciseIndex).removeAt(setIndex);
+    }
+
+    removeExercise(exerciseIndex: number) {
+        this.getExercises().removeAt(exerciseIndex);
+    }
 }
