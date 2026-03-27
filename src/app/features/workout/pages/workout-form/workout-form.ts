@@ -10,9 +10,11 @@ import {
     faSolidChildReaching,
     faSolidCircle,
     faSolidDumbbell,
+    faSolidEllipsis,
     faSolidFireFlameCurved,
     faSolidNoteSticky,
     faSolidPersonRunning,
+    faSolidPersonWalkingArrowLoopLeft,
     faSolidTag,
     faSolidXmark
 } from "@ng-icons/font-awesome/solid";
@@ -30,7 +32,7 @@ import { WorkoutService } from '../../services/workout-service';
     imports: [NgIcon, FormsModule, ReactiveFormsModule, DatePipe, Button, RouterOutlet],
     templateUrl: './workout-form.html',
     styleUrl: './workout-form.css',
-    providers: [provideIcons({faSolidTag, faSolidCalendarDay, faSolidDumbbell, faSolidFireFlameCurved, faSolidBookOpen, faSolidBars, faSolidNoteSticky, faSolidXmark, faSolidCircle, faSolidPersonRunning, faSolidChildReaching})]
+    providers: [provideIcons({faSolidTag, faSolidCalendarDay, faSolidDumbbell, faSolidFireFlameCurved, faSolidBookOpen, faSolidBars, faSolidNoteSticky, faSolidXmark, faSolidCircle, faSolidPersonRunning, faSolidChildReaching, faSolidPersonWalkingArrowLoopLeft, faSolidEllipsis})]
 })
 export class WorkoutForm {
     isControlValid = isControlValid
