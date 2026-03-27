@@ -17,6 +17,8 @@ import { NgxSkeletonLoaderComponent } from 'ngx-skeleton-loader';
 import { ExerciseFilterType } from '../../models/exercise-filter-type';
 import { ExerciseModalLayoutService } from '../../services/exercise-modal-layout-service';
 import { ExerciseService } from '../../services/exercise-service';
+import { ExerciseSessionService } from '../../services/exercise-session-service';
+import { ExerciseType } from '../../../workout/models/exercise-type';
 
 
 @Component({
@@ -33,6 +35,7 @@ export class ExerciseList {
     private exerciseModal = inject(ExerciseModalLayoutService);
     private exerciseService = inject(ExerciseService);
     private router = inject(Router);
+    private exerciseSession = inject(ExerciseSessionService);
 
     exercises = this.exerciseService.exercises;
     categories = this.exerciseService.exerciseCategories;
@@ -91,6 +94,11 @@ export class ExerciseList {
 
     onSearchChange(searchTerm: string) {
         this.searchTerm.set(searchTerm);
+    }
+
+    addExercise(name: string, type: ExerciseType) {
+        this.exerciseSession.addExercise({exerciseName: name, exerciseType: type});
+        this.router.navigate(['workout-form/exercises/session']);
     }
 
 }
