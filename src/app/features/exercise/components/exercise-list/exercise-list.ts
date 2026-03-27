@@ -19,11 +19,12 @@ import { ExerciseModalLayoutService } from '../../services/exercise-modal-layout
 import { ExerciseService } from '../../services/exercise-service';
 import { ExerciseSessionService } from '../../services/exercise-session-service';
 import { ExerciseType } from '../../../workout/models/exercise-type';
+import { Button } from "../../../../shared/button/button";
 
 
 @Component({
     selector: 'app-exercise-list',
-    imports: [NgIcon, NgxSkeletonLoaderComponent, FormsModule],
+    imports: [NgIcon, NgxSkeletonLoaderComponent, FormsModule, Button],
     templateUrl: './exercise-list.html',
     styleUrl: './exercise-list.css',
     providers: [provideIcons({ faSolidDumbbell, faSolidMagnifyingGlass, faSolidFilter, faSolidPlus, faSolidXmark, faSolidPersonRunning, faSolidChildReaching, faSolidGear, faSolidPersonWalkingArrowLoopLeft })]
@@ -99,6 +100,14 @@ export class ExerciseList {
     addExercise(name: string, type: ExerciseType) {
         this.exerciseSession.addExercise({exerciseName: name, exerciseType: type});
         this.router.navigate(['workout-form/exercises/session']);
+    }
+
+    goToCurrentSession() {
+        this.router.navigate(['workout-form/exercises/session']);
+    }
+
+    isSessionActive() {
+        return this.exerciseSession.getExercises().length > 0;
     }
 
 }
