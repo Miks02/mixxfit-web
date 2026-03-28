@@ -21,22 +21,22 @@ export function exerciseEntryFormFactory(fb: FormBuilder, name: string, type: Ex
 
 export function weightSetFactory(fb: FormBuilder): FormGroup {
     return fb.group({
-        weight: [null as number | null, Validators.required, Validators.min(1), Validators.max(1000), onlyNumbersCheck()],
-        reps: [null as number | null, Validators.required, Validators.min(1), Validators.max(1000), onlyNumbersCheck()]
+        weight: [null as number | null, [Validators.required, Validators.min(1), Validators.max(1000), onlyNumbersCheck()]],
+        reps: [null as number | null, [Validators.required, Validators.min(1), Validators.max(1000), onlyNumbersCheck()]]
     })
 }
 
 export function cardioSetFactory(fb: FormBuilder): FormGroup {
     return fb.group({
-        durationMinutes: [null as number | null, Validators.required, onlyNumbersCheck()],
-        durationSeconds: [null as number | null, Validators.required, onlyNumbersCheck()],
-        distance: [null as number | null, Validators.required, Validators.min(1), Validators.max(1000), onlyNumbersCheck()]
+        durationMinutes: [null as number | null, [Validators.required, onlyNumbersCheck()]],
+        durationSeconds: [null as number | null, [Validators.required, onlyNumbersCheck()]],
+        distance: [null as number | null, [Validators.required, Validators.min(1), Validators.max(1000), onlyNumbersCheck()]]
     })
 }
 
 export function stretchingSetFactory(fb: FormBuilder): FormGroup {
     return fb.group({
-        durationMinutes: [null as number | null, Validators.required],
-        durationSeconds: [null as number | null, Validators.required],
+        durationMinutes: [null as number | null, [Validators.required, Validators.min(1), Validators.max(1000), onlyNumbersCheck()]],
+        durationSeconds: [null as number | null, [Validators.required, Validators.min(1), Validators.max(1000), onlyNumbersCheck()]],
     })
 }

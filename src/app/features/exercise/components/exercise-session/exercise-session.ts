@@ -34,7 +34,7 @@ export class ExerciseSession {
         effect(() => {
             const exercises = this.exercises() as [];
 
-            if( exercises?.length === 0)
+            if(exercises?.length === 0)
                 this.router.navigate(['workout-form/exercises']);
         })
 
