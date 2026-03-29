@@ -1,8 +1,8 @@
 import { inject, Injectable } from '@angular/core';
 import { FormArray, FormBuilder } from '@angular/forms';
-import { ExerciseEntryItem } from '../models/exercise-entry-item';
 import { ExerciseType } from '../../workout/models/exercise-type';
-import { cardioSetFactory, weightSetFactory, exerciseEntryFormFactory, stretchingSetFactory } from '../factories/exercise-factories';
+import { cardioSetFactory, exerciseEntryFormFactory, stretchingSetFactory, weightSetFactory } from '../factories/exercise-factories';
+import { ExerciseEntryItem } from '../models/exercise-entry-item';
 
 @Injectable({
     providedIn: 'root',
@@ -27,7 +27,7 @@ export class ExerciseSessionService {
     }
 
     getExerciseType(index: number): ExerciseType {
-        return this.getExercises().at(index).get("exerciseType")?.value;
+        return this.getExercises().at(index).get("exerciseType")?.value!;
     }
 
     addExercise(exercise: ExerciseEntryItem) {

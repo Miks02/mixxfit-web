@@ -26,6 +26,24 @@ export function createExerciseForm(fb: FormBuilder): FormGroup {
     })
 }
 
+export function createExerciseGroup(fb: FormBuilder, data?: any): FormGroup {
+  return fb.group({
+    exerciseName: [data?.exerciseName || ''],
+    exerciseType: [data?.exerciseType || ''],
+    details: fb.array(
+      data?.details
+        ? data.details.map((d: any) => fb.group({
+            weight: [d.weight || null],
+            reps: [d.reps || null],
+            durationMinutes: [d.durationMinutes || null],
+            durationSeconds: [d.durationSeconds || null],
+            distance: [d.distance || null]
+          }))
+        : []
+    )
+  });
+}
+
 export function createWorkoutForm(fb: FormBuilder): FormGroup {
     const today = new Date().toISOString().substring(0, 10);
     return fb.group({
@@ -44,18 +62,7 @@ export function createWorkoutObject(form: FormGroup): CreateWorkoutDto {
         exerciseEntries: (form.get('exercises')?.value as ExerciseEntryFormValue[]).map(exercise => ({
             name: exercise.exerciseName,
             exerciseType: exercise.exerciseType,
-            cardioType: exercise.cardioType,
-            durationMinutes: exercise.durationMinutes,
-            durationSeconds: exercise.durationSeconds,
-            distanceKm: exercise.distance,
-            avgHeartRate: exercise.avgHeartRate,
-            maxHeartRate: exercise.maxHeartRate,
-            caloriesBurned: exercise.caloriesBurned,
-            paceMinPerKm: exercise.pace,
-            workIntervalSec: exercise.workInterval,
-            restIntervalSec: exercise.restInterval,
-            intervalsCount: exercise.intervalsCount,
-            sets: exercise.sets
+            sets: exercise.details
         }))
     }
 }
