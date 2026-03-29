@@ -59,6 +59,8 @@
                                         [class.to-indigo-600]="exercise.exerciseType === 2"
                                         [class.from-red-400]="exercise.exerciseType === 3"
                                         [class.to-rose-500]="exercise.exerciseType === 3"
+                                        [class.from-purple-400]="exercise.exerciseType === 4"
+                                        [class.to-purple-600]="exercise.exerciseType === 4"
                                         class="w-12 h-12 rounded-xl shadow-lg flex items-center justify-center group-hover:scale-105 transition-transform">
                                         @if(exercise.exerciseType === 3) { <ng-icon name="faSolidPersonRunning" class="text-white! text-xl"></ng-icon> }
                                         @else if(exercise.exerciseType === 2) { <ng-icon name="faSolidChildReaching" class="text-white! text-xl"></ng-icon> }
@@ -69,41 +71,31 @@
                                         <div class="text-xs text-slate-500 font-medium mt-0.5">{{ exerciseTypeLabel(exercise) }}</div>
                                     </div>
                                 </div>
-                                <div class="text-right ">
-                                    @if(!isExerciseTypeCardio(exercise)) {
-                                        <span class="px-3 flex flex-col py-1 bg-slate-100 rounded-lg font-bold text-slate-700 text-sm">{{ getSetCount(exercise) }} sets</span>
-                                    }
-                                    @else {
-                                        <span class="px-3 py-1 bg-slate-100 rounded-lg font-bold text-slate-700 text-sm">{{ isCardioTypeSteadyState(exercise) ? 'Steady state' : 'HIIT' }}</span>
-                                    }
+                                <div class="text-right">
+                                    <span class="px-3 flex flex-col py-1 bg-slate-100 rounded-lg font-bold text-slate-700 text-sm">{{ getSetCount(exercise) }} sets</span>
                                 </div>
                             </div>
 
-                            @if(!isExerciseTypeCardio(exercise)) {
-                                <div class="flex flex-wrap gap-2">
-                                    @for(set of exercise.sets; track $index) {
-                                        <span class="bg-white border-2 border-amber-200 text-slate-700 px-4 py-2 rounded-xl text-sm font-semibold shadow-sm hover:shadow-md hover:border-amber-300 transition-all">
-                                            Set {{$index + 1}}: {{ set.weightKg.toFixed() }} kg × {{ set.reps }} reps
-                                        </span>
-                                    }
-                                </div>
-                            }
-                            @else {
-                                @if(isCardioTypeSteadyState(exercise)) {
-                                    <div class="flex flex-wrap gap-3 text-sm">
-                                        <span class="bg-white border-2 border-blue-200 rounded-xl px-4 py-2 shadow-sm font-semibold text-slate-700 hover:border-blue-300 transition-all">Duration: {{ (exercise.durationMinutes || 0) | number }}m {{ exercise.durationSeconds || 0 }}s</span>
-                                        <span class="bg-white border-2 border-blue-200 rounded-xl px-4 py-2 shadow-sm font-semibold text-slate-700 hover:border-blue-300 transition-all">Distance: {{ (exercise.distanceKm || 0) | number:'1.2-2'  }} km</span>
-                                        <span class="bg-white border-2 border-blue-200 rounded-xl px-4 py-2 shadow-sm font-semibold text-slate-700 hover:border-blue-300 transition-all">Calories: {{ (exercise.caloriesBurned?.toFixed()) || 0 }}</span>
-                                    </div>
+                            <div class="flex flex-wrap gap-2">
+                                @for(set of exercise.sets; track $index) {
+                                    <span class="bg-white border-2 border-amber-200 text-slate-700 px-4 py-2 rounded-xl text-sm font-semibold shadow-sm hover:shadow-md hover:border-amber-300 transition-all">
+                                        @switch(exercise.exerciseType) {
+                                            @case (1) {
+                                                Set {{ $index + 1 }}: {{ set.weight }} kg | {{ set.reps }} reps
+                                            }
+                                            @case (2) {
+                                                Set {{ $index + 1 }}: {{ set.weight }} kg | {{ set.reps }} reps
+                                            }
+                                            @case (3) {
+                                                Set {{ $index + 1 }}: {{ set.durationMinutes }} minutes | {{ set.durationSeconds }} seconds | {{ set.distance }} km
+                                            }
+                                            @case (4) {
+                                                Set {{ $index + 1 }}: {{ set.durationMinutes }} minutes | {{ set.durationSeconds }} seconds
+                                            }
+                                        }
+                                    </span>
                                 }
-                                @else {
-                                    <div class="flex flex-wrap gap-3 text-sm">
-                                        <span class="bg-white border-2 border-red-200 rounded-xl px-4 py-2 shadow-sm font-semibold text-slate-700 hover:border-red-300 transition-all">Intervals: {{ exercise.intervalsCount?.toFixed() }}</span>
-                                        <span class="bg-white border-2 border-red-200 rounded-xl px-4 py-2 shadow-sm font-semibold text-slate-700 hover:border-red-300 transition-all">Work: {{ exercise.workIntervalSec?.toFixed() || 0 }}s</span>
-                                        <span class="bg-white border-2 border-red-200 rounded-xl px-4 py-2 shadow-sm font-semibold text-slate-700 hover:border-red-300 transition-all">Rest: {{ exercise.restIntervalSec?.toFixed() || 0 }}s</span>
-                                    </div>
-                                }
-                            }
+                            </div>
                         </div>
                     }
                 }
@@ -163,34 +155,54 @@
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 gap-4">
-                <div class="flex items-center gap-4 bg-linear-to-br from-yellow-100 to-amber-100 rounded-2xl shadow-md px-4 py-4  hover:shadow-lg transition-all">
+            <div class="flex flex-wrap gap-4">
+                <div class="flex grow items-center gap-4 bg-linear-to-br from-yellow-100 to-amber-100 rounded-2xl shadow-md px-4 py-4 hover:shadow-lg transition-all">
                     <div class="w-12 h-12 rounded-xl bg-linear-to-br from-yellow-400 to-amber-500 flex items-center justify-center shadow-lg">
                         <ng-icon name="faSolidDumbbell" class="text-white! text-xl"></ng-icon>
                     </div>
                     <div class="flex-1">
-                        <p class="text-xs text-amber-700 font-semibold uppercase tracking-wider">Weight</p>
+                        <p class="text-xs text-amber-700 font-semibold uppercase tracking-wider"></p>
                         <p class="text-2xl font-bold text-amber-900">{{ getWeightExerciseCount() }}</p>
                     </div>
                 </div>
 
-                <div class="flex items-center gap-4 bg-linear-to-br from-red-100 to-rose-200 rounded-2xl shadow-md px-4 py-4 hover:shadow-lg transition-all">
+                <div class="flex grow items-center gap-4 bg-linear-to-br from-red-100 to-rose-200 rounded-2xl shadow-md px-4 py-4 hover:shadow-lg transition-all">
                     <div class="w-12 h-12 rounded-xl bg-linear-to-br from-red-400 to-rose-500 flex items-center justify-center shadow-lg">
                         <ng-icon name="faSolidPersonRunning" class="text-white! text-xl"></ng-icon>
                     </div>
                     <div class="flex-1">
-                        <p class="text-xs text-rose-700 font-semibold uppercase tracking-wider">Cardio</p>
+                        <p class="text-xs text-rose-700 font-semibold uppercase tracking-wider"></p>
                         <p class="text-2xl font-bold text-rose-900">{{ getCardioExerciseCount() }}</p>
                     </div>
                 </div>
 
-                <div class="flex items-center gap-4 bg-linear-to-br from-indigo-100 to-indigo-200 rounded-2xl shadow-md px-4 py-4 hover:shadow-lg transition-all">
-                    <div class="w-12 h-12 rounded-xl bg-linear-to-br from-indigo-400 to-indigo-600 flex items-center justify-center shadow-lg">
+                <div class="flex grow items-center gap-4 bg-linear-to-br from-blue-100 to-blue-200 rounded-2xl shadow-md px-4 py-4 hover:shadow-lg transition-all">
+                    <div class="w-12 h-12 rounded-xl bg-linear-to-br from-blue-400 to-blue-600 flex items-center justify-center shadow-lg">
                         <ng-icon name="faSolidChildReaching" class="text-white! text-xl"></ng-icon>
                     </div>
                     <div class="flex-1">
-                        <p class="text-xs text-indigo-700 font-semibold uppercase tracking-wider">Bodyweight</p>
-                        <p class="text-2xl font-bold text-indigo-900">{{ getBodyweightExerciseCount() }}</p>
+                        <p class="text-xs text-blue-700 font-semibold uppercase tracking-wider"></p>
+                        <p class="text-2xl font-bold text-blue-900">{{ getBodyweightExerciseCount() }}</p>
+                    </div>
+                </div>
+
+                <div class="flex grow items-center gap-4 bg-linear-to-br from-purple-100 to-purple-200 rounded-2xl shadow-md px-4 py-4 hover:shadow-lg transition-all">
+                    <div class="w-12 h-12 rounded-xl bg-linear-to-br from-purple-400 to-purple-600 flex items-center justify-center shadow-lg">
+                        <ng-icon name="faSolidPersonWalkingArrowLoopLeft" class="text-white! text-xl"></ng-icon>
+                    </div>
+                    <div class="flex-1">
+                        <p class="text-xs text-purple-700 font-semibold uppercase tracking-wider"></p>
+                        <p class="text-2xl font-bold text-purple-900">{{ getStretchingExerciseCount() }}</p>
+                    </div>
+                </div>
+
+                <div class="flex grow items-center gap-4 bg-linear-to-br from-gray-100 to-gray-200 rounded-2xl shadow-md px-4 py-4 hover:shadow-lg transition-all">
+                    <div class="w-12 h-12 rounded-xl bg-linear-to-br from-gray-400 to-gray-600 flex items-center justify-center shadow-lg">
+                        <ng-icon name="faSolidEllipsis" class="text-white! text-xl"></ng-icon>
+                    </div>
+                    <div class="flex-1">
+                        <p class="text-xs text-gray-700 font-semibold uppercase tracking-wider"></p>
+                        <p class="text-2xl font-bold text-gray-900">{{ getOtherExerciseCount() }}</p>
                     </div>
                 </div>
             </div>
