@@ -1,5 +1,6 @@
 import { DatePipe } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, effect, inject } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { AbstractControl, FormArray, FormBuilder, FormsModule, ReactiveFormsModule, } from '@angular/forms';
 import { Router, RouterOutlet } from '@angular/router';
 import { NgIcon, provideIcons } from "@ng-icons/core";
@@ -16,14 +17,15 @@ import {
     faSolidPersonRunning,
     faSolidPersonWalkingArrowLoopLeft,
     faSolidTag,
+    faSolidTrash,
     faSolidXmark
 } from "@ng-icons/font-awesome/solid";
 import { handleValidationErrors, isControlValid } from '../../../../core/helpers/FormHelpers';
 import { NotificationService } from '../../../../core/services/notification-service';
 import { LayoutState } from '../../../../layout/services/layout-state';
 import { Button } from '../../../../shared/button/button';
-import { createWorkoutForm, createWorkoutObject } from '../../factories/workout-factories';
-import { CardioType } from '../../models/cardio-type';
+import { ExerciseSessionService } from '../../../exercise/services/exercise-session-service';
+import { createExerciseGroup, createWorkoutForm, createWorkoutObject } from '../../factories/workout-factories';
 import { ExerciseType } from '../../models/exercise-type';
 import { WorkoutService } from '../../services/workout-service';
 
@@ -32,30 +34,50 @@ import { WorkoutService } from '../../services/workout-service';
     imports: [NgIcon, FormsModule, ReactiveFormsModule, DatePipe, Button, RouterOutlet],
     templateUrl: './workout-form.html',
     styleUrl: './workout-form.css',
-    providers: [provideIcons({faSolidTag, faSolidCalendarDay, faSolidDumbbell, faSolidFireFlameCurved, faSolidBookOpen, faSolidBars, faSolidNoteSticky, faSolidXmark, faSolidCircle, faSolidPersonRunning, faSolidChildReaching, faSolidPersonWalkingArrowLoopLeft, faSolidEllipsis})]
+    providers: [provideIcons({faSolidTag, faSolidCalendarDay, faSolidDumbbell, faSolidFireFlameCurved, faSolidBookOpen, faSolidBars, faSolidNoteSticky, faSolidXmark, faSolidCircle, faSolidPersonRunning, faSolidChildReaching, faSolidPersonWalkingArrowLoopLeft, faSolidEllipsis, faSolidTrash})]
 })
 export class WorkoutForm {
-    isControlValid = isControlValid
+    isControlValid = isControlValid;
 
-    layoutState = inject(LayoutState)
-    fb = inject(FormBuilder)
-    workoutService = inject(WorkoutService)
-    router = inject(Router)
+    layoutState = inject(LayoutState);
+    fb = inject(FormBuilder);
+    workoutService = inject(WorkoutService);
+    exerciseSession = inject(ExerciseSessionService);
+    router = inject(Router);
     notificationService = inject(NotificationService);
 
     form = createWorkoutForm(this.fb);
 
-    get exercises(): FormArray {
-        return this.form.get('exercises') as FormArray
+    get exercises() {
+        return this.exerciseSession.getExercises();
+    }
+    private exerciseSource = toSignal(this.exerciseSession.getExercises().valueChanges,
+    {initialValue: this.exerciseSession.getExercises().value});;
+
+    constructor() {
+        this.layoutState.setTitle("Workout Form")
+
+        effect(() => {
+            const exercises = this.exerciseSource();
+
+            const data = exercises.map((ex: any) => createExerciseGroup(this.fb, ex))
+
+            this.form.setControl('exercises', new FormArray(data), {emitEvent: false})
+        })
     }
 
     getTotalSets(): number {
         let total = 0;
-        for (const exercise of this.exercises.controls) {
+        for (const exercise of this.exerciseSession.getExercises().controls) {
             const sets = exercise.get('sets') as FormArray | null;
             total += sets?.length ?? 0;
         }
         return total;
+    }
+
+    getSetControls(exercise: AbstractControl): AbstractControl[] {
+        const details = exercise.get('details') as FormArray;
+        return details ? details.controls : [];
     }
 
     getWeightExerciseCount(): number {
@@ -70,9 +92,17 @@ export class WorkoutForm {
         return this.getExerciseTypeCount(ExerciseType.Cardio);
     }
 
+    getStretchingExerciseCount(): number {
+        return this.getExerciseTypeCount(ExerciseType.Stretching);
+    }
+
+    getOtherExerciseCount(): number {
+        return this.getExerciseTypeCount(ExerciseType.Other);
+    }
+
     private getExerciseTypeCount(type: ExerciseType): number {
         let count = 0;
-        for (const exercise of this.exercises.controls) {
+        for (const exercise of this.exerciseSession.getExercises().controls) {
             if (exercise.get('exerciseType')?.value === type) {
                 count++;
             }
@@ -80,24 +110,16 @@ export class WorkoutForm {
         return count;
     }
 
-    getExerciseSets(exercise: AbstractControl): number {
-        return (exercise.get('sets') as Object as []).length;
+    getExerciseSets(exerciseId: number) {
+        return this.exerciseSession.getExerciseDetails(exerciseId).value
     }
 
-    getExerciseType(exercise: AbstractControl): number {
-        return (exercise.get('exerciseType'))?.value
-    }
-
-    isExerciseTypeCardio(exercise: AbstractControl): boolean {
-        return exercise.get('exerciseType')?.value === ExerciseType.Cardio
-    }
-
-    isCardioTypeSteadyState(exercise: AbstractControl): boolean {
-        return exercise.get('cardioType')?.value === CardioType.SteadyState
+    getExerciseType(exercise: AbstractControl) {
+        return exercise.get("exerciseType")?.value;
     }
 
     exerciseTypeLabel(exercise: AbstractControl): string {
-        const type = exercise.get('exerciseType')?.value;
+        const type = exercise.get("exerciseType")?.value;
         if (type === ExerciseType.Cardio) {
             return 'Cardio';
         }
@@ -113,11 +135,7 @@ export class WorkoutForm {
     }
 
     removeExercise(index: number) {
-        return this.exercises.removeAt(index);
-    }
-
-    constructor() {
-        this.layoutState.setTitle("Workout Form")
+        return this.exerciseSession.getExercises().removeAt(index);
     }
 
     openExerciseList() {
@@ -125,9 +143,9 @@ export class WorkoutForm {
     }
 
     onSubmit() {
-        if(this.form.invalid) {
+        if(this.form.invalid)
             return;
-        }
+
         const workout = createWorkoutObject(this.form);
         this.form.disable();
         this.workoutService.addWorkout(workout)
