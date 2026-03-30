@@ -1,17 +1,16 @@
-import { Component, effect, ElementRef, inject, signal, ViewChild, ViewChildren, QueryList } from '@angular/core';
+import { Component, effect, ElementRef, inject, QueryList, signal, ViewChild, ViewChildren } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { ReactiveFormsModule, ɵInternalFormsSharedModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import { faSolidBackward, faSolidBackwardStep, faSolidTrash } from '@ng-icons/font-awesome/solid';
-import { ExerciseModalLayoutService } from '../../services/exercise-modal-layout-service';
-import { ExerciseSessionService } from '../../services/exercise-session-service';
-import { ExerciseType } from '../../../workout/models/exercise-type';
-import { Button } from '../../../../shared/button/button';
-import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
-import { NavigationEnd, Router } from '@angular/router';
+import { faSolidBackwardStep, faSolidTrash } from '@ng-icons/font-awesome/solid';
 import { ModalData } from '../../../../core/models/ModalData';
 import { ModalType } from '../../../../core/models/ModalType';
 import { Modal } from '../../../../layout/utilities/modal/modal';
-import { filter, take, takeUntil } from 'rxjs';
+import { Button } from '../../../../shared/button/button';
+import { ExerciseType } from '../../../workout/models/exercise-type';
+import { ExerciseModalLayoutService } from '../../services/exercise-modal-layout-service';
+import { ExerciseSessionService } from '../../services/exercise-session-service';
 
 @Component({
     selector: 'app-exercise-session',
