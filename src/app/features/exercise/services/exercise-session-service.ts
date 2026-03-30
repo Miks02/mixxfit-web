@@ -31,7 +31,7 @@ export class ExerciseSessionService {
     }
 
     addExercise(exercise: ExerciseEntryItem) {
-        this.getExercises().push(exerciseEntryFormFactory(this.fb, exercise.exerciseName, exercise.exerciseType))
+        this.getExercises().push(exerciseEntryFormFactory(this.fb, exercise))
         this.addDetails(exercise.exerciseType)
     }
 

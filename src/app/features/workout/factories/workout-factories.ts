@@ -28,6 +28,7 @@ export function createExerciseForm(fb: FormBuilder): FormGroup {
 
 export function createExerciseGroup(fb: FormBuilder, data?: any): FormGroup {
   return fb.group({
+    exerciseId: [data?.exerciseId || ''],
     exerciseName: [data?.exerciseName || ''],
     exerciseType: [data?.exerciseType || ''],
     details: fb.array(
@@ -60,6 +61,7 @@ export function createWorkoutObject(form: FormGroup): CreateWorkoutDto {
         workoutDate: form.get('workoutDate')?.value,
         notes: form.get('notes')?.value,
         exerciseEntries: (form.get('exercises')?.value as ExerciseEntryFormValue[]).map(exercise => ({
+            exerciseId: exercise.exerciseId,
             name: exercise.exerciseName,
             exerciseType: exercise.exerciseType,
             sets: exercise.details

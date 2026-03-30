@@ -97,8 +97,8 @@ export class ExerciseList {
         this.searchTerm.set(searchTerm);
     }
 
-    addExercise(name: string, type: ExerciseType) {
-        this.exerciseSession.addExercise({exerciseName: name, exerciseType: type});
+    addExercise(id: number, name: string, type: ExerciseType) {
+        this.exerciseSession.addExercise({exerciseId: id, exerciseName: name, exerciseType: type});
         this.router.navigate(['workout-form/exercises/session']);
     }
 

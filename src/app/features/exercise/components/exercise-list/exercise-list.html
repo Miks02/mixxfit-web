@@ -86,7 +86,7 @@
             }
         </div>
         @for(exercise of filteredExercises(); track exercise.id) {
-            <div (click)="addExercise(exercise.name, exercise.exerciseType)" class="flex items-center bg-slate-300 rounded-xl px-4 py-3.5 hover:bg-amber-300/70 transition-all duration-200 cursor-pointer group shadow-md active:bg-amber-300 active:scale-[0.99]">
+            <div (click)="addExercise(exercise.id, exercise.name, exercise.exerciseType)" class="flex items-center bg-slate-300 rounded-xl px-4 py-3.5 hover:bg-amber-300/70 transition-all duration-200 cursor-pointer group shadow-md active:bg-amber-300 active:scale-[0.99]">
 
                 <div
                 [class.from-yellow-400]="exercise.exerciseType === 1"
