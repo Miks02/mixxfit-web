@@ -5,9 +5,9 @@
             <div class="top-0 w-full flex justify-between items-center">
                 <h4 class="text-lg sm:text-xl text-slate-700 font-semibold my-2">Exercises: {{exerciseSession.getExercises().length}}</h4>
 
-                <p
-                (click)="backToExerciseList()"
-                class="flex gap-1 text-blue-700 underline text-lg font-bold hover:opacity-70 active:opacity-50 transition duration-200 cursor-pointer">Add Next</p>
+                <app-button (clicked)="backToExerciseList()" label="Add Next" buttonSize="sm" fontSize="sm" class="mr-1">
+                    <ng-icon slot="icon" class="self-center" name="faSolidPlus"></ng-icon>
+                </app-button>
 
             </div>
 
