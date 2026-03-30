@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, effect, inject } from '@angular/core';
+import { Component, effect, inject, signal, WritableSignal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { AbstractControl, FormArray, FormBuilder, FormsModule, ReactiveFormsModule, } from '@angular/forms';
 import { Router, RouterOutlet } from '@angular/router';
@@ -47,6 +47,8 @@ export class WorkoutForm {
     notificationService = inject(NotificationService);
 
     form = createWorkoutForm(this.fb);
+
+    isLoading: WritableSignal<boolean> = signal(false);
 
     get exercises() {
         return this.exerciseSession.getExercises();
@@ -146,6 +148,7 @@ export class WorkoutForm {
         if(this.form.invalid)
             return;
 
+        this.isLoading.set(true);
         const workout = createWorkoutObject(this.form);
         this.form.disable();
         this.workoutService.addWorkout(workout)
@@ -153,6 +156,7 @@ export class WorkoutForm {
             next: () => {
                 this.notificationService.showSuccess("Workout logged successfully!")
                 this.router.navigate(['/workouts'])
+                this.isLoading.set(false);
             },
             error: err  => {
                 if(err.error.errorCode === "General.LimitReached") {
@@ -161,6 +165,7 @@ export class WorkoutForm {
                 }
                 handleValidationErrors(err, this.form);
                 this.form.enable();
+                this.isLoading.set(false);
             }
 
         })

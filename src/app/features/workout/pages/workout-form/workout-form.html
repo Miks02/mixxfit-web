@@ -164,7 +164,7 @@
 </div>
 
 <div class="flex justify-center pt-2">
-    <app-button htmlType="submit" label="Save Workout" buttonSize="sm" buttonType="primary" ></app-button>
+    <app-button htmlType="submit" label="Save Workout" buttonSize="sm" buttonType="primary" [disabled]="form.invalid || isLoading()" [isLoading]="isLoading()"></app-button>
 </div>
 </form>
 </div>
