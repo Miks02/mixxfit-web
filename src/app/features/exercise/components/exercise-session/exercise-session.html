@@ -16,7 +16,7 @@
                     <div [formGroupName]="exIdx" class="flex flex-col w-full bg-gray-100 rounded-xl shadow-lg  hover:shadow-xl transition duration-200 px-4 py-2">
                         <div class="flex justify-between items-center w-full">
                             <h1 class="text-lg sm:text-xl text-slate-800 font-semibold mb-3">{{ exercise.get('exerciseName')?.value }}</h1>
-                            <app-button class="" buttonType="danger" [fontSize]="'xs'" label="Remove" [isFullWidth]="true" buttonSize="sm" (clicked)="removeExercise(exIdx)">
+                            <app-button class="" buttonType="danger" [fontSize]="'xs'" label="Remove" [isFullWidth]="true" buttonSize="sm" (clicked)="openRemoveModal(exIdx)">
                                 <ng-icon slot="icon" class="self-center" name="faSolidTrash"></ng-icon>
                             </app-button>
                         </div>
@@ -110,4 +110,8 @@
 
     </div>
 </form>
+
+@if(isModalOpen()) {
+    <app-modal (close)="closeModal()" [data]="buildModal()"></app-modal>
+}
 </div>
