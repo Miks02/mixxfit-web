@@ -1,4 +1,4 @@
-import { Component, effect, inject, signal } from '@angular/core';
+import { Component, effect, ElementRef, inject, signal, ViewChild, ViewChildren, QueryList } from '@angular/core';
 import { ReactiveFormsModule, ɵInternalFormsSharedModule } from '@angular/forms';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { faSolidBackward, faSolidBackwardStep, faSolidTrash } from '@ng-icons/font-awesome/solid';
@@ -6,11 +6,12 @@ import { ExerciseModalLayoutService } from '../../services/exercise-modal-layout
 import { ExerciseSessionService } from '../../services/exercise-session-service';
 import { ExerciseType } from '../../../workout/models/exercise-type';
 import { Button } from '../../../../shared/button/button';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { Router } from '@angular/router';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { NavigationEnd, Router } from '@angular/router';
 import { ModalData } from '../../../../core/models/ModalData';
 import { ModalType } from '../../../../core/models/ModalType';
 import { Modal } from '../../../../layout/utilities/modal/modal';
+import { filter, take, takeUntil } from 'rxjs';
 
 @Component({
     selector: 'app-exercise-session',
@@ -20,6 +21,9 @@ import { Modal } from '../../../../layout/utilities/modal/modal';
     providers: [provideIcons({ faSolidTrash, faSolidBackwardStep })]
 })
 export class ExerciseSession {
+    @ViewChild('exercisesContainer') container!: ElementRef<HTMLDivElement>
+    @ViewChildren('addSetButton', { read: ElementRef }) addSetButtons!: QueryList<ElementRef<HTMLElement>>;
+
     modalConfig = inject(ExerciseModalLayoutService);
     exerciseSession = inject(ExerciseSessionService);
     router = inject(Router);
@@ -42,8 +46,14 @@ export class ExerciseSession {
 
             if(exercises?.length === 0)
                 this.backToExerciseList();
+
         })
 
+    }
+
+    ngAfterViewInit() {
+        const containerHeight = this.container.nativeElement.scrollHeight;
+        this.container.nativeElement.scrollTo({top: containerHeight, behavior: 'smooth'})
     }
 
     getExerciseType(index: number): ExerciseType {
@@ -57,6 +67,32 @@ export class ExerciseSession {
     addSet(exerciseIndex: number) {
         const type = this.getExerciseType(exerciseIndex);
         this.exerciseSession.addDetails(type, exerciseIndex);
+
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => this.scrollAddSetButtonIntoView(exerciseIndex));
+        });
+    }
+
+    private scrollAddSetButtonIntoView(exerciseIndex: number) {
+        const containerEl = this.container?.nativeElement;
+        const buttonEl = this.addSetButtons?.get(exerciseIndex)?.nativeElement;
+
+        if (!containerEl || !buttonEl) return;
+
+        const containerRect = containerEl.getBoundingClientRect();
+        const buttonRect = buttonEl.getBoundingClientRect();
+        const offset = 40;
+
+        const isBelowViewport = buttonRect.bottom > containerRect.bottom - offset;
+        const isAboveViewport = buttonRect.top < containerRect.top + offset;
+
+        if (!isBelowViewport && !isAboveViewport) return;
+
+        const scrollDelta = isBelowViewport
+            ? buttonRect.bottom - containerRect.bottom + offset
+            : buttonRect.top - containerRect.top - offset;
+
+        containerEl.scrollBy({ top: scrollDelta, behavior: 'smooth' });
     }
 
     removeSet(exerciseIndex: number, setIndex: number) {
