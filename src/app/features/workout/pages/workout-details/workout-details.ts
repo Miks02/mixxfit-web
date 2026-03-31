@@ -12,22 +12,24 @@ import {
     faSolidPersonWalkingArrowLoopLeft,
     faSolidTag
 } from "@ng-icons/font-awesome/solid";
-import { take, tap } from 'rxjs';
+import { finalize, take, tap } from 'rxjs';
 
 import { ModalData } from '../../../../core/models/ModalData';
 import { ModalType } from '../../../../core/models/ModalType';
 import { NotificationService } from '../../../../core/services/notification-service';
+import { LayoutState } from '../../../../layout/services/layout-state';
 import { Modal } from "../../../../layout/utilities/modal/modal";
+import { Button } from '../../../../shared/button/button';
+import { WorkoutDetailsSkeleton } from '../../components/workout-details-skeleton/workout-details-skeleton';
 import { ExerciseEntry } from '../../models/exercise-entry';
 import { ExerciseType } from '../../models/exercise-type';
 import { WorkoutDetailsDto } from '../../models/workout-details-dto';
 import { WorkoutService } from '../../services/workout-service';
-import { Button } from '../../../../shared/button/button';
 
 @Component({
     selector: 'app-workout-details',
     standalone: true,
-    imports: [DatePipe, NgIcon, Modal, Button],
+    imports: [DatePipe, NgIcon, Modal, Button, WorkoutDetailsSkeleton],
     templateUrl: './workout-details.html',
     styleUrl: './workout-details.css',
     providers: [
@@ -48,14 +50,20 @@ export class WorkoutDetails  {
     private route = inject(ActivatedRoute);
     private router = inject(Router)
     private notificationService = inject(NotificationService)
+    private layoutState = inject(LayoutState);
 
     isModalOpen: WritableSignal<boolean> = signal(false);
+    isLoading: WritableSignal<boolean> = signal(true);
 
     id!: number;
     workout$: WritableSignal<WorkoutDetailsDto | null> = signal(null);
 
-    ngOnInit() {
+    constructor() {
         this.id = Number(this.route.snapshot.paramMap.get('id'));
+        this.layoutState.setTitle("Workout Details");
+    }
+
+    ngOnInit() {
         this.loadWorkout(this.id);
     }
 
@@ -148,12 +156,14 @@ export class WorkoutDetails  {
     }
 
     loadWorkout(id: number) {
+        this.isLoading.set(true);
+
         return this.workoutService
         .getUserWorkout(id)
         .pipe(
             take(1),
             tap(res => this.workout$.set(res)),
-            tap(() => console.log(this.workout$()))
+            finalize(() => this.isLoading.set(false))
         )
         .subscribe();
     }
