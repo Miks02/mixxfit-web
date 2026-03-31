@@ -71,7 +71,7 @@ export class WorkoutForm {
     getTotalSets(): number {
         let total = 0;
         for (const exercise of this.exerciseSession.getExercises().controls) {
-            const sets = exercise.get('sets') as FormArray | null;
+            const sets = exercise.get('details') as FormArray | null;
             total += sets?.length ?? 0;
         }
         return total;
