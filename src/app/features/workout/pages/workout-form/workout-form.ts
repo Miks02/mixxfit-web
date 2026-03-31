@@ -144,8 +144,12 @@ export class WorkoutForm {
         this.router.navigate(['/workout-form/exercises']);
     }
 
+    isFormValid(): boolean {
+        return this.exerciseSession.getExercises().length > 0 && this.form.valid && this.exerciseSession.form.valid
+    }
+
     onSubmit() {
-        if(this.form.invalid)
+        if(!this.isFormValid())
             return;
 
         this.isLoading.set(true);

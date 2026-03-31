@@ -63,7 +63,10 @@
 
             </div>
 
-            <div class="space-y-3 max-h-40 overflow-y-auto shadow-md rounded-xl ">
+            <div
+            [class.border-red-500]="exerciseSession.form.invalid"
+            [class.border-transparent]="exerciseSession.form.valid"
+             class="space-y-3 bg-amber-100 max-h-40 border-2 overflow-y-auto shadow-md rounded-xl ">
                 @if(exercises.length === 0) {
                     <div class="text-center text-slate-600 py-6 bg-slate-50  rounded-xl border border-slate-200 ">
                         <p class="font-semibold text-slate-700 text-lg">No exercises added yet</p>
@@ -113,15 +116,15 @@
                             class="bg-white border-2 border-amber-200 text-slate-700 px-4 py-2 rounded-xl text-sm font-semibold shadow-sm hover:shadow-md hover:border-amber-300 transition-all">
                             @switch(getExerciseType(exercise)) {
                                 @case (1) {
-                                    Set {{$index + 1}}: {{ set.get("weight")?.value }} kg | {{ set.get("reps")?.value}} reps
+                                    Set {{$index + 1}}: {{ set.get("weight")!.value ?? '0'}} kg | {{ set.get("reps")?.value ?? '0'}} reps
 
                                 }
                                 @case (2) {
-                                    Set {{$index + 1}}: {{ set.get("weight")?.value }} kg | {{ set.get("reps")?.value}} reps
+                                    Set {{$index + 1}}: {{ set.get("weight")!.value ?? '0'}} kg | {{ set.get("reps")?.value ?? '0'}} reps
 
                                 }
                                 @case (3) {
-                                    Set {{$index + 1}}: {{ set.get("durationMinutes")?.value }} minutes | {{ set.get("durationSeconds")?.value}} seconds | {{set.get("distance")?.value}} km
+                                    Set {{$index + 1}}: {{ set.get("durationMinutes")?.value ?? '0' }} minutes | {{ set.get("durationSeconds")?.value ?? '0'}} seconds | {{set.get("distance")?.value ?? '0'}} km
 
                                 }
                                 @case (4) {
@@ -164,7 +167,7 @@
 </div>
 
 <div class="flex justify-center pt-2">
-    <app-button htmlType="submit" label="Save Workout" buttonSize="sm" buttonType="primary" [disabled]="form.invalid || isLoading()" [isLoading]="isLoading()"></app-button>
+    <app-button htmlType="submit" label="Save Workout" buttonSize="sm" buttonType="primary" [disabled]="!isFormValid() || isLoading()" [isLoading]="isLoading()"></app-button>
 </div>
 </form>
 </div>

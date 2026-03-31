@@ -1,5 +1,5 @@
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { onlyNumbersCheck } from "../../../core/helpers/FormHelpers";
+import { minArrayLength, onlyNumbersCheck } from "../../../core/helpers/FormHelpers";
 import { ExerciseType } from "../../workout/models/exercise-type";
 import { ExerciseEntryItem } from "../models/exercise-entry-item";
 
@@ -17,7 +17,7 @@ export function exerciseEntryFormFactory(fb: FormBuilder, exercise: ExerciseEntr
         exerciseId: [exercise.exerciseId, [Validators.required]],
         exerciseName: [exercise.exerciseName, [Validators.required]],
         exerciseType: [exercise.exerciseType, [Validators.required]],
-        details: fb.array([])
+        details: fb.array([], minArrayLength(1))
     })
 };
 
