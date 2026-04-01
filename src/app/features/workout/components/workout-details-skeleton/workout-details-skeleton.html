@@ -156,14 +156,21 @@
         <div class="px-6 pb-6 pt-6 space-y-5">
             <div class="grid grid-cols-2 gap-4">
                 @for(item of [1, 2]; track $index) {
-                    <div class="rounded-2xl shadow-md p-4 bg-slate-100">
+                    <div
+                    class="rounded-2xl shadow-md p-4"
+                    [class.bg-linear-to-br]="true"
+                    [class.from-amber-100]="$index === 0"
+                    [class.to-amber-200]="$index === 0"
+                    [class.from-blue-100]="$index === 1"
+                    [class.to-blue-200]="$index === 1">
                         <ngx-skeleton-loader
                         appearance="line"
                         [theme]="{
                             'height': '10px',
                             'width': '80px',
                             'border-radius': '8px',
-                            'background': '#94a3b866'
+                            'background': $index === 0 ? '#b45309' : '#1d4ed8',
+                            'opacity': '0.35'
                         }">
                     </ngx-skeleton-loader>
                     <ngx-skeleton-loader
@@ -172,7 +179,8 @@
                         'height': '34px',
                         'width': '54px',
                         'border-radius': '8px',
-                        'background': '#cbd5e1',
+                        'background': $index === 0 ? '#78350f' : '#1e3a8a',
+                        'opacity': '0.35',
                         'margin-top': '0.35rem'
                     }">
                 </ngx-skeleton-loader>
@@ -196,7 +204,18 @@
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4">
   @for(item of [1, 2, 3, 4, 5]; track $index) {
     <div
-      class="flex items-center gap-4 rounded-2xl shadow-md px-4 py-4 bg-slate-100"
+            class="flex items-center gap-4 rounded-2xl shadow-md px-4 py-4"
+            [class.bg-linear-to-br]="true"
+            [class.from-yellow-100]="$index === 0"
+            [class.to-amber-100]="$index === 0"
+            [class.from-red-100]="$index === 1"
+            [class.to-rose-200]="$index === 1"
+            [class.from-blue-100]="$index === 2"
+            [class.to-blue-200]="$index === 2"
+            [class.from-purple-100]="$index === 3"
+            [class.to-purple-200]="$index === 3"
+            [class.from-gray-100]="$index === 4"
+            [class.to-gray-200]="$index === 4"
       [class.lg:col-span-2]="$index < 3"
       [class.lg:col-span-3]="$index >= 3">
 
@@ -206,7 +225,12 @@
             'height': '48px',
             'width': '48px',
             'border-radius': '12px',
-            'background': '#cbd5e1',
+                        'background': $index === 0 ? '#f59e0b' :
+                                                    $index === 1 ? '#f43f5e' :
+                                                    $index === 2 ? '#2563eb' :
+                                                    $index === 3 ? '#9333ea' :
+                                                    '#6b7280',
+                        'opacity': '0.8',
             'margin': '0'
         }">
       </ngx-skeleton-loader>
