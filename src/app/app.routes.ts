@@ -11,6 +11,11 @@ import { WorkoutForm } from './features/workout/pages/workout-form/workout-form'
 import { ProfilePage } from './features/profile/pages/profile-page/profile-page';
 import { WorkoutDetails } from './features/workout/pages/workout-details/workout-details';
 import { WeightPage } from './features/weight/pages/weight-page/weight-page';
+import { ExerciseList } from './features/exercise/components/exercise-list/exercise-list';
+import { ExerciseModalLayout } from './features/exercise/layouts/exercise-modal-layout/exercise-modal-layout';
+import { CreateExerciseForm } from './features/exercise/components/create-exercise-form/create-exercise-form';
+import { EditExerciseForm } from './features/exercise/components/edit-exercise-form/edit-exercise-form';
+import { ExerciseSession } from './features/exercise/components/exercise-session/exercise-session';
 
 export const routes: Routes = [
     {
@@ -37,7 +42,31 @@ export const routes: Routes = [
             },
             {
                 path: "workout-form",
-                component: WorkoutForm
+                component: WorkoutForm,
+                children: [
+                    {
+                        path: "exercises",
+                        component: ExerciseModalLayout,
+                        children: [
+                            {
+                                path: "",
+                                component: ExerciseList
+                            },
+                            {
+                                path: "create",
+                                component: CreateExerciseForm
+                            },
+                            {
+                                path: "edit/:id",
+                                component: EditExerciseForm
+                            },
+                            {
+                                path: "session",
+                                component: ExerciseSession
+                            }
+                        ]
+                    }
+                ]
             },
             {
                 path: "weight",

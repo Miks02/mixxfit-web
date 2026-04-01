@@ -1,29 +1,12 @@
-import { CardioType } from "./cardio-type"
 import { ExerciseType } from "./exercise-type"
 import { SetEntry } from "./set-entry"
 
 
 export type ExerciseEntry = {
     id?: number,
+    exerciseId: number,
     name: string,
     workoutId?: number,
-
     exerciseType: ExerciseType,
-    cardioType?: CardioType,
-
-    durationMinutes?: number,
-    durationSeconds?: number,
-
-    distanceKm?: number,
-    avgHeartRate?: number,
-    maxHeartRate?: number,
-    caloriesBurned?: number,
-
-    paceMinPerKm?: number,
-
-    workIntervalSec?: number,
-    restIntervalSec?: number,
-    intervalsCount?: number,
-
     sets: SetEntry[]
 }

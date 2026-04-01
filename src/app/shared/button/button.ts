@@ -2,7 +2,7 @@ import { Component, computed, input, output } from '@angular/core';
 
 type ButtonType = "primary" | "secondary" | "danger" | "default"
 type ButtonSize = "default" | "sm"
-type FontSize = "default" | "lg" | "xl"
+type FontSize = "default" | "lg" | "xl" | "sm" | "xs"
 type HtmlButtonType = "button" | "submit" | "reset"
 
 @Component({
@@ -53,6 +53,10 @@ export class Button {
                 return "text-lg";
             case "xl":
                 return "text-xl";
+            case "sm":
+                return "text-sm";
+            case "xs":
+                return "text-xs"
         }
     })
 
