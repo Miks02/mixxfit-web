@@ -20,10 +20,6 @@ export class ExerciseModalLayout {
 
     config = this.modalLayout.config;
 
-    constructor() {
-        console.log(history.state)
-    }
-
     ngOnInit() {
         this.loadExercises();
     }

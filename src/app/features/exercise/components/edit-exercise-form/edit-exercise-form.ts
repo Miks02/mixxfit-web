@@ -144,7 +144,6 @@ export class EditExerciseForm {
         const categoryName = this.exerciseCategories()!.find(m => m.id == categoryId)?.name;
 
         if (!categoryName) {
-            console.error(`Error occurred: Muscle group with id ${categoryId} has not been found`);
             return;
         }
 
