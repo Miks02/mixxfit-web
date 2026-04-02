@@ -4,19 +4,20 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
-    faSolidChevronLeft,
-    faSolidChevronRight,
+    faSolidBars,
+    faSolidFilter,
     faSolidChildReaching,
     faSolidDumbbell,
+    faSolidMagnifyingGlass,
+    faSolidXmark,
     faSolidPersonRunning
 } from '@ng-icons/font-awesome/solid';
 import { NgxSkeletonLoaderComponent } from 'ngx-skeleton-loader';
 import { debounceTime, distinctUntilChanged, Subject, take, takeUntil } from 'rxjs';
-import { NotificationService } from '../../../../core/services/notification-service';
 import { LayoutState } from '../../../../layout/services/layout-state';
-import { WorkoutListItemDto } from '../../models/workout-list-item-dto';
 import { WorkoutService } from '../../services/workout-service';
 import { Button } from "../../../../shared/button/button";
+import { Month } from '../../../../core/models/Month';
 
 @Component({
     selector: 'app-workout-list',
@@ -25,8 +26,10 @@ import { Button } from "../../../../shared/button/button";
     styleUrl: './workout-list.css',
     providers: [
         provideIcons({
-            faSolidChevronRight,
-            faSolidChevronLeft,
+            faSolidMagnifyingGlass,
+            faSolidFilter,
+            faSolidBars,
+            faSolidXmark,
             faSolidDumbbell,
             faSolidPersonRunning,
             faSolidChildReaching
@@ -36,7 +39,6 @@ import { Button } from "../../../../shared/button/button";
 export class WorkoutList {
     layoutState = inject(LayoutState);
     workoutService = inject(WorkoutService);
-    notificationService = inject(NotificationService);
     router = inject(Router);
     activatedRoute = inject(ActivatedRoute);
 
@@ -44,33 +46,35 @@ export class WorkoutList {
     private search$ = new Subject<string>();
 
     isLoaded: WritableSignal<boolean> = signal(false);
-    selectedWorkout: WorkoutListItemDto | null = null;
+    isSearchOpen: WritableSignal<boolean> = signal(false);
+    isSortOpen: WritableSignal<boolean> = signal(false);
+    isFilterOpen: WritableSignal<boolean> = signal(false);
 
     workoutSummarySource = this.workoutService.workoutSummary;
-    workoutsSource = this.workoutService.pagedWorkouts;
+    workoutsSource = this.workoutService.workouts;
+    availableYearsSource = this.workoutService.availableYears;
+    availableMonthsSource = this.workoutService.availableMonths;
+    selectedYearSource = this.workoutService.selectedYear;
+    selectedMonthSource = this.workoutService.selectedMonth;
 
-    page: number = 1;
-    search: string | null= null;
-    sort: string | null = null;
-    date: string | null = null;
+    search: string | null = null;
+    sort: string = 'newest';
+    year: number | null = null;
+    month: number | null = null;
 
-    totalCount = computed(() => this.workoutsSource()?.totalCount);
-    pageSize = computed(() => this.workoutsSource()?.pageSize);
+    workoutList = computed(() => this.workoutsSource() ?? []);
+    workoutSummary = computed(() => this.workoutSummarySource());
+    availableYears = computed(() => this.availableYearsSource() ?? []);
+    availableMonths = computed(() => this.availableMonthsSource() ?? []);
+    selectedYearValue = computed(() => this.year ?? this.availableYears()[0] ?? null);
+    selectedMonthValue = computed(() => this.month ?? this.availableMonths()[0] ?? null);
 
     constructor() {
         effect(() => {
-            this.page = this.workoutsSource()?.page ?? 1
-        })
+            this.year = this.selectedYearSource();
+            this.month = this.selectedMonthSource();
+        });
     }
-
-    workoutList = computed(() => this.workoutsSource()?.items)
-    workoutSummary = computed(() => this.workoutSummarySource())
-
-    totalPages = computed(() => {
-        if (this.totalCount() === undefined || this.pageSize() === undefined)
-            return 0;
-        return Math.ceil(this.totalCount()! / this.pageSize()!);
-    });
 
     ngOnInit() {
         this.layoutState.setTitle('Workouts');
@@ -83,7 +87,12 @@ export class WorkoutList {
             takeUntil(this.destroy$)
         )
         .subscribe(search => {
-            this.updateQueryParams({ search, page: 1 });
+            this.updateQueryParams({
+                search,
+                sort: this.sort,
+                year: this.year,
+                month: this.month
+            });
         });
     }
 
@@ -96,28 +105,28 @@ export class WorkoutList {
         return this.activatedRoute.queryParams
         .pipe(takeUntil(this.destroy$))
         .subscribe(params => {
-            this.page = params['page'] ? +params['page'] : 1;
             this.search = params['search'] || null;
             this.sort = params['sort'] || 'newest';
-            this.date = params['date'] || null;
+            this.year = this.parseNullableNumber(params['year']);
+            this.month = this.parseNullableNumber(params['month']);
 
             this.workoutService.setQueryParams({
-                sort: this.sort!,
-                search: this.search!,
-                date: this.date!,
-                page: this.page
+                sort: this.sort,
+                search: this.search,
+                year: this.year,
+                month: this.month
             });
 
             if (!this.isLoaded()) {
                 this.isLoaded.set(true);
-                this.loadWorkoutSummary();
+                this.loadWorkoutOverview();
                 return;
             }
             this.loadWorkouts();
         });
     }
 
-    updateQueryParams(params: Partial<{ page: number; search: string; sort: string; date: string | null}>) {
+    updateQueryParams(params: Partial<{ search: string | null; sort: string; year: number | null; month: number | null }>) {
         this.router.navigate([], {
             relativeTo: this.activatedRoute,
             queryParams: params,
@@ -125,7 +134,7 @@ export class WorkoutList {
         });
     }
 
-    loadWorkoutSummary() {
+    loadWorkoutOverview() {
         this.workoutService.getUserWorkoutsPage()
         .pipe(take(1))
         .subscribe();
@@ -138,17 +147,6 @@ export class WorkoutList {
         .subscribe();
     }
 
-    loadWorkoutsByQuery(resetPage: boolean = false) {
-        const params: any = {
-            sort: this.sort,
-            search: this.search,
-            date: this.date,
-            page: resetPage ? 1 : this.page
-        };
-
-        this.updateQueryParams(params);
-    }
-
     toWorkoutForm() {
         this.router.navigate(['/workout-form']);
     }
@@ -158,28 +156,78 @@ export class WorkoutList {
     }
 
     onSortChange() {
-        this.updateQueryParams({ sort: this.sort!, page: 1 });
+        this.updateQueryParams({
+            sort: this.sort,
+            search: this.search,
+            year: this.year,
+            month: this.month
+        });
+        this.isSortOpen.set(false);
     }
 
-    onDateChange() {
-        this.updateQueryParams({ date: this.date, page: 1 });
+    onYearChange(value: string) {
+        const nextYear = this.parseNullableNumber(value);
+        this.updateQueryParams({ year: nextYear, month: null });
     }
 
-    getPreviousPage() {
-        this.updateQueryParams({ page: this.page - 1 });
+    onMonthChange(value: string) {
+        const nextMonth = this.parseNullableNumber(value);
+        this.updateQueryParams({ month: nextMonth, year: this.year });
     }
 
-    getNextPage() {
-        this.updateQueryParams({ page: this.page + 1 });
+    toggleFilter() {
+        this.isFilterOpen.update(isOpen => !isOpen);
+        this.isSortOpen.set(false);
+        this.isSearchOpen.set(false);
+    }
+
+    toggleSort() {
+        this.isSortOpen.update(isOpen => !isOpen);
+        this.isFilterOpen.set(false);
+        this.isSearchOpen.set(false);
+    }
+
+    toggleSearch() {
+        this.isSearchOpen.update(isOpen => !isOpen);
+        this.isSortOpen.set(false);
+        this.isFilterOpen.set(false);
+    }
+
+    closeSearch() {
+        this.isSearchOpen.set(false);
+        this.search = null;
+        this.onSearchChange('');
+    }
+
+    closePopupPanels() {
+        this.isSortOpen.set(false);
+        this.isFilterOpen.set(false);
     }
 
     getWorkoutDetails(id: number) {
         this.router.navigate(['/workouts', id])
     }
 
+    getMonthLabel(month: number): string {
+        const monthName = Month[month];
+
+        if (!monthName)
+            return month.toString();
+
+        return monthName;
+    }
+
+    private parseNullableNumber(value: string | null | undefined): number | null {
+        if (value === null || value === undefined || value === '')
+            return null;
+
+        const parsed = Number(value);
+        return Number.isNaN(parsed) ? null : parsed;
+    }
+
     getWorkoutCardClass() {
 
-        return this.workoutList()?.length! < 2
+        return this.workoutList().length < 2
         ? 'w-full'
         : 'w-full md:w-[calc(50%-0.375rem)]';
     }
