@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, computed, effect, inject, signal, WritableSignal } from '@angular/core';
+import { Component, computed, DestroyRef, effect, inject, signal, WritableSignal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
@@ -12,8 +12,9 @@ import {
     faSolidXmark,
     faSolidPersonRunning
 } from '@ng-icons/font-awesome/solid';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NgxSkeletonLoaderComponent } from 'ngx-skeleton-loader';
-import { debounceTime, distinctUntilChanged, Subject, take, takeUntil } from 'rxjs';
+import { debounceTime, distinctUntilChanged, Subject, take } from 'rxjs';
 import { LayoutState } from '../../../../layout/services/layout-state';
 import { WorkoutService } from '../../services/workout-service';
 import { Button } from "../../../../shared/button/button";
@@ -42,7 +43,7 @@ export class WorkoutList {
     router = inject(Router);
     activatedRoute = inject(ActivatedRoute);
 
-    private destroy$ = new Subject<void>();
+    private destroyRef = inject(DestroyRef);
     private search$ = new Subject<string>();
 
     isLoaded: WritableSignal<boolean> = signal(false);
@@ -59,20 +60,22 @@ export class WorkoutList {
 
     search: string | null = null;
     sort: string = 'newest';
-    year: number | null = null;
-    month: number | null = null;
+    year: WritableSignal<number | null> = signal(null);
+    month: WritableSignal<number | null> = signal(null);
 
-    workoutList = computed(() => this.workoutsSource() ?? []);
+    workoutList = computed(() => this.workoutsSource());
     workoutSummary = computed(() => this.workoutSummarySource());
     availableYears = computed(() => this.availableYearsSource() ?? []);
     availableMonths = computed(() => this.availableMonthsSource() ?? []);
-    selectedYearValue = computed(() => this.year ?? this.availableYears()[0] ?? null);
-    selectedMonthValue = computed(() => this.month ?? this.availableMonths()[0] ?? null);
+    selectedYearValue = computed(() => this.year() ?? this.availableYears()[0] ?? null);
+    selectedMonthValue = computed(() => this.month() ?? this.availableMonths()[0] ?? null);
 
     constructor() {
         effect(() => {
-            this.year = this.selectedYearSource();
-            this.month = this.selectedMonthSource();
+            this.year.set(this.selectedYearSource());
+            this.month.set(this.selectedMonthSource());
+
+            console.log("Workouts: ", this.workoutList());
         });
     }
 
@@ -84,37 +87,32 @@ export class WorkoutList {
         .pipe(
             debounceTime(300),
             distinctUntilChanged(),
-            takeUntil(this.destroy$)
+            takeUntilDestroyed(this.destroyRef)
         )
         .subscribe(search => {
             this.updateQueryParams({
                 search,
                 sort: this.sort,
-                year: this.year,
-                month: this.month
+                year: this.year(),
+                month: this.month()
             });
         });
     }
 
-    ngOnDestroy() {
-        this.destroy$.next();
-        this.destroy$.complete();
-    }
-
     readQueryParams() {
         return this.activatedRoute.queryParams
-        .pipe(takeUntil(this.destroy$))
+        .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe(params => {
             this.search = params['search'] || null;
             this.sort = params['sort'] || 'newest';
-            this.year = this.parseNullableNumber(params['year']);
-            this.month = this.parseNullableNumber(params['month']);
+            this.year.set(this.parseNullableNumber(params['year']));
+            this.month.set(this.parseNullableNumber(params['month']));
 
             this.workoutService.setQueryParams({
                 sort: this.sort,
                 search: this.search,
-                year: this.year,
-                month: this.month
+                year: this.year(),
+                month: this.month()
             });
 
             if (!this.isLoaded()) {
@@ -159,8 +157,8 @@ export class WorkoutList {
         this.updateQueryParams({
             sort: this.sort,
             search: this.search,
-            year: this.year,
-            month: this.month
+            year: this.year(),
+            month: this.month()
         });
         this.isSortOpen.set(false);
     }
@@ -172,7 +170,7 @@ export class WorkoutList {
 
     onMonthChange(value: string) {
         const nextMonth = this.parseNullableNumber(value);
-        this.updateQueryParams({ month: nextMonth, year: this.year });
+        this.updateQueryParams({ month: nextMonth, year: this.year() });
     }
 
     toggleFilter() {
@@ -227,7 +225,7 @@ export class WorkoutList {
 
     getWorkoutCardClass() {
 
-        return this.workoutList().length < 2
+        return this.workoutList()!.length < 2
         ? 'w-full'
         : 'w-full md:w-[calc(50%-0.375rem)]';
     }

@@ -146,7 +146,7 @@
         >
         </ngx-skeleton-loader>
       }
-      @else if (workoutList().length === 0) {
+      @else if (workoutList()?.length === 0) {
         <div class="flex flex-col gap-2 justify-center h-full mt-4 items-center md:min-h-120">
           <ng-icon name="faSolidDumbbell" class="text-5xl sm:text-6xl md:text-8xl opacity-50 text-slate-600!"></ng-icon>
           <h1 class="text-2xl md:text-5xl font-semibold text-center text-slate-600">No workouts found</h1>
@@ -226,15 +226,15 @@
             <div class="flex flex-col sm:flex-row gap-4 justify-between items-center">
               <div class="flex items-center">
                 <span class="font-semibold text-slate-800 bg-linear-to-br from-amber-400 to-amber-500 px-3 py-1.5 rounded-lg shadow-sm">
-                  Workouts: {{ workoutList().length }}
+                  Workouts: {{ workoutList()?.length }}
                 </span>
               </div>
 
               <div class="flex items-center gap-2 text-slate-700 font-semibold text-sm bg-slate-200 rounded-lg px-3 py-1.5">
                 <ng-icon name="faSolidFilter"></ng-icon>
-                <span>Year: {{ year ?? 'All' }}</span>
+                <span>Year: {{ year() ?? 'All' }}</span>
                 <span class="text-slate-400">|</span>
-                <span>Month: {{ month ? getMonthLabel(month) : 'All' }}</span>
+                <span>Month: {{ month() ? getMonthLabel(month()!) : 'All' }}</span>
               </div>
             </div>
           </div>
