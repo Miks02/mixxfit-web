@@ -1,6 +1,6 @@
 export type QueryParams = {
-    search: string,
-    sort: string,
-    date: string,
-    page: number,
+    search: string | null,
+    sort: string | null,
+    year: number | null,
+    month: number | null,
 }
