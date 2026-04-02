@@ -133,7 +133,7 @@
         </div>
       }
 
-      @if (workoutList() === undefined) {
+      @if (workoutList() === undefined || isSearching()) {
         <ngx-skeleton-loader
           count="5"
           [theme]="{

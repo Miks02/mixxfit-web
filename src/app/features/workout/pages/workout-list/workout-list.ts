@@ -14,7 +14,7 @@ import {
 } from '@ng-icons/font-awesome/solid';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NgxSkeletonLoaderComponent } from 'ngx-skeleton-loader';
-import { debounceTime, distinctUntilChanged, Subject, take } from 'rxjs';
+import { debounceTime, distinctUntilChanged, finalize, Subject, take } from 'rxjs';
 import { LayoutState } from '../../../../layout/services/layout-state';
 import { WorkoutService } from '../../services/workout-service';
 import { Button } from "../../../../shared/button/button";
@@ -47,6 +47,7 @@ export class WorkoutList {
     private search$ = new Subject<string>();
 
     isLoaded: WritableSignal<boolean> = signal(false);
+    isSearching: WritableSignal<boolean> = signal(false);
     isSearchOpen: WritableSignal<boolean> = signal(false);
     isSortOpen: WritableSignal<boolean> = signal(false);
     isFilterOpen: WritableSignal<boolean> = signal(false);
@@ -75,7 +76,6 @@ export class WorkoutList {
             this.year.set(this.selectedYearSource());
             this.month.set(this.selectedMonthSource());
 
-            console.log("Workouts: ", this.workoutList());
         });
     }
 
@@ -139,9 +139,13 @@ export class WorkoutList {
     }
 
     loadWorkouts() {
+        this.isSearching.set(true);
         this.workoutService
         .getUserWorkoutsByQuery()
-        .pipe(take(1))
+        .pipe(
+            take(1),
+            finalize(() => this.isSearching.set(false))
+        )
         .subscribe();
     }
 
