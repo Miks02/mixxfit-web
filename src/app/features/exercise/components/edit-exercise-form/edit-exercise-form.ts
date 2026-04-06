@@ -37,7 +37,8 @@ export class EditExerciseForm {
     isControlValid = isControlValid;
 
     muscleGroups = this.exerciseService.muscleGroups;
-    exerciseCategories = this.exerciseService.exerciseCategories;
+    exerciseCategories = computed(() =>
+        this.exerciseService.exerciseCategories()?.filter(m => m.name.toLowerCase() !== "other"));
 
     exerciseCategoryId = toSignal(this.form.get('categoryId')?.valueChanges!);
     muscleGroupId = toSignal(this.form.get('muscleGroupId')?.valueChanges!);
@@ -154,8 +155,6 @@ export class EditExerciseForm {
             case 'Bodyweight':
             case 'Assisted Bodyweight':
             return ExerciseType.Bodyweight;
-            case 'Other':
-            return ExerciseType.Other;
             case 'Stretching':
             return ExerciseType.Stretching;
             default:
