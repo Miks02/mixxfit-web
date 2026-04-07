@@ -73,4 +73,8 @@ export class ExerciseSessionService {
         exercises.forEach(e => this.getExercises().push(e));
     }
 
+    clearSession() {
+        this.getExercises().clear();
+    }
+
 }

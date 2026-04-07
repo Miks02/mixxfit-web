@@ -161,6 +161,7 @@ export class WorkoutForm {
                 this.notificationService.showSuccess("Workout logged successfully!")
                 this.router.navigate(['/workouts'])
                 this.isLoading.set(false);
+                this.exerciseSession.clearSession();
             },
             error: err  => {
                 if(err.error.errorCode === "General.LimitReached") {
