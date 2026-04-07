@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, inject, OnInit, signal, WritableSignal } from '@angular/core';
+import { Component, computed, inject, signal, WritableSignal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -15,6 +15,7 @@ import { createExerciseFormFactory } from '../../factories/exercise-factories';
 import { ExerciseDto } from '../../models/exercise-dto';
 import { ExerciseModalLayoutService } from '../../services/exercise-modal-layout-service';
 import { ExerciseService } from '../../services/exercise-service';
+import { ExerciseSessionService } from '../../services/exercise-session-service';
 
 @Component({
     selector: 'app-edit-exercise-form',
@@ -28,6 +29,7 @@ export class EditExerciseForm {
     private router = inject(Router);
     private fb = inject(FormBuilder);
     private notification = inject(NotificationService);
+    private exerciseSession = inject(ExerciseSessionService);
 
     modalLayout = inject(ExerciseModalLayoutService);
     exerciseService = inject(ExerciseService);
@@ -117,12 +119,19 @@ export class EditExerciseForm {
 
     onDelete() {
         this.isDeleting.set(true);
+        let deleteMessage = "Exercise deleted successfully";
 
         this.exerciseService.deleteExercise(this.exercise()!.id)
         .pipe(take(1), finalize(() => this.isDeleting.set(false)))
         .subscribe({
             next: () => {
-                this.notification.showSuccess('Exercise deleted successfully');
+
+                if(this.exerciseSession.isExerciseInSession(this.exercise()!.id)) {
+                    deleteMessage = "Exercise deleted successfully, and has been cleared from your current session";
+                    this.exerciseSession.removeExercisesById(this.exercise()!.id)
+                }
+
+                this.notification.showSuccess(deleteMessage);
                 this.router.navigate(['workout-form/exercises']);
             },
             error: () => this.notification.showError('An error occurred while deleting the exercise'),

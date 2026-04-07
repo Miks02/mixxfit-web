@@ -18,6 +18,10 @@ export class ExerciseSessionService {
         return this.form.get("exercises") as FormArray;
     }
 
+    getExerciseById(id: number) {
+        return this.getExercises().at(id);
+    }
+
     getExerciseDetails(index: number | null = null): FormArray {
         const exercises = this.getExercises();
 
@@ -28,6 +32,10 @@ export class ExerciseSessionService {
 
     getExerciseType(index: number): ExerciseType {
         return this.getExercises().at(index).get("exerciseType")?.value!;
+    }
+
+    isExerciseInSession(exerciseIndex: number): boolean {
+        return this.getExercises().controls.some(e => e.get('exerciseId')?.value == exerciseIndex);
     }
 
     addExercise(exercise: ExerciseEntryItem) {
@@ -57,4 +65,12 @@ export class ExerciseSessionService {
     removeExercise(exerciseIndex: number) {
         this.getExercises().removeAt(exerciseIndex);
     }
+
+    removeExercisesById(exerciseIndex: number) {
+        const exercises = this.getExercises().controls.filter(e => e.get('exerciseId')?.value != exerciseIndex);
+
+        this.getExercises().clear();
+        exercises.forEach(e => this.getExercises().push(e));
+    }
+
 }
