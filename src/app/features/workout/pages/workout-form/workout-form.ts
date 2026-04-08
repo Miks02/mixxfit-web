@@ -164,13 +164,24 @@ export class WorkoutForm {
                 this.exerciseSession.clearSession();
             },
             error: err  => {
-                if(err.error.errorCode === "General.LimitReached") {
+                this.form.enable();
+                this.isLoading.set(false);
+
+                let errorCode = err.error.errorCode;
+
+                if(errorCode === "General.LimitReached") {
                     this.notificationService.showWarning("Slow down! You've logged 5 workouts today. Rest is just as important as the grind. Try again tomorrow!");
                     return;
                 }
+                if(errorCode === "Exercise.NotFound") {
+                    const errorMessage = this.exerciseSession.getExercises().length > 1
+                    ? "One or more selected exercises are no longer available"
+                    : "The selected exercise is no longer available"
+
+                    this.notificationService.showError(errorMessage);
+                    return;
+                }
                 handleValidationErrors(err, this.form);
-                this.form.enable();
-                this.isLoading.set(false);
             }
 
         })

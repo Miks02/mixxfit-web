@@ -110,21 +110,44 @@ export class EditExerciseForm {
         .pipe(take(1), finalize(() => this.isLoading.set(false)))
         .subscribe({
             next: () => {
-                this.notification.showSuccess('Exercise updated successfully');
+                let updateMessage = "Exercise updated successfully";
+
+                if(this.exerciseSession.isExerciseInSession(this.exercise()!.id)) {
+                    updateMessage = "Exercise has been updated successfully, and has been cleared from your current session";
+                    this.exerciseSession.removeExercisesById(this.exercise()!.id)
+                }
+
+                this.notification.showSuccess(updateMessage);
                 this.router.navigate(['workout-form/exercises']);
             },
-            error: () => this.notification.showError('An error occurred while updating the exercise'),
+            error: err => {
+                let errorMessage = "An error occurred while updating the exercise";
+                const errorCode = err.error.errorCode;
+
+                if(errorCode === "Exercise.NotFound") {
+                    errorMessage = "Exercise not found";
+                    this.notification.showError(errorMessage);
+                    return;
+                }
+
+                if(errorCode === "Exercise.AlreadyExists") {
+                    errorMessage = "Exercise with the selected name already exists";
+                    this.notification.showError(errorMessage);
+                    return;
+                }
+                this.notification.showError(errorMessage);
+            }
         });
     }
 
     onDelete() {
         this.isDeleting.set(true);
-        let deleteMessage = "Exercise deleted successfully";
 
         this.exerciseService.deleteExercise(this.exercise()!.id)
         .pipe(take(1), finalize(() => this.isDeleting.set(false)))
         .subscribe({
             next: () => {
+                let deleteMessage = "Exercise deleted successfully";
 
                 if(this.exerciseSession.isExerciseInSession(this.exercise()!.id)) {
                     deleteMessage = "Exercise deleted successfully, and has been cleared from your current session";
@@ -134,7 +157,15 @@ export class EditExerciseForm {
                 this.notification.showSuccess(deleteMessage);
                 this.router.navigate(['workout-form/exercises']);
             },
-            error: () => this.notification.showError('An error occurred while deleting the exercise'),
+            error: err => {
+                let errorMessage = "An error occurred while deleting the exercise";
+                const errorCode = err.error.errorCode;
+
+                if(errorCode === "Exercise.NotFound")
+                    errorMessage = "Exercise not found";
+
+                this.notification.showError(errorMessage);
+            },
         });
     }
 
