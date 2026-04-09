@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, inject, OnInit, signal, WritableSignal } from '@angular/core';
+import { Component, computed, inject, signal, WritableSignal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -15,6 +15,7 @@ import { createExerciseFormFactory } from '../../factories/exercise-factories';
 import { ExerciseDto } from '../../models/exercise-dto';
 import { ExerciseModalLayoutService } from '../../services/exercise-modal-layout-service';
 import { ExerciseService } from '../../services/exercise-service';
+import { ExerciseSessionService } from '../../services/exercise-session-service';
 
 @Component({
     selector: 'app-edit-exercise-form',
@@ -28,6 +29,7 @@ export class EditExerciseForm {
     private router = inject(Router);
     private fb = inject(FormBuilder);
     private notification = inject(NotificationService);
+    private exerciseSession = inject(ExerciseSessionService);
 
     modalLayout = inject(ExerciseModalLayoutService);
     exerciseService = inject(ExerciseService);
@@ -37,7 +39,8 @@ export class EditExerciseForm {
     isControlValid = isControlValid;
 
     muscleGroups = this.exerciseService.muscleGroups;
-    exerciseCategories = this.exerciseService.exerciseCategories;
+    exerciseCategories = computed(() =>
+        this.exerciseService.exerciseCategories()?.filter(m => m.name.toLowerCase() !== "other"));
 
     exerciseCategoryId = toSignal(this.form.get('categoryId')?.valueChanges!);
     muscleGroupId = toSignal(this.form.get('muscleGroupId')?.valueChanges!);
@@ -107,10 +110,33 @@ export class EditExerciseForm {
         .pipe(take(1), finalize(() => this.isLoading.set(false)))
         .subscribe({
             next: () => {
-                this.notification.showSuccess('Exercise updated successfully');
+                let updateMessage = "Exercise updated successfully";
+
+                if(this.exerciseSession.isExerciseInSession(this.exercise()!.id)) {
+                    updateMessage = "Exercise has been updated successfully, and has been cleared from your current session";
+                    this.exerciseSession.removeExercisesById(this.exercise()!.id)
+                }
+
+                this.notification.showSuccess(updateMessage);
                 this.router.navigate(['workout-form/exercises']);
             },
-            error: () => this.notification.showError('An error occurred while updating the exercise'),
+            error: err => {
+                let errorMessage = "An error occurred while updating the exercise";
+                const errorCode = err.error.errorCode;
+
+                if(errorCode === "Exercise.NotFound") {
+                    errorMessage = "Exercise not found";
+                    this.notification.showError(errorMessage);
+                    return;
+                }
+
+                if(errorCode === "Exercise.AlreadyExists") {
+                    errorMessage = "Exercise with the selected name already exists";
+                    this.notification.showError(errorMessage);
+                    return;
+                }
+                this.notification.showError(errorMessage);
+            }
         });
     }
 
@@ -121,10 +147,25 @@ export class EditExerciseForm {
         .pipe(take(1), finalize(() => this.isDeleting.set(false)))
         .subscribe({
             next: () => {
-                this.notification.showSuccess('Exercise deleted successfully');
+                let deleteMessage = "Exercise deleted successfully";
+
+                if(this.exerciseSession.isExerciseInSession(this.exercise()!.id)) {
+                    deleteMessage = "Exercise deleted successfully, and has been cleared from your current session";
+                    this.exerciseSession.removeExercisesById(this.exercise()!.id)
+                }
+
+                this.notification.showSuccess(deleteMessage);
                 this.router.navigate(['workout-form/exercises']);
             },
-            error: () => this.notification.showError('An error occurred while deleting the exercise'),
+            error: err => {
+                let errorMessage = "An error occurred while deleting the exercise";
+                const errorCode = err.error.errorCode;
+
+                if(errorCode === "Exercise.NotFound")
+                    errorMessage = "Exercise not found";
+
+                this.notification.showError(errorMessage);
+            },
         });
     }
 
@@ -154,8 +195,6 @@ export class EditExerciseForm {
             case 'Bodyweight':
             case 'Assisted Bodyweight':
             return ExerciseType.Bodyweight;
-            case 'Other':
-            return ExerciseType.Other;
             case 'Stretching':
             return ExerciseType.Stretching;
             default:

@@ -34,7 +34,8 @@ export class CreateExerciseForm {
     isControlValid = isControlValid;
 
     muscleGroups = this.exerciseService.muscleGroups;
-    exerciseCategories = this.exerciseService.exerciseCategories;
+    exerciseCategories = computed(() =>
+        this.exerciseService.exerciseCategories()?.filter(m => m.name.toLowerCase() !== "other"));
 
     exerciseCategoryId = toSignal(this.form.get("categoryId")?.valueChanges!);
     muscleGroupId = toSignal(this.form.get("muscleGroupId")?.valueChanges!);
@@ -58,7 +59,29 @@ export class CreateExerciseForm {
                 this.notification.showSuccess("Exercise created successfully")
                 this.router.navigate(['workout-form/exercises'])
             },
-            error: () => this.notification.showError("An error occurred while creating an exercise"),
+             error: err => {
+                let errorMessage = "An error occurred while creating the exercise";
+                const errorCode = err.error.errorCode;
+
+                if(errorCode === "Exercise.AlreadyExists") {
+                    errorMessage = "Exercise with the selected name already exists";
+                    this.notification.showError(errorMessage);
+                    return;
+                }
+
+                if(errorCode === "Exercise.MuscleGroupNotFound") {
+                    errorMessage = "Selected muscle group has not been found";
+                    this.notification.showError(errorMessage);
+                    return;
+                }
+
+                if(errorCode === "Exercise.ExerciseCategoryNotFound") {
+                    errorMessage = "Selected category has not been found";
+                    this.notification.showError(errorMessage);
+                    return;
+                }
+                this.notification.showError(errorMessage);
+            },
         })
     }
 
@@ -89,8 +112,6 @@ export class CreateExerciseForm {
             case "Bodyweight":
             case "Assisted Bodyweight":
                 return ExerciseType.Bodyweight
-            case "Other":
-                return ExerciseType.Other;
             case "Stretching":
                 return ExerciseType.Stretching;
             default:
