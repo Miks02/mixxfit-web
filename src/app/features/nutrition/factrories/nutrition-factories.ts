@@ -1,7 +1,7 @@
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { onlyNumbersCheck } from "./form-helpers";
-import { UnitSystem } from "../../features/nutrition/models/unit-system";
-import { ActivityLevel } from "../../features/nutrition/models/activity-level";
+import { onlyNumbersCheck } from "../../../core/helpers/form-helpers";
+import { UnitSystem } from "../models/unit-system";
+import { ActivityLevel } from "../models/activity-level";
 
 export function createCalculateCaloriesForm(fb: FormBuilder): FormGroup {
   return fb.group({
