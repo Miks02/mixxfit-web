@@ -1,5 +1,5 @@
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { onlyNumbersCheck } from "./FormHelpers";
+import { onlyNumbersCheck } from "./form-helpers";
 import { UnitSystem } from "../../features/nutrition/models/unit-system";
 import { ActivityLevel } from "../../features/nutrition/models/activity-level";
 

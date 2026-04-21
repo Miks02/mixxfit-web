@@ -1,5 +1,5 @@
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { minArrayLength } from "../../../core/helpers/FormHelpers";
+import { minArrayLength } from "../../../core/helpers/form-helpers";
 import { CardioType } from "../models/cardio-type";
 import { CreateWorkoutDto } from "../models/create-workout-dto";
 import { ExerciseEntryFormValue } from "../models/exercise-entry-form-value";

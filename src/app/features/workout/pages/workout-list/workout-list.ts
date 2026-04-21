@@ -18,7 +18,7 @@ import { debounceTime, distinctUntilChanged, finalize, Subject, take } from 'rxj
 import { LayoutState } from '../../../../layout/services/layout-state';
 import { WorkoutService } from '../../services/workout-service';
 import { Button } from "../../../../shared/button/button";
-import { Month } from '../../../../core/models/Month';
+import { Month } from '../../../../core/models/month';
 
 @Component({
     selector: 'app-workout-list',

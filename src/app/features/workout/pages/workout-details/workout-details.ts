@@ -14,8 +14,8 @@ import {
 } from "@ng-icons/font-awesome/solid";
 import { finalize, take, tap } from 'rxjs';
 
-import { ModalData } from '../../../../core/models/ModalData';
-import { ModalType } from '../../../../core/models/ModalType';
+import { ModalData } from '../../../../core/models/modal-data';
+import { ModalType } from '../../../../core/models/modal-type';
 import { NotificationService } from '../../../../core/services/notification-service';
 import { LayoutState } from '../../../../layout/services/layout-state';
 import { Modal } from "../../../../layout/utilities/modal/modal";

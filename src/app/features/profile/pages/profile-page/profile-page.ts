@@ -24,9 +24,9 @@ import {
     faSolidXmark
 } from "@ng-icons/font-awesome/solid";
 import { take } from 'rxjs';
-import { handleValidationErrors, isControlValid } from '../../../../core/helpers/FormHelpers';
-import { AccountStatus } from '../../../../core/models/AccountStatus';
-import { ModalType } from '../../../../core/models/ModalType';
+import { handleValidationErrors, isControlValid } from '../../../../core/helpers/form-helpers';
+import { AccountStatus } from '../../../../core/models/account-status';
+import { ModalType } from '../../../../core/models/modal-type';
 import { AuthService } from '../../../../core/services/auth-service';
 import { NotificationService } from '../../../../core/services/notification-service';
 import { UserState } from '../../../../core/states/user-state';

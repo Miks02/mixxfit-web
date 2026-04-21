@@ -1,6 +1,6 @@
 import { HttpErrorResponse } from "@angular/common/http";
 import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, ValidatorFn } from "@angular/forms";
-import { ValidationError } from "../models/ValidationError";
+import { ValidationError } from "../models/validation-error";
 
 export function isControlValid(control: string, form: FormGroup): boolean {
     const ct = form?.get(control);

@@ -1,5 +1,5 @@
-import { AccountStatus } from "./AccountStatus"
-import { Gender } from "./Gender"
+import { AccountStatus } from "./account-status"
+import { Gender } from "./gender"
 
 export type UserDetailsDto = {
     fullName: string,

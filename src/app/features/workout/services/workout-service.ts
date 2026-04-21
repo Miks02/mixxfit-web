@@ -6,7 +6,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { WorkoutListItemDto } from '../models/workout-list-item-dto';
 import { WorkoutPageDto } from '../models/workout-page-dto';
 import { WorkoutSummaryDto } from '../models/workout-summary-dto';
-import { QueryParams } from '../../../core/models/QueryParams';
+import { QueryParams } from '../models/query-params';
 import { WorkoutsPerMonthDto } from '../models/workouts-per-month-dto';
 import { environment } from '../../../../environments/environment';
 import { WorkoutListResponseDto } from '../models/workout-list-response-dto';

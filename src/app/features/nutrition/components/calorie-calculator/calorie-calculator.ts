@@ -16,9 +16,9 @@ import {
     faSolidScaleUnbalanced,
     faSolidXmark,
 } from '@ng-icons/font-awesome/solid';
-import { createCalculateCaloriesForm } from '../../../../core/helpers/Factories';
-import { isControlValid } from '../../../../core/helpers/FormHelpers';
-import { Gender } from '../../../../core/models/Gender';
+import { createCalculateCaloriesForm } from '../../../../core/helpers/factories';
+import { isControlValid } from '../../../../core/helpers/form-helpers';
+import { Gender } from '../../../../core/models/gender';
 import { NotificationService } from '../../../../core/services/notification-service';
 import { ActivityLevel } from '../../models/activity-level';
 import { CalorieResult } from '../../models/calorie-result';

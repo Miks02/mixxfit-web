@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { BehaviorSubject, tap } from 'rxjs';
-import { DashboardDto } from '../models/DashboardDto';
+import { DashboardDto } from '../models/dasbhoard-dto';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 

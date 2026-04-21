@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { of, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { UserDetailsDto } from '../models/UserDetailsDto';
+import { UserDetailsDto } from '../models/user-details-dto';
 import { UserState } from '../states/user-state';
 
 @Injectable({
