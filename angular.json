@@ -64,9 +64,7 @@
                     "options": {
                         "ssl": true,
                         "sslCert": "localhost.pem",
-                        "sslKey": "localhost-key.pem",
-                        "liveReload": true,
-                        "host": "localhost"
+                        "sslKey": "localhost-key.pem"
                     },
                     "configurations": {
                         "production": {
@@ -75,7 +73,7 @@
                         "development": {
                             "buildTarget": "mixxfit-web:build:development",
                             "liveReload": true,
-                            "hmr": true
+                            "hmr": false
                         }
                     },
                     "defaultConfiguration": "development"
