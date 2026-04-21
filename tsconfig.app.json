@@ -1,14 +1,8 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-<<<<<<< HEAD
-    "outDir": "./out-tsc/*",
-    "rootDir": "./src",
-    "types": []
-=======
     "outDir": "./out-tsc/app",
     "rootDir": "./src"
->>>>>>> chore/project-update
   },
   "include": ["src/**/*.ts"],
   "exclude": ["src/**/*.spec.ts"]
