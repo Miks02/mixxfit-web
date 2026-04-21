@@ -61,12 +61,21 @@
                 },
                 "serve": {
                     "builder": "@angular/build:dev-server",
+                    "options": {
+                        "ssl": true,
+                        "sslCert": "localhost.pem",
+                        "sslKey": "localhost-key.pem",
+                        "liveReload": true,
+                        "host": "localhost"
+                    },
                     "configurations": {
                         "production": {
                             "buildTarget": "mixxfit-web:build:production"
                         },
                         "development": {
-                            "buildTarget": "mixxfit-web:build:development"
+                            "buildTarget": "mixxfit-web:build:development",
+                            "liveReload": true,
+                            "hmr": true
                         }
                     },
                     "defaultConfiguration": "development"
