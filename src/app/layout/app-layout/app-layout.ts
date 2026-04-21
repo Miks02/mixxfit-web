@@ -1,7 +1,7 @@
 import { Component, computed, ElementRef, inject, Signal, ViewChild } from '@angular/core';
 import { NavigationEnd, Router, RouterOutlet } from "@angular/router";
 import { filter, Subject, takeUntil } from 'rxjs';
-import { Gender } from '../../core/models/Gender';
+import { Gender } from '../../core/models/gender';
 import { AuthService } from '../../core/services/auth-service';
 import { UserService } from '../../core/services/user-service';
 import { UserState } from '../../core/states/user-state';

@@ -1,5 +1,5 @@
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { minArrayLength, onlyNumbersCheck } from "../../../core/helpers/FormHelpers";
+import { minArrayLength, onlyNumbersCheck } from "../../../core/helpers/form-helpers";
 import { ExerciseType } from "../../workout/models/exercise-type";
 import { ExerciseEntryItem } from "../models/exercise-entry-item";
 

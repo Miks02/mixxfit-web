@@ -5,7 +5,7 @@ import { NgIcon, provideIcons } from "@ng-icons/core";
 import { faSolidCircleInfo, faSolidKey, faSolidLock, faSolidXmark } from "@ng-icons/font-awesome/solid";
 import { take } from 'rxjs';
 import { createChangePasswordForm } from '../../factories/profile-factories';
-import { handleValidationErrors, isControlValid } from '../../../../core/helpers/FormHelpers';
+import { handleValidationErrors, isControlValid } from '../../../../core/helpers/form-helpers';
 import { NotificationService } from '../../../../core/services/notification-service';
 import { ProfileService } from '../../services/profile-service';
 import { AuthService } from '../../../../core/services/auth-service';

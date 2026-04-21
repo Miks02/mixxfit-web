@@ -7,7 +7,7 @@ import { NgIcon, provideIcons } from '@ng-icons/core';
 import { faSolidPersonWalkingArrowLoopLeft } from '@ng-icons/font-awesome/solid';
 import { NgxSkeletonLoaderComponent } from 'ngx-skeleton-loader';
 import { finalize, take } from 'rxjs';
-import { isControlValid } from '../../../../core/helpers/FormHelpers';
+import { isControlValid } from '../../../../core/helpers/form-helpers';
 import { NotificationService } from '../../../../core/services/notification-service';
 import { Button } from '../../../../shared/button/button';
 import { ExerciseType } from '../../../workout/models/exercise-type';

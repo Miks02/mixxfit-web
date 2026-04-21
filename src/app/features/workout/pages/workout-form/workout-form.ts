@@ -20,7 +20,7 @@ import {
     faSolidTrash,
     faSolidXmark
 } from "@ng-icons/font-awesome/solid";
-import { handleValidationErrors, isControlValid } from '../../../../core/helpers/FormHelpers';
+import { handleValidationErrors, isControlValid } from '../../../../core/helpers/form-helpers';
 import { NotificationService } from '../../../../core/services/notification-service';
 import { LayoutState } from '../../../../layout/services/layout-state';
 import { Button } from '../../../../shared/button/button';

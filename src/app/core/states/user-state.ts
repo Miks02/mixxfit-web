@@ -1,5 +1,5 @@
 import { computed, Injectable, signal, Signal, WritableSignal } from '@angular/core';
-import { UserDetailsDto } from '../models/UserDetailsDto';
+import { UserDetailsDto } from '../models/user-details-dto';
 
 @Injectable({
   providedIn: 'root',

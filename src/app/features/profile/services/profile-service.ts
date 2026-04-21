@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { tap } from 'rxjs';
 import { environment } from '../../../../environments/environment';
-import { Gender } from '../../../core/models/Gender';
+import { Gender } from '../../../core/models/gender';
 import { DateOfBirthDto } from '../models/date-of-birth-dto';
 import { GenderDto } from '../models/gender-dto';
 import { HeightDto } from '../models/height-dto';

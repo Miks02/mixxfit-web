@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { ModalData } from '../../../core/models/ModalData';
+import { ModalData } from '../../../core/models/modal-data';
 import { NgIcon, provideIcons } from "@ng-icons/core";
 import { faSolidCheck, faSolidCircleCheck, faSolidCircleExclamation, faSolidCircleInfo, faSolidCircleQuestion, faSolidTriangleExclamation, faSolidXmark } from '@ng-icons/font-awesome/solid';
-import { ModalType } from '../../../core/models/ModalType';
+import { ModalType } from '../../../core/models/modal-type';
 import { Button } from '../../../shared/button/button';
 
 @Component({

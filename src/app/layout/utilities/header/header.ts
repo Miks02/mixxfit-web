@@ -1,8 +1,8 @@
-import { Component, inject, Input, Signal, signal, WritableSignal } from '@angular/core';
+import { Component, inject, Input, Signal, signal } from '@angular/core';
 import { LayoutState } from '../../services/layout-state';
 import { Title } from '@angular/platform-browser';
 import { RouterLink } from "@angular/router";
-import { Gender } from '../../../core/models/Gender';
+import { Gender } from '../../../core/models/gender';
 
 @Component({
     selector: 'app-header',

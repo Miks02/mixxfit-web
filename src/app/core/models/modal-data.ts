@@ -1,4 +1,4 @@
-import { ModalType } from "./ModalType";
+import { ModalType } from "./modal-type";
 
 export type ModalData = {
     title: string,

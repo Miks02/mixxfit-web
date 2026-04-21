@@ -1,5 +1,5 @@
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { onlyNumbersCheck } from "../../../core/helpers/FormHelpers";
+import { onlyNumbersCheck } from "../../../core/helpers/form-helpers";
 
 
 export function createWeightEntryForm(fb: FormBuilder): FormGroup {
