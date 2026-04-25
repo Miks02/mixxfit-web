@@ -5,5 +5,6 @@ export type DashboardDto = {
     averageSleep: number,
     waterIntake: number,
     lastWorkoutDate: string,
+    workoutStreak: number,
     recentWorkouts: WorkoutListItemDto[]
 }

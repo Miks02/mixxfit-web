@@ -33,40 +33,22 @@
 
             </div>
 
-            <div class="flex flex-col pl-5 justify-between bg-linear-to-br from-cyan-500/90 to to-cyan-600  shadow-xl  rounded-2xl w-full lg:w-65 grow h-45 px-2 py-4 text-gray-100 font-semibold hover:shadow-white/50 transition-all duration-200">
-                <div class="flex items-center gap-5">
-                    <ng-icon name="faSolidGlassWater" class="text-5xl"></ng-icon>
-                    <h5 class="text-2xl">Water intake</h5>
-                </div>
-                @if(!dashboardSource()?.waterIntake) {
-                    <div class="flex gap-4 items-center opacity-95">
-                        <ng-icon name="faSolidGhost" class="text-xl"></ng-icon>
-                        <p class="text-xl font-semibold overflow-hidden whitespace-nowra typewriter w-[14ch]">
-                            Coming soon...
-                        </p>
-                    </div>
-                } @else {
-                    <p class="text-xl font-semibold overflow-hidden whitespace-nowra  w-[12ch]">
-                        {{dashboardSource()?.waterIntake}}
-                    </p>
-                }
-            </div>
-
             <div class="flex flex-col pl-5 justify-between bg-linear-to-br from-teal-500/90 to to-teal-600 shadow-xl  rounded-2xl w-full lg:w-65 grow h-45 px-2 py-4 text-gray-100 font-semibold hover:shadow-white/50 transition-all duration-200">
                 <div class="flex items-center gap-5">
-                    <ng-icon name="faSolidMoon" class="text-5xl"></ng-icon>
-                    <h5 class="text-2xl">Sleep</h5>
+                    <ng-icon name="faSolidBolt" class="text-5xl"></ng-icon>
+                    <h5 class="text-2xl">Workout Streak</h5>
                 </div>
-                @if(!dashboardSource()?.averageSleep) {
+                @if(!dashboardSource()?.workoutStreak || dashboardSource()?.workoutStreak === 0) {
                     <div class="flex gap-4 items-center opacity-95  ">
-                        <ng-icon name="faSolidGhost" class="pr-2 text-xl"></ng-icon>
                         <p class="text-xl font-semibold overflow-hidden typewriter">
-                            Coming soon...
+                            Not on a streak
                         </p>
                     </div>
                 } @else {
-                    <p class="text-xl font-semibold overflow-hidden whitespace-nowra  w-[12ch]">
-                        {{dashboardSource()?.averageSleep}}
+                    <p class="text-xl font-semibold overflow-hidden whitespace-nowra  ">
+                        {{dashboardSource()?.workoutStreak === 1
+                        ? `${dashboardSource()?.workoutStreak} day - keep it going!`
+                         : `${dashboardSource()?.workoutStreak} days - well done!`}}
                     </p>
                 }
             </div>

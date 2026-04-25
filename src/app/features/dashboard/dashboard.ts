@@ -1,6 +1,6 @@
 import { Component, computed, inject, effect, WritableSignal, signal } from '@angular/core';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import { faSolidDumbbell, faSolidFireFlameCurved, faSolidGlassWater, faSolidMoon, faSolidScaleUnbalanced, faSolidUtensils, faSolidCalculator, faSolidGhost,  faSolidChartLine, faSolidUser } from '@ng-icons/font-awesome/solid';
+import { faSolidDumbbell, faSolidFireFlameCurved, faSolidGlassWater, faSolidMoon, faSolidScaleUnbalanced, faSolidUtensils, faSolidCalculator, faSolidGhost,  faSolidChartLine, faSolidUser, faSolidBolt } from '@ng-icons/font-awesome/solid';
 import {
     Chart, registerables
 } from 'chart.js';
@@ -26,7 +26,7 @@ Chart.register(...registerables)
     imports: [NgIcon, WorkoutsChart, WeightChart, RouterLink, DatePipe, FormsModule, NgxSkeletonLoaderModule, CalorieCalculator, Button],
     templateUrl: './dashboard.html',
     styleUrl: './dashboard.css',
-    providers: [provideIcons({faSolidDumbbell, faSolidFireFlameCurved, faSolidGlassWater, faSolidMoon, faSolidScaleUnbalanced, faSolidUtensils, faSolidCalculator, faSolidGhost, faSolidChartLine, faSolidUser})]
+    providers: [provideIcons({faSolidDumbbell, faSolidFireFlameCurved, faSolidGlassWater, faSolidBolt, faSolidScaleUnbalanced, faSolidUtensils, faSolidCalculator, faSolidGhost, faSolidChartLine, faSolidUser})]
 })
 export class Dashboard {
     private layoutState = inject(LayoutState);
