@@ -40,15 +40,14 @@
                 </div>
                 @if(!dashboardSource()?.workoutStreak || dashboardSource()?.workoutStreak === 0) {
                     <div class="flex gap-4 items-center opacity-95  ">
+                        <ng-icon name="faSolidGhost" class="text-xl"></ng-icon>
                         <p class="text-xl font-semibold overflow-hidden typewriter">
                             Not on a streak
                         </p>
                     </div>
                 } @else {
-                    <p class="text-xl font-semibold overflow-hidden whitespace-nowra  ">
-                        {{dashboardSource()?.workoutStreak === 1
-                        ? `1 Day - Keep It Going!`
-                         : `${dashboardSource()?.workoutStreak} Days - Well Done!`}}
+                    <p class="text-xl font-semibold overflow-hidden whitespace-nowrap">
+                        {{getWorkoutStreakMessage()}}
                     </p>
                 }
             </div>

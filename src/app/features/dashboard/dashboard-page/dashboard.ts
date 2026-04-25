@@ -10,7 +10,6 @@ import { take } from 'rxjs';
 import { WeightChart } from '../../weight/components/weight-chart/weight-chart';
 import { Router, RouterLink } from "@angular/router";
 import { DashboardState } from '../services/dashboard-state';
-import { toSignal } from '@angular/core/rxjs-interop';
 import { DatePipe } from '@angular/common';
 import { WorkoutService } from '../../workout/services/workout-service';
 import { FormsModule } from '@angular/forms';
@@ -125,6 +124,21 @@ export class Dashboard {
     getProfileImageSrc = computed(() => {
         if (this.userDetails()?.imagePath && this.userDetails()?.imagePath !== null) return this.userDetails()!.imagePath as string;
         return this.userDetails()?.gender === 1 ? 'user_male.png' : (this.userDetails()?.gender === 2 ? 'user_female.png' : 'user_other.png');
+    })
+
+    getWorkoutStreakMessage = computed(() => {
+        const streak = this.dashboardSource()?.workoutStreak;
+
+        if(!streak || streak === 0)
+            return `Not on a streak`;
+        if(streak === 1)
+            return `${streak} Day - Keep it going!`;
+        if(streak >= 2 && streak < 5)
+            return `${streak} Days - Well done!`;
+        if(streak >= 5)
+            return `${streak} Days - Outstanding!`;
+
+        return "N/A"
     })
 
 }
