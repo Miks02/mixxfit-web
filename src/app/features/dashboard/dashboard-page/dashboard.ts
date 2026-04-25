@@ -4,21 +4,21 @@ import { faSolidDumbbell, faSolidFireFlameCurved, faSolidGlassWater, faSolidMoon
 import {
     Chart, registerables
 } from 'chart.js';
-import { WorkoutsChart } from '../workout/components/workouts-chart/workouts-chart';
-import { LayoutState } from '../../layout/services/layout-state';
+import { WorkoutsChart } from '../../workout/components/workouts-chart/workouts-chart';
+import { LayoutState } from '../../../layout/services/layout-state';
 import { take } from 'rxjs';
-import { WeightChart } from '../weight/components/weight-chart/weight-chart';
+import { WeightChart } from '../../weight/components/weight-chart/weight-chart';
 import { Router, RouterLink } from "@angular/router";
-import { DashboardState } from './services/dashboard-state';
+import { DashboardState } from '../services/dashboard-state';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { DatePipe } from '@angular/common';
-import { WorkoutService } from '../workout/services/workout-service';
+import { WorkoutService } from '../../workout/services/workout-service';
 import { FormsModule } from '@angular/forms';
-import { WeightEntryService } from '../weight/services/weight-entry-service';
+import { WeightEntryService } from '../../weight/services/weight-entry-service';
 import { NgxSkeletonLoaderModule } from 'ngx-skeleton-loader';
-import { CalorieCalculator } from '../nutrition/components/calorie-calculator/calorie-calculator';
-import { UserState } from '../../core/states/user-state';
-import { Button } from '../../shared/button/button';
+import { CalorieCalculator } from '../../nutrition/components/calorie-calculator/calorie-calculator';
+import { UserState } from '../../../core/states/user-state';
+import { Button } from '../../../shared/button/button';
 Chart.register(...registerables)
 
 @Component({
@@ -39,7 +39,7 @@ export class Dashboard {
     isLoading: boolean = false;
     isCalorieCalculatorOpen: WritableSignal<boolean> = signal(false);
 
-    dashboardSource = toSignal(this.dashboardState.dashboard$, {initialValue: null})
+    dashboardSource = this.dashboardState.dashboard;
     workoutsPerMonth = this.workoutService.workoutCounts;
     weightChart = this.weightService.weightChart;
 
