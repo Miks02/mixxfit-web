@@ -18,11 +18,12 @@ import { NgxSkeletonLoaderModule } from 'ngx-skeleton-loader';
 import { CalorieCalculator } from '../../nutrition/components/calorie-calculator/calorie-calculator';
 import { UserState } from '../../../core/states/user-state';
 import { Button } from '../../../shared/button/button';
+import { DashboardCard } from '../components/dashboard-card/dashboard-card';
 Chart.register(...registerables)
 
 @Component({
     selector: 'app-dashboard',
-    imports: [NgIcon, WorkoutsChart, WeightChart, RouterLink, DatePipe, FormsModule, NgxSkeletonLoaderModule, CalorieCalculator, Button],
+    imports: [NgIcon, WorkoutsChart, WeightChart, RouterLink, DatePipe, FormsModule, NgxSkeletonLoaderModule, CalorieCalculator, Button, DashboardCard],
     templateUrl: './dashboard.html',
     styleUrl: './dashboard.css',
     providers: [provideIcons({faSolidDumbbell, faSolidFireFlameCurved, faSolidGlassWater, faSolidBolt, faSolidScaleUnbalanced, faSolidUtensils, faSolidCalculator, faSolidGhost, faSolidChartLine, faSolidUser})]
