@@ -20,7 +20,7 @@ export class DashboardCard {
     unavailableClass = input<string>('text-xl font-semibold overflow-hidden whitespace-nowrap typewriter');
     unavailableIcon = input<string>('faSolidGhost');
 
-    readonly baseClass = 'flex flex-col pl-5 justify-between rounded-2xl w-full lg:w-65 grow h-45 px-2 py-4 text-gray-100 font-semibold shadow-xl hover:shadow-white/50 transition-all duration-200';
+    readonly baseClass = 'flex flex-col pl-5 justify-between rounded-2xl w-full lg:w-65 grow h-45 px-2 py-4 text-gray-100 font-semibold shadow-xl hover:shadow-white/50 transition-shadow duration-200';
 
     mergedClass = computed(() => `${this.baseClass} ${this.cardClass()}`.trim());
 
