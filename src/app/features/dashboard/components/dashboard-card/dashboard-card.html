@@ -1,0 +1,19 @@
+<div [class]="mergedClass()" >
+	<div class="flex items-center gap-5">
+		<ng-icon [name]="icon()" class="text-5xl"></ng-icon>
+		<h5 class="text-2xl">{{ title() }}</h5>
+	</div>
+
+	@if (isUnavailable()) {
+		<div class="flex gap-4 items-center opacity-95" #typewriter>
+			<ng-icon [name]="unavailableIcon()" class="text-xl"></ng-icon>
+			<p [class]="unavailableClass()" >
+				{{ unavailableText() }}
+			</p>
+		</div>
+	} @else {
+		<p [class]="valueClass()">
+			{{ value() }}
+		</p>
+	}
+</div>

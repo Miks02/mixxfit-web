@@ -1,32 +1,32 @@
-import { Component, computed, inject, effect, WritableSignal, signal } from '@angular/core';
+import { Component, computed, inject, effect, WritableSignal, signal, viewChildren, ElementRef, afterNextRender } from '@angular/core';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import { faSolidDumbbell, faSolidFireFlameCurved, faSolidGlassWater, faSolidMoon, faSolidScaleUnbalanced, faSolidUtensils, faSolidCalculator, faSolidGhost,  faSolidChartLine, faSolidUser } from '@ng-icons/font-awesome/solid';
+import { faSolidDumbbell, faSolidFireFlameCurved, faSolidGlassWater, faSolidMoon, faSolidScaleUnbalanced, faSolidUtensils, faSolidCalculator, faSolidGhost,  faSolidChartLine, faSolidUser, faSolidBolt } from '@ng-icons/font-awesome/solid';
 import {
     Chart, registerables
 } from 'chart.js';
-import { WorkoutsChart } from '../workout/components/workouts-chart/workouts-chart';
-import { LayoutState } from '../../layout/services/layout-state';
+import { WorkoutsChart } from '../../../workout/components/workouts-chart/workouts-chart';
+import { LayoutState } from '../../../../layout/services/layout-state';
 import { take } from 'rxjs';
-import { WeightChart } from '../weight/components/weight-chart/weight-chart';
+import { WeightChart } from '../../../weight/components/weight-chart/weight-chart';
 import { Router, RouterLink } from "@angular/router";
-import { DashboardState } from './services/dashboard-state';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { DashboardState } from '../../services/dashboard-state';
 import { DatePipe } from '@angular/common';
-import { WorkoutService } from '../workout/services/workout-service';
+import { WorkoutService } from '../../../workout/services/workout-service';
 import { FormsModule } from '@angular/forms';
-import { WeightEntryService } from '../weight/services/weight-entry-service';
+import { WeightEntryService } from '../../../weight/services/weight-entry-service';
 import { NgxSkeletonLoaderModule } from 'ngx-skeleton-loader';
-import { CalorieCalculator } from '../nutrition/components/calorie-calculator/calorie-calculator';
-import { UserState } from '../../core/states/user-state';
-import { Button } from '../../shared/button/button';
+import { CalorieCalculator } from '../../../nutrition/components/calorie-calculator/calorie-calculator';
+import { UserState } from '../../../../core/states/user-state';
+import { Button } from '../../../../shared/button/button';
+import { DashboardCard } from '../../components/dashboard-card/dashboard-card';
 Chart.register(...registerables)
 
 @Component({
     selector: 'app-dashboard',
-    imports: [NgIcon, WorkoutsChart, WeightChart, RouterLink, DatePipe, FormsModule, NgxSkeletonLoaderModule, CalorieCalculator, Button],
-    templateUrl: './dashboard.html',
-    styleUrl: './dashboard.css',
-    providers: [provideIcons({faSolidDumbbell, faSolidFireFlameCurved, faSolidGlassWater, faSolidMoon, faSolidScaleUnbalanced, faSolidUtensils, faSolidCalculator, faSolidGhost, faSolidChartLine, faSolidUser})]
+    imports: [NgIcon, WorkoutsChart, WeightChart, RouterLink, DatePipe, FormsModule, NgxSkeletonLoaderModule, CalorieCalculator, Button, DashboardCard],
+    templateUrl: './dashboard-page.html',
+    styleUrl: './dashboard-page.css',
+    providers: [provideIcons({faSolidDumbbell, faSolidFireFlameCurved, faSolidGlassWater, faSolidBolt, faSolidScaleUnbalanced, faSolidUtensils, faSolidCalculator, faSolidGhost, faSolidChartLine, faSolidUser})]
 })
 export class Dashboard {
     private layoutState = inject(LayoutState);
@@ -39,7 +39,7 @@ export class Dashboard {
     isLoading: boolean = false;
     isCalorieCalculatorOpen: WritableSignal<boolean> = signal(false);
 
-    dashboardSource = toSignal(this.dashboardState.dashboard$, {initialValue: null})
+    dashboardSource = this.dashboardState.dashboard;
     workoutsPerMonth = this.workoutService.workoutCounts;
     weightChart = this.weightService.weightChart;
 
@@ -51,6 +51,8 @@ export class Dashboard {
 
     userDetails = this.userState.userDetails;
 
+    typewriterElements = viewChildren<ElementRef>('typewriter');
+
     constructor() {
         this.layoutState.setTitle("Dashboard")
 
@@ -61,20 +63,17 @@ export class Dashboard {
                 this.yearInitialized = true;
             }
         });
+
+        afterNextRender(() => {
+            this.typewriterElements().forEach((el: ElementRef) => {
+                el.nativeElement.style.setProperty('--target-width', el.nativeElement.scrollWidth + 'px');
+            });
+        });
     }
     ngOnInit() {
         this.loadDashboard();
         this.loadCounts();
         this.loadWeightChart();
-    }
-
-    ngAfterViewInit() {
-        setTimeout(() => {
-            const elements = document.querySelectorAll('.typewriter');
-            elements.forEach((el: any) => {
-                el.style.setProperty('--target-width', el.scrollWidth + 'px');
-            });
-        }, 100);
     }
 
     loadDashboard() {
@@ -125,6 +124,21 @@ export class Dashboard {
     getProfileImageSrc = computed(() => {
         if (this.userDetails()?.imagePath && this.userDetails()?.imagePath !== null) return this.userDetails()!.imagePath as string;
         return this.userDetails()?.gender === 1 ? 'user_male.png' : (this.userDetails()?.gender === 2 ? 'user_female.png' : 'user_other.png');
+    })
+
+    getWorkoutStreakMessage = computed(() => {
+        const streak = this.dashboardSource()?.workoutStreak;
+
+        if(!streak || streak === 0)
+            return `Not on a streak`;
+        if(streak === 1)
+            return `${streak} Day - Keep it going!`;
+        if(streak >= 2 && streak < 5)
+            return `${streak} Days - Well done!`;
+        if(streak >= 5)
+            return `${streak} Days - Outstanding!`;
+
+        return "N/A"
     })
 
 }

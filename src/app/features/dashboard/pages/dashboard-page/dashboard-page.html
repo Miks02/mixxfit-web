@@ -11,87 +11,39 @@
 
 <div class="flex w-full flex-col lg:flex-row justify-between flex-wrap gap-6">
     <div class="flex flex-col-reverse lg:flex-col gap-4 md:gap-6 mx-auto">
-        <div class="flex justify-start sm:justify-center gap-4 md:gap-4 flex-wrap">
+        <div class="flex justify-start grow gap-4 md:gap-4 flex-wrap">
+            <app-dashboard-card
+                title="Daily calories"
+                icon="faSolidFireFlameCurved"
+                [value]="userDetails()?.dailyCalorieGoal ? (userDetails()?.dailyCalorieGoal + ' kCal') : null"
+                unavailableText="No data yet..."
+                cardClass="bg-linear-to-br from-amber-500 to-amber-600"
+                valueClass="text-xl font-semibold overflow-hidden whitespace-nowrap w-[12ch]"
+                unavailableClass="text-xl font-semibold overflow-hidden whitespace-nowrap typewriter w-[14ch]"
+                #typewriter>
+            </app-dashboard-card>
 
-            <div class="flex flex-col pl-5 justify-between bg-linear-to-br from-amber-500 to to-amber-600 rounded-2xl w-full lg:w-65 grow h-45 px-2 py-4 text-gray-100 font-semibold shadow-xl hover:shadow-white/50 transition-all duration-200">
-                <div class="flex items-center gap-5">
-                    <ng-icon name="faSolidFireFlameCurved" class="text-5xl"></ng-icon>
-                    <h5 class="text-2xl">Daily calories</h5>
-                </div>
-                @if(!userDetails()?.dailyCalorieGoal) {
-                    <div class="flex gap-4 items-center opacity-95">
-                        <ng-icon name="faSolidGhost" class="text-xl"></ng-icon>
-                        <p class="text-xl font-semibold overflow-hidden whitespace-nowra typewriter w-[14ch]">
-                            No data yet...
-                        </p>
-                    </div>
-                } @else {
-                    <p class="text-xl font-semibold overflow-hidden whitespace-nowra  w-[12ch]">
-                        {{userDetails()?.dailyCalorieGoal}} kCal
-                    </p>
-                }
+            <app-dashboard-card
+                title="Workout Streak"
+                icon="faSolidBolt"
+                [value]="dashboardSource()?.workoutStreak ? getWorkoutStreakMessage() : null"
+                unavailableText="Not on a streak"
+                cardClass="bg-linear-to-br from-teal-500/90 to-teal-600"
+                valueClass="text-xl font-semibold overflow-hidden whitespace-nowrap"
+                unavailableClass="text-xl font-semibold overflow-hidden typewriter whitespace-nowrap"
+                #typewriter>
+            </app-dashboard-card>
 
-            </div>
-
-            <div class="flex flex-col pl-5 justify-between bg-linear-to-br from-cyan-500/90 to to-cyan-600  shadow-xl  rounded-2xl w-full lg:w-65 grow h-45 px-2 py-4 text-gray-100 font-semibold hover:shadow-white/50 transition-all duration-200">
-                <div class="flex items-center gap-5">
-                    <ng-icon name="faSolidGlassWater" class="text-5xl"></ng-icon>
-                    <h5 class="text-2xl">Water intake</h5>
-                </div>
-                @if(!dashboardSource()?.waterIntake) {
-                    <div class="flex gap-4 items-center opacity-95">
-                        <ng-icon name="faSolidGhost" class="text-xl"></ng-icon>
-                        <p class="text-xl font-semibold overflow-hidden whitespace-nowra typewriter w-[14ch]">
-                            Coming soon...
-                        </p>
-                    </div>
-                } @else {
-                    <p class="text-xl font-semibold overflow-hidden whitespace-nowra  w-[12ch]">
-                        {{dashboardSource()?.waterIntake}}
-                    </p>
-                }
-            </div>
-
-            <div class="flex flex-col pl-5 justify-between bg-linear-to-br from-teal-500/90 to to-teal-600 shadow-xl  rounded-2xl w-full lg:w-65 grow h-45 px-2 py-4 text-gray-100 font-semibold hover:shadow-white/50 transition-all duration-200">
-                <div class="flex items-center gap-5">
-                    <ng-icon name="faSolidMoon" class="text-5xl"></ng-icon>
-                    <h5 class="text-2xl">Sleep</h5>
-                </div>
-                @if(!dashboardSource()?.averageSleep) {
-                    <div class="flex gap-4 items-center opacity-95  ">
-                        <ng-icon name="faSolidGhost" class="pr-2 text-xl"></ng-icon>
-                        <p class="text-xl font-semibold overflow-hidden typewriter">
-                            Coming soon...
-                        </p>
-                    </div>
-                } @else {
-                    <p class="text-xl font-semibold overflow-hidden whitespace-nowra  w-[12ch]">
-                        {{dashboardSource()?.averageSleep}}
-                    </p>
-                }
-            </div>
-
-            <div class="flex flex-col pl-5 justify-between bg-linear-to-br from-slate-500/90 to to-slate-600 shadow-xl rounded-2xl grow w-full lg:w-65  h-45 px-2 py-4 text-gray-100 font-semibold hover:shadow-white/50 transition-all duration-200">
-                <div class="flex items-center gap-5">
-                    <ng-icon name="faSolidDumbbell" class="text-5xl"></ng-icon>
-                    <h5 class="text-2xl">Last workout</h5>
-                </div>
-                @if(!dashboardSource()?.lastWorkoutDate) {
-                    <div class="flex gap-4 items-center opacity-95">
-                        <ng-icon name="faSolidGhost" class="text-xl"></ng-icon>
-                        <p
-                        class="text-xl font-semibold overflow-hidden whitespace-nowra w-[12ch] typewriter">
-                        No Data Yet...
-                    </p>
-                </div>
-            } @else {
-                <p
-
-                class="text-xl font-semibold overflow-hidden whitespace-nowrap  w-[12ch]">
-                {{dashboardSource()?.lastWorkoutDate | date}}
-            </p>
-        }
-    </div>
+            <app-dashboard-card
+                title="Last workout"
+                icon="faSolidDumbbell"
+                [value]="dashboardSource()?.lastWorkoutDate ? (dashboardSource()?.lastWorkoutDate | date) : null"
+                unavailableText="No Data Yet..."
+                cardClass="bg-linear-to-br from-slate-500/90 to-slate-600"
+                valueClass="text-xl font-semibold overflow-hidden whitespace-nowrap w-[12ch]"
+                unavailableClass="text-xl font-semibold overflow-hidden whitespace-nowrap typewriter w-[12ch]"
+                #typewriter>
+            </app-dashboard-card>
 
 </div>
 
