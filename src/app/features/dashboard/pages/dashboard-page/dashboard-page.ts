@@ -1,4 +1,4 @@
-import { Component, computed, inject, effect, WritableSignal, signal } from '@angular/core';
+import { Component, computed, inject, effect, WritableSignal, signal, viewChildren, ElementRef, afterNextRender } from '@angular/core';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { faSolidDumbbell, faSolidFireFlameCurved, faSolidGlassWater, faSolidMoon, faSolidScaleUnbalanced, faSolidUtensils, faSolidCalculator, faSolidGhost,  faSolidChartLine, faSolidUser, faSolidBolt } from '@ng-icons/font-awesome/solid';
 import {
@@ -51,6 +51,8 @@ export class Dashboard {
 
     userDetails = this.userState.userDetails;
 
+    typewriterElements = viewChildren<ElementRef>('typewriter');
+
     constructor() {
         this.layoutState.setTitle("Dashboard")
 
@@ -61,20 +63,17 @@ export class Dashboard {
                 this.yearInitialized = true;
             }
         });
+
+        afterNextRender(() => {
+            this.typewriterElements().forEach((el: ElementRef) => {
+                el.nativeElement.style.setProperty('--target-width', el.nativeElement.scrollWidth + 'px');
+            });
+        });
     }
     ngOnInit() {
         this.loadDashboard();
         this.loadCounts();
         this.loadWeightChart();
-    }
-
-    ngAfterViewInit() {
-        setTimeout(() => {
-            const elements = document.querySelectorAll('.typewriter');
-            elements.forEach((el: any) => {
-                el.style.setProperty('--target-width', el.scrollWidth + 'px');
-            });
-        }, 100);
     }
 
     loadDashboard() {

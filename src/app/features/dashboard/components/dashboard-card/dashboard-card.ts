@@ -1,4 +1,4 @@
-import { Component, computed, input } from '@angular/core';
+import { afterNextRender, Component, computed, ElementRef, input, viewChildren } from '@angular/core';
 import { NgIcon } from '@ng-icons/core';
 
 @Component({
@@ -22,10 +22,22 @@ export class DashboardCard {
 
     readonly baseClass = 'flex flex-col pl-5 justify-between rounded-2xl w-full lg:w-65 grow h-45 px-2 py-4 text-gray-100 font-semibold shadow-xl hover:shadow-white/50 transition-shadow duration-200';
 
+    typewriterElements = viewChildren<ElementRef>('typewriter');
+
+    constructor() {
+        afterNextRender(() => {
+            this.typewriterElements().forEach((el: ElementRef) => {
+                el.nativeElement.style.setProperty('--target-width', el.nativeElement.scrollWidth + 'px');
+            });
+        });
+    }
+
     mergedClass = computed(() => `${this.baseClass} ${this.cardClass()}`.trim());
 
     isUnavailable = computed(() => {
         const value = this.value();
         return value === null || value === undefined || value === '';
     });
+
+
 }
