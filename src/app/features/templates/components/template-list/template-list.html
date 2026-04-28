@@ -1,0 +1,66 @@
+    <div class="w-full  bg-slate-200 rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl duration-200">
+        <div class="bg-linear-to-br from-amber-500 to-amber-400 px-4 py-2">
+            <h2 class="text-xl font-bold text-slate-800">Workout Templates</h2>
+        </div>
+
+        <div class="px-4 pb-6 pt-4 flex flex-col gap-6">
+            <div class="flex flex-col gap-4">
+                <h3 class="font-semibold text-gray-800 text-xl">Quick Start</h3>
+                <app-button
+                [label]="'Add Exercises'"
+                [buttonSize]="'sm'"
+                [fontSize]="'sm'"
+                [isFullWidth]=true
+                [buttonType]="'secondary'"></app-button>
+            </div>
+
+            <div class="flex flex-col gap-4">
+                <div class="flex justify-between w-full items-center">
+                    <h3 class="font-semibold text-gray-800 text-xl">My Templates</h3>
+                    <ng-icon name="faSolidPlus" class="self-center text-xl text-emerald-700! hover:opacity-70 active:opacity-50 transition duration-200 cursor-pointer" ></ng-icon>
+                </div>
+                @if(userTemplates()?.length === 0) {
+                    <div class="flex flex-col w-full gap-2 items-center mx-auto justify-center border border-slate-300 rounded-lg p-2">
+                        <h3 class="text-slate-800 text-lg font-semibold">No Templates Found</h3>
+                        <p class="text-sm text-slate-700 text-center">Add your own templates by clicking on a plus icon</p>
+                    </div>
+                }
+                @else {
+                    <div class="grid grid-cols-2 gap-4 md:flex grow w-full mx-auto">
+
+                        @for (item of userTemplates(); track $index) {
+                            <div class="flex flex-col gap-2 border border-slate-300 shadow-lg p-4 rounded-lg bg-amber-200/90 hover:opacity-70 active:opacity-50 transition duration-200 hover:shadow-xl cursor-pointer">
+                                <div class="flex justify-between gap-2">
+                                    <h4 class="max-w-[8ch] text-wrap">{{transformedName(item.name)}}</h4>
+                                    <ng-icon name="faSolidGear" class="self-center text-emerald-700! hover:opacity-70 active:opacity-50 transition duration-200 cursor-pointer"></ng-icon>
+                                </div>
+                                <p class="text-sm">Exercises: {{item.exercises.length}}</p>
+
+                            </div>
+                        }
+
+                    </div>
+                }
+
+
+            </div>
+
+            <div class="flex flex-col gap-4 w-full">
+                <h3 class="font-semibold text-gray-800 text-xl">System Templates</h3>
+                <div class="grid grid-cols-2 gap-4 md:flex grow w-full mx-auto">
+                    @for (item of systemTemplates(); track $index) {
+                        <div class="flex flex-col gap-2 border border-slate-300 shadow-lg p-4 rounded-lg bg-amber-200/90 hover:opacity-70 active:opacity-50 transition duration-200 hover:shadow-xl cursor-pointer">
+                            <div class="flex justify-between gap-2">
+                                <h4 class="max-w-[8ch] text-wrap">{{transformedName(item.name)}}</h4>
+                                <ng-icon name="faSolidGear" class="self-center text-emerald-700! hover:opacity-70 active:opacity-50 transition duration-200 cursor-pointer"></ng-icon>
+                            </div>
+                            <p class="text-sm">Exercises: {{item.exercises.length}}</p>
+
+                        </div>
+                    }
+                </div>
+
+            </div>
+        </div>
+
+    </div>

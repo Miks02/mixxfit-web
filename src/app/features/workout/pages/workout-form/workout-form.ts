@@ -28,10 +28,11 @@ import { ExerciseSessionService } from '../../../exercise/services/exercise-sess
 import { createExerciseGroup, createWorkoutForm, createWorkoutObject } from '../../factories/workout-factories';
 import { ExerciseType } from '../../models/exercise-type';
 import { WorkoutService } from '../../services/workout-service';
+import { TemplateList } from "../../../templates/components/template-list/template-list";
 
 @Component({
     selector: 'app-workout-form',
-    imports: [NgIcon, FormsModule, ReactiveFormsModule, DatePipe, Button, RouterOutlet],
+    imports: [NgIcon, FormsModule, ReactiveFormsModule, DatePipe, Button, RouterOutlet, TemplateList],
     templateUrl: './workout-form.html',
     styleUrl: './workout-form.css',
     providers: [provideIcons({faSolidTag, faSolidCalendarDay, faSolidDumbbell, faSolidFireFlameCurved, faSolidBookOpen, faSolidBars, faSolidNoteSticky, faSolidXmark, faSolidCircle, faSolidPersonRunning, faSolidChildReaching, faSolidPersonWalkingArrowLoopLeft, faSolidEllipsis, faSolidTrash})]
