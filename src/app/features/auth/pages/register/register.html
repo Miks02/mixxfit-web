@@ -1,7 +1,6 @@
 <div class="flex flex-col items-center gap-4">
     <div class="flex flex-col justify-center items-center w-[80%]">
         <h1 class="text-5xl font-semibold text-gray-800">Sign up</h1>
-        <p class="text-center text-sm text-gray-600 mt-4">Create your account and start tracking your fitness journey today.</p>
     </div>
 
     <form [formGroup]="form" (ngSubmit)="onSubmit()" class="mt-10 self-center w-[80%] flex flex-col justify-center gap-6">
@@ -9,7 +8,7 @@
             <div class="flex flex-col w-full">
                 <div class="flex border-b-2 w-full bg-transparent p-1 px-2 transition-colors duration-200"
                      [class.border-b-red-500]="firstName?.invalid && (firstName?.touched || firstName?.dirty)"
-                     [class.border-b-gray-700]="!firstName?.invalid || (!firstName?.touched && !firstName?.dirty)">
+                     [class.border-b-gray-700]="!firstName?.    invalid || (!firstName?.touched && !firstName?.dirty)">
                     <label for="firstName" class="flex w-full border-none outline-none bg-transparent gap-4 text-xl">
                         <ng-icon class="self-center shrink-0 text-gray-600!" name="faSolidUser"></ng-icon>
                         <input formControlName="firstName" type="text" id="firstName" name="firstName"
@@ -156,9 +155,12 @@
         </div>
 
         <div class="flex flex-col relative gap-2 items-center mt-4">
-            <app-button buttonSize="sm" htmlType="submit" label="Register" [isLoading]="isLoading()" [disabled]="form.invalid" fontSize="xl"></app-button>
-            <p class="text-gray-600 mt-2">Already have an account?
+            <app-button buttonType="secondary" buttonSize="sm" htmlType="submit" label="Register" [isLoading]="isLoading()" [disabled]="form.invalid" fontSize="xl"></app-button>
+            <p class="text-gray-600 mt-2 text-center">Already have an account? <br>
                 <a routerLink="/login" class="text-yellow-600 hover:text-yellow-700 transition-colors duration-200 underline">Sign in here</a>
+            </p>
+            <p class="text-gray-600 mt-2 text-center">By signing up, you agree to our<br>
+                <a href="/MixxFit-Privacy-Policy.pdf" class="text-yellow-600 hover:text-yellow-700 transition-colors duration-200 underline">Privacy Policy</a>
             </p>
         </div>
     </form>
