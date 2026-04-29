@@ -16,6 +16,10 @@ import { ExerciseModalLayout } from './features/exercise/layouts/exercise-modal-
 import { CreateExerciseForm } from './features/exercise/components/create-exercise-form/create-exercise-form';
 import { EditExerciseForm } from './features/exercise/components/edit-exercise-form/edit-exercise-form';
 import { ExerciseSession } from './features/exercise/components/exercise-session/exercise-session';
+import { Component } from '@angular/core';
+import { TemplateModalLayout } from './features/templates/layouts/template-modal-layout/template-modal-layout';
+import { TemplateList } from './features/templates/components/template-list/template-list';
+import { TemplateDetails } from './features/templates/components/template-details/template-details';
 
 export const routes: Routes = [
     {
@@ -64,8 +68,24 @@ export const routes: Routes = [
                                 path: "session",
                                 component: ExerciseSession
                             }
+                        ],
+
+                    },
+                    {
+                        path: "templates",
+                        component: TemplateModalLayout,
+                        children: [
+                            {
+                                path: "",
+                                component: TemplateList
+                            },
+                            {
+                                path: "details/:id",
+                                component: TemplateDetails
+                            }
                         ]
                     }
+
                 ]
             },
             {
