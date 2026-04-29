@@ -21,4 +21,8 @@ export class TemplateService {
         );
     }
 
+    getTemplateById(id: number): Observable<TemplateDto> {
+        return this.http.get<TemplateDto>(`${this.api}/workout-templates/${id}`)
+    }
+
 }
