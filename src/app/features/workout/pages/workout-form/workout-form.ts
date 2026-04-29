@@ -20,19 +20,20 @@ import {
     faSolidTrash,
     faSolidXmark
 } from "@ng-icons/font-awesome/solid";
+import { take } from 'rxjs';
 import { handleValidationErrors, isControlValid } from '../../../../core/helpers/form-helpers';
 import { NotificationService } from '../../../../core/services/notification-service';
 import { LayoutState } from '../../../../layout/services/layout-state';
 import { Button } from '../../../../shared/button/button';
+import { ExerciseService } from '../../../exercise/services/exercise-service';
 import { ExerciseSessionService } from '../../../exercise/services/exercise-session-service';
 import { createExerciseGroup, createWorkoutForm, createWorkoutObject } from '../../factories/workout-factories';
 import { ExerciseType } from '../../models/exercise-type';
 import { WorkoutService } from '../../services/workout-service';
-import { TemplateList } from "../../../templates/components/template-list/template-list";
 
 @Component({
     selector: 'app-workout-form',
-    imports: [NgIcon, FormsModule, ReactiveFormsModule, DatePipe, Button, RouterOutlet, TemplateList],
+    imports: [NgIcon, FormsModule, ReactiveFormsModule, DatePipe, Button, RouterOutlet],
     templateUrl: './workout-form.html',
     styleUrl: './workout-form.css',
     providers: [provideIcons({faSolidTag, faSolidCalendarDay, faSolidDumbbell, faSolidFireFlameCurved, faSolidBookOpen, faSolidBars, faSolidNoteSticky, faSolidXmark, faSolidCircle, faSolidPersonRunning, faSolidChildReaching, faSolidPersonWalkingArrowLoopLeft, faSolidEllipsis, faSolidTrash})]
@@ -44,6 +45,7 @@ export class WorkoutForm {
     fb = inject(FormBuilder);
     workoutService = inject(WorkoutService);
     exerciseSession = inject(ExerciseSessionService);
+    exerciseService = inject(ExerciseService);
     router = inject(Router);
     notificationService = inject(NotificationService);
 
@@ -67,6 +69,16 @@ export class WorkoutForm {
 
             this.form.setControl('exercises', new FormArray(data), {emitEvent: false})
         })
+    }
+
+    ngOnInit() {
+        this.loadExercises();
+    }
+
+    loadExercises() {
+        this.exerciseService.getExercises()
+        .pipe(take(1))
+        .subscribe();
     }
 
     getTotalSets(): number {
@@ -145,6 +157,10 @@ export class WorkoutForm {
         this.router.navigate(['/workout-form/exercises']);
     }
 
+    openTemplateList() {
+        this.router.navigate(['/workout-form/templates']);
+    }
+
     isFormValid(): boolean {
         return this.exerciseSession.getExercises().length > 0 && this.form.valid && this.exerciseSession.form.valid
     }
@@ -167,10 +183,9 @@ export class WorkoutForm {
             error: err  => {
                 this.form.enable();
                 this.isLoading.set(false);
-
                 let errorCode = err.error.errorCode;
 
-                if(errorCode === "General.LimitReached") {
+                if(errorCode === "Workout.LimitReached") {
                     this.notificationService.showWarning("Slow down! You've logged 5 workouts today. Rest is just as important as the grind. Try again tomorrow!");
                     return;
                 }

@@ -1,8 +1,8 @@
 <div class="flex flex-col lg:flex-row gap-8 items-start">
 
-    <app-template-list class="w-full"></app-template-list>
+    <!-- <app-template-list class="w-full"></app-template-list> -->
 
-    <div class="hidden w-full lg:w-2/3 bg-slate-200 rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl duration-200">
+    <div class="w-full lg:w-2/3 bg-slate-200 rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl duration-200">
         <div class="bg-linear-to-br from-amber-500 to-amber-400 px-4 py-2">
             <h2 class="text-xl font-bold text-slate-800">Add Workout</h2>
         </div>
@@ -57,91 +57,90 @@
         </div>
 
         <div class="border-t pt-4">
-            <div class="flex items-center justify-between gap-3 mb-2">
-                <h3 class="hidden md:block text-lg font-semibold text-slate-800">Exercises</h3>
-                @if(exercises.length > 0) {
-                    <app-button class="mx-auto md:mx-0" [buttonType]="'secondary'" buttonSize="sm" fontSize="sm" label="Add Exercise" (click)="openExerciseList()"></app-button>
-                }
+            <div class="flex items-center justify-between gap-3 mb-3">
+                <app-button class="md:mx-0" [buttonType]="'secondary'" buttonSize="sm" fontSize="sm" label="Templates" (click)="openTemplateList()"></app-button>
+
+                <app-button class="md:mx-0" [buttonType]="'secondary'" buttonSize="sm" fontSize="sm" label="Add Exercise" (click)="openExerciseList()"></app-button>
+
 
             </div>
 
             <div
             [class.border-red-500]="exerciseSession.form.invalid"
             [class.border-transparent]="exerciseSession.form.valid"
-             class="space-y-3 bg-amber-100 max-h-40 border-2 overflow-y-auto shadow-md rounded-xl ">
-                @if(exercises.length === 0) {
-                    <div class="text-center text-slate-600 py-6 bg-slate-50  rounded-xl border border-slate-200 ">
-                        <p class="font-semibold text-slate-700 text-lg">No exercises added yet</p>
-                        <p class="text-sm text-slate-500 mt-1 mb-4">Add your first exercise</p>
-                        <app-button [buttonType]="'secondary'" buttonSize="sm" fontSize="sm" label="Add Exercise" (click)="openExerciseList()"></app-button>
-                    </div>
-                }
+            class="space-y-3 bg-amber-100 max-h-40 border-2 overflow-y-auto shadow-md rounded-xl ">
+            @if(exercises.length === 0) {
+                <div class="text-center text-slate-600 py-6 bg-slate-50  rounded-xl border border-slate-200 ">
+                    <p class="font-semibold text-slate-700 text-lg">No exercises added yet</p>
+                    <p class="text-sm text-slate-500 mt-1 mb-4">Add your first exercise</p>
+                </div>
+            }
 
-                @for(exercise of exercises.controls; track $index) {
-                    <div class="group flex flex-col gap-4 bg-linear-to-br from-white to-slate-50 rounded-2xl p-5 shadow-md hover:shadow-xl transition-all duration-300 border border-slate-100 hover:border-amber-200">
-                        <div class="flex items-center justify-between gap-3">
-                            <div class="flex items-center gap-4">
-                                <div
-                                [class.bg-linear-to-br]="true"
-                                [class.from-yellow-400]="getExerciseType(exercise) === 1"
-                                [class.to-amber-500]="getExerciseType(exercise) === 1"
-                                [class.from-indigo-400]="getExerciseType(exercise) === 2"
-                                [class.to-indigo-600]="getExerciseType(exercise) === 2"
-                                [class.from-red-400]="getExerciseType(exercise) === 3"
-                                [class.to-rose-500]="getExerciseType(exercise) === 3"
-                                [class.from-purple-400]="getExerciseType(exercise) === 4"
-                                [class.to-purple-600]="getExerciseType(exercise) === 4"
-                                class="w-12 h-12 rounded-xl shadow-lg flex items-center justify-center group-hover:scale-105 transition-transform">
-                                @if(getExerciseType(exercise) === 3) { <ng-icon name="faSolidPersonRunning" class="text-white! text-xl"></ng-icon> }
-                                @else if(getExerciseType(exercise) === 2) { <ng-icon name="faSolidChildReaching" class="text-white! text-xl"></ng-icon> }
-                                @else { <ng-icon name="faSolidDumbbell" class="text-white! text-xl"></ng-icon> }
-                            </div>
-                            <div>
-                                <div class="text-base font-bold text-slate-800">{{ exercise.get("exerciseName")?.value }}</div>
-                                <div class="text-xs text-slate-500 font-medium mt-0.5">{{ exerciseTypeLabel(exercise) }}</div>
-                            </div>
+            @for(exercise of exercises.controls; track $index) {
+                <div class="group flex flex-col gap-4 bg-linear-to-br from-white to-slate-50 rounded-2xl p-5 shadow-md hover:shadow-xl transition-all duration-300 border border-slate-100 hover:border-amber-200">
+                    <div class="flex items-center justify-between gap-3">
+                        <div class="flex items-center gap-4">
+                            <div
+                            [class.bg-linear-to-br]="true"
+                            [class.from-yellow-400]="getExerciseType(exercise) === 1"
+                            [class.to-amber-500]="getExerciseType(exercise) === 1"
+                            [class.from-indigo-400]="getExerciseType(exercise) === 2"
+                            [class.to-indigo-600]="getExerciseType(exercise) === 2"
+                            [class.from-red-400]="getExerciseType(exercise) === 3"
+                            [class.to-rose-500]="getExerciseType(exercise) === 3"
+                            [class.from-purple-400]="getExerciseType(exercise) === 4"
+                            [class.to-purple-600]="getExerciseType(exercise) === 4"
+                            class="w-12 h-12 rounded-xl shadow-lg flex items-center justify-center group-hover:scale-105 transition-transform">
+                            @if(getExerciseType(exercise) === 3) { <ng-icon name="faSolidPersonRunning" class="text-white! text-xl"></ng-icon> }
+                            @else if(getExerciseType(exercise) === 2) { <ng-icon name="faSolidChildReaching" class="text-white! text-xl"></ng-icon> }
+                            @else { <ng-icon name="faSolidDumbbell" class="text-white! text-xl"></ng-icon> }
                         </div>
-                        <div class="flex items-center justify-between">
-
-                            <button (click)="removeExercise($index)" type="button" class="text-red-600 hover:opacity-70 font-semibold shadow-md bg-red-100 flex items-center px-3 py-2 active:opacity-50 rounded-lg transition-all duration-200 cursor-pointer">
-                                <ng-icon name="faSolidTrash"></ng-icon>
-                            </button>
+                        <div>
+                            <div class="text-base font-bold text-slate-800">{{ exercise.get("exerciseName")?.value }}</div>
+                            <div class="text-xs text-slate-500 font-medium mt-0.5">{{ exerciseTypeLabel(exercise) }}</div>
                         </div>
                     </div>
+                    <div class="flex items-center justify-between">
 
-                    <div class="flex flex-wrap gap-2">
-                        @for(set of getSetControls(exercise); track $index) {
-
-                            <span
-                            [class.border-red-500]="set.invalid"
-                            [class.border-blue-200]="set.valid"
-                            class="bg-white border-2 border-amber-200 text-slate-700 px-4 py-2 rounded-xl text-sm font-semibold shadow-sm hover:shadow-md hover:border-amber-300 transition-all">
-                            @switch(getExerciseType(exercise)) {
-                                @case (1) {
-                                    Set {{$index + 1}}: {{ set.get("weight")!.value ?? '0'}} kg | {{ set.get("reps")?.value ?? '0'}} reps
-
-                                }
-                                @case (2) {
-                                    Set {{$index + 1}}: {{ set.get("weight")!.value ?? '0'}} kg | {{ set.get("reps")?.value ?? '0'}} reps
-
-                                }
-                                @case (3) {
-                                    Set {{$index + 1}}: {{ set.get("durationMinutes")?.value ?? '0' }} minutes | {{ set.get("durationSeconds")?.value ?? '0'}} seconds | {{set.get("distance")?.value ?? '0'}} km
-
-                                }
-                                @case (4) {
-                                    Set {{$index + 1}}: {{ set.get("durationMinutes")?.value }} minutes | {{ set.get("durationSeconds")?.value}} seconds
-
-                                }
-                            }
-                        </span>
-                    }
+                        <button (click)="removeExercise($index)" type="button" class="text-red-600 hover:opacity-70 font-semibold shadow-md bg-red-100 flex items-center px-3 py-2 active:opacity-50 rounded-lg transition-all duration-200 cursor-pointer">
+                            <ng-icon name="faSolidTrash"></ng-icon>
+                        </button>
+                    </div>
                 </div>
 
+                <div class="flex flex-wrap gap-2">
+                    @for(set of getSetControls(exercise); track $index) {
 
+                        <span
+                        [class.border-red-500]="set.invalid"
+                        [class.border-blue-200]="set.valid"
+                        class="bg-white border-2 border-amber-200 text-slate-700 px-4 py-2 rounded-xl text-sm font-semibold shadow-sm hover:shadow-md hover:border-amber-300 transition-all">
+                        @switch(getExerciseType(exercise)) {
+                            @case (1) {
+                                Set {{$index + 1}}: {{ set.get("weight")!.value ?? '0'}} kg | {{ set.get("reps")?.value ?? '0'}} reps
+
+                            }
+                            @case (2) {
+                                Set {{$index + 1}}: {{ set.get("weight")!.value ?? '0'}} kg | {{ set.get("reps")?.value ?? '0'}} reps
+
+                            }
+                            @case (3) {
+                                Set {{$index + 1}}: {{ set.get("durationMinutes")?.value ?? '0' }} minutes | {{ set.get("durationSeconds")?.value ?? '0'}} seconds | {{set.get("distance")?.value ?? '0'}} km
+
+                            }
+                            @case (4) {
+                                Set {{$index + 1}}: {{ set.get("durationMinutes")?.value }} minutes | {{ set.get("durationSeconds")?.value}} seconds
+
+                            }
+                        }
+                    </span>
+                }
             </div>
-        }
-    </div>
+
+
+        </div>
+    }
+</div>
 </div>
 
 <div>
