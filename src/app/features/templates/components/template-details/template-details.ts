@@ -11,16 +11,6 @@ import { TemplateDto } from '../../models/template-dto';
 import { TemplateModalLayoutService } from '../../services/template-modal-layout-service';
 import { TemplateService } from '../../services/template-service';
 
-type TemplateExerciseView = {
-    exerciseId: number;
-    setCount: number;
-    order: number;
-    exerciseName: string;
-    muscleGroupName: string;
-    exerciseType: number;
-    isUserDefined: boolean;
-};
-
 @Component({
     selector: 'app-template-details',
     imports: [NgIcon, NgxSkeletonLoaderComponent, Button],
