@@ -1,15 +1,14 @@
-import { computed, inject, Injectable, signal, WritableSignal } from '@angular/core';
-import { CurrentTemplate } from '../models/current-template';
-import { FormArray, FormBuilder } from '@angular/forms';
-import { createCurrentTemplate } from '../factories/template-factories';
-import { ExerciseService } from '../../exercise/services/exercise-service';
+import { computed, inject, Injectable } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { FormArray, NonNullableFormBuilder } from '@angular/forms';
+import { ExerciseService } from '../../exercise/services/exercise-service';
+import { createCurrentTemplate } from '../factories/template-factories';
 
 @Injectable({
     providedIn: 'root',
 })
 export class TemplateState {
-    fb = inject(FormBuilder);
+    fb = inject(NonNullableFormBuilder);
     exerciseService = inject(ExerciseService);
 
     form = createCurrentTemplate(this.fb);

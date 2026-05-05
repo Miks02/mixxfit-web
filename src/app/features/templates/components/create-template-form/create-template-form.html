@@ -25,19 +25,19 @@
         <div class="flex flex-col gap-2">
             <h4 class="text-lg sm:text-xl text-slate-700 font-semibold">Exercises ({{ templateExercises()!.length }})</h4>
 
-            @for(exercise of templateExercises(); track exercise!.exerciseId) {
+            @for(exercise of templateExercises(); track exercise.exerciseId) {
                 <div class="flex items-center bg-slate-300 rounded-xl px-4 py-3.5 shadow-md">
                     <div
-                        [class.from-yellow-400]="exercise!.exerciseType === 1"
-                        [class.to-amber-500]="exercise!.exerciseType === 1"
-                        [class.from-indigo-400]="exercise!.exerciseType === 2"
-                        [class.to-indigo-600]="exercise!.exerciseType === 2"
-                        [class.from-red-400]="exercise!.exerciseType === 3"
-                        [class.to-rose-500]="exercise!.exerciseType === 3"
-                        [class.from-violet-400]="exercise!.exerciseType === 4"
-                        [class.to-violet-500]="exercise!.exerciseType === 4"
+                        [class.from-yellow-400]="exercise.exerciseType === 1"
+                        [class.to-amber-500]="exercise.exerciseType === 1"
+                        [class.from-indigo-400]="exercise.exerciseType === 2"
+                        [class.to-indigo-600]="exercise.exerciseType === 2"
+                        [class.from-red-400]="exercise.exerciseType === 3"
+                        [class.to-rose-500]="exercise.exerciseType === 3"
+                        [class.from-violet-400]="exercise.exerciseType === 4"
+                        [class.to-violet-500]="exercise.exerciseType === 4"
                         class="bg-linear-to-br w-11 h-11 rounded-xl shadow-lg flex items-center justify-center mr-4 shrink-0">
-                        @switch(exercise!.exerciseType) {
+                        @switch(exercise.exerciseType) {
                             @case(4) { <ng-icon name="faSolidPersonWalkingArrowLoopLeft" class="text-white! text-lg"></ng-icon> }
                             @case(3) { <ng-icon name="faSolidPersonRunning" class="text-white! text-lg"></ng-icon> }
                             @case(2) { <ng-icon name="faSolidChildReaching" class="text-white! text-lg"></ng-icon> }
@@ -46,15 +46,15 @@
                     </div>
 
                     <div class="flex flex-col flex-1 min-w-0">
-                        <p class="font-semibold text-sm sm:text-lg text-slate-900 truncate">{{ exercise!.exerciseName }}</p>
-                        <p class="text-xs sm:text-sm text-slate-600 font-medium truncate mt-0.5">{{ exercise!.muscleGroupName }}</p>
+                        <p class="font-semibold text-sm sm:text-lg text-slate-900 truncate">{{ exercise.exerciseName }}</p>
+                        <p class="text-xs sm:text-sm text-slate-600 font-medium truncate mt-0.5">{{ exercise.muscleGroupName }}</p>
                     </div>
 
                     <div class="flex items-center gap-3 shrink-0 ml-3">
                         <div class="flex flex-col items-center gap-1">
                             <label class="text-xs text-slate-500 font-medium">Sets</label>
                             <input
-                                [(ngModel)]="exercise!.setCount"
+                                [(ngModel)]="exercise.setCount"
                                 type="number"
                                 min="1"
                                 max="20"
@@ -62,7 +62,7 @@
                         </div>
 
                         <button
-                            (click)="removeExercise(exercise!.exerciseId)"
+                            (click)="removeExercise(exercise.exerciseId)"
                             class="text-slate-500 hover:text-red-500 active:text-red-700 transition-colors duration-200 cursor-pointer p-1">
                             <ng-icon name="faSolidTrash" class="text-base"></ng-icon>
                         </button>
