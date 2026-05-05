@@ -20,6 +20,8 @@ import { ExerciseFilterType } from '../../../exercise/models/exercise-filter-typ
 import { TemplateModalLayoutService } from '../../services/template-modal-layout-service';
 import { ExerciseService } from '../../../exercise/services/exercise-service';
 import { ExerciseSessionService } from '../../../exercise/services/exercise-session-service';
+import { TemplateState } from '../../services/template-state';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 
 @Component({
@@ -36,7 +38,7 @@ export class ExerciseList {
     private exerciseModal = inject(TemplateModalLayoutService);
     private exerciseService = inject(ExerciseService);
     private router = inject(Router);
-    private exerciseSession = inject(ExerciseSessionService);
+    private templateState = inject(TemplateState);
 
     exercises = this.exerciseService.exercises;
     categories = this.exerciseService.exerciseCategories;
@@ -54,7 +56,6 @@ export class ExerciseList {
             action: [
                 { icon: 'faSolidMagnifyingGlass', action: this.isSearchOpen },
                 { icon: 'faSolidFilter', action: this.isFilterOpen },
-
             ],
             showBackButton: false
         });
@@ -94,6 +95,7 @@ export class ExerciseList {
         let selectedExs = this.selectedExercises();
 
         if(selectedExs.size > 0) {
+            console.log(selectedExs.size + "kurac");
             return true;
         }
 
@@ -108,19 +110,26 @@ export class ExerciseList {
         this.searchTerm.set(searchTerm);
     }
 
-    addExercise(id: number, name: string, type: ExerciseType) {
-        this.exerciseSession.addExercise({exerciseId: id, exerciseName: name, exerciseType: type});
-        this.router.navigate(['workout-form/exercises/session']);
+    addExercises() {
+        this.templateState.addExerciseToTemplate(Array.from(this.selectedExercises()))
+        this.selectedExercises().clear();
+        this.router.navigate(['workout-form/templates/create']);
     }
 
     toggleExercise = this.exerciseService.toggleExercise;
 
-    goToCurrentSession() {
-        this.router.navigate(['workout-form/exercises/session']);
+    goToCurrentTemplate() {
+        this.router.navigate(['workout-form/templates/create']);
     }
 
-    isSessionActive() {
-        return this.exerciseSession.getExercises().length > 0;
-    }
+    tempExercises = toSignal(this.templateState.getTemplateExercises().valueChanges, {initialValue: this.templateState.getTemplateExercises()})
+
+    isTemplateActive = computed(() => {
+        let tempExercises = this.tempExercises().value;
+
+        if(!tempExercises || tempExercises.length === 0)
+            return false;
+        return true;
+    })
 
 }

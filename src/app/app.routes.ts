@@ -20,6 +20,7 @@ import { ExerciseSession } from './features/exercise/components/exercise-session
 import { TemplateModalLayout } from './features/templates/layouts/template-modal-layout/template-modal-layout';
 import { TemplateList } from './features/templates/components/template-list/template-list';
 import { TemplateDetails } from './features/templates/components/template-details/template-details';
+import { CreateTemplateForm } from './features/templates/components/create-template-form/create-template-form';
 
 export const routes: Routes = [
     {
@@ -86,6 +87,10 @@ export const routes: Routes = [
                             {
                                 path: "exercises",
                                 component: TemplateExerciseList
+                            },
+                            {
+                                path: "create",
+                                component: CreateTemplateForm
                             }
                         ]
                     }
