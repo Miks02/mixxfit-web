@@ -28,4 +28,8 @@ export class TemplateService {
         return this.http.get<TemplateDto>(`${this.api}/workout-templates/${id}`)
     }
 
+    addTemplate(request: Omit<TemplateDto, "id" | "isSystem" | "order">) {
+        return this.http.post<TemplateDto>(`${this.api}/workout-templates/`, request);
+    }
+
 }
