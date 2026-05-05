@@ -70,4 +70,8 @@ export class TemplateList implements AfterViewInit, OnDestroy {
     getTemplateDetails(id: number) {
         this.router.navigate([`workout-form/templates/details/${id}`]);
     }
+
+    goToTemplateCreation() {
+        this.router.navigate([`workout-form/templates/exercises`])
+    }
 }

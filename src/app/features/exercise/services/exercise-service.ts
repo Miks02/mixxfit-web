@@ -22,6 +22,8 @@ export class ExerciseService {
     public muscleGroups: Signal<MuscleGroupDto[] | undefined> = this._muscleGroups;
     public exerciseCategories: Signal<ExerciseCategoryDto[] | undefined> = this._excerciseCategories;
 
+    public selectedExercises: WritableSignal<Set<number>> = signal(new Set())
+
     private http = inject(HttpClient);
 
     getExercises(): Observable<ExerciseDto[]> {
@@ -60,6 +62,19 @@ export class ExerciseService {
         .pipe(
             tap((exercise) => this._exercises.update(exercises => [...exercises ?? [], exercise])
         ));
+    }
+
+    toggleExercise(id: number) {
+        const current = this.selectedExercises();
+        const next = new Set(current);
+
+        if(this.selectedExercises().has(id)) {
+            next.delete(id);
+            this.selectedExercises.set(next);
+            return;
+        }
+        next.add(id);
+        this.selectedExercises.set(next);
     }
 
 }
