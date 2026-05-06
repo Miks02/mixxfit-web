@@ -61,7 +61,7 @@ export class CreateTemplateForm {
         }
 
         const mappedExercises = mapTemplateExercises(this.templateExercises())
-        const request = createTemplateRequestFromForm(this.templateName(), mappedExercises)
+        const request = createTemplateRequestFromForm(this.templateName(), mappedExercises, this.templateNotes())
 
         this.createTemplate(request);
     }
