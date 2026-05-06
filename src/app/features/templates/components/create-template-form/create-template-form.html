@@ -3,13 +3,19 @@
     <form (ngSubmit)="submit()" [formGroup]="templateState.form" class="flex-1 overflow-y-auto min-h-0 p-4 flex flex-col gap-5">
 
         <div class="flex flex-col gap-1.5">
-            <label class="text-xs font-bold text-slate-600 uppercase tracking-wide">Template Name</label>
-            <div class="flex items-center bg-white rounded-xl px-4 py-2.5 shadow-md focus-within:ring-2 focus-within:ring-amber-400 transition-all">
+            <label class="text-sm font-medium text-slate-700">Template Name <span class="text-red-600">*</span></label>
+            <div
+                class="flex items-center gap-4 shadow-md bg-linear-to-br from-white to-slate-50 rounded-lg px-4 py-4 transition-colors duration-200 border focus-within:outline outline-amber-400"
+                [class.border-red-500]="currentTemplate.get('name')!.invalid && currentTemplate.get('name')!.touched"
+                [class.border-transparent]="!(currentTemplate.get('name')!.invalid && currentTemplate.get('name')!.touched)">
+                <div class="flex justify-center">
+                    <ng-icon name="faSolidTag" class="text-emerald-700! text-xl"></ng-icon>
+                </div>
                 <input
                     formControlName="name"
                     type="text"
                     placeholder="Enter template name..."
-                    class="flex-1 bg-transparent outline-none text-sm text-slate-800 placeholder-slate-400 font-medium">
+                    class="flex-1 text-slate-800 font-semibold bg-transparent outline-none md:text-lg">
             </div>
             @if(currentTemplate.get('name')!.invalid && currentTemplate.get('name')!.touched) {
                 @if(currentTemplate.get('name')!.errors?.['required']) {
@@ -17,12 +23,13 @@
                 } @else if(currentTemplate.get('name')!.errors?.['minlength']) {
                     <p class="text-xs text-red-500 font-medium px-1">Name must be at least 4 characters.</p>
                 } @else if(currentTemplate.get('name')!.errors?.['maxlength']) {
-                    <p class="text-xs text-red-500 font-medium px-1">Name cannot exceed 50 characters.</p>
+                    <p class="text-xs text-red-500 font-medium px-1">Name cannot exceed 100 characters.</p>
                 }
             }
         </div>
 
-        <div formArrayName="exercises" class="flex flex-col gap-2">
+
+        <div formArrayName="exercises" class="flex border border-slate-300/60 bg-slate-100/80 p-2 shadow-md rounded-lg flex-col gap-2 overflow-y-auto h-100">
             <h4 class="text-lg sm:text-xl text-slate-700 font-semibold">Exercises ({{ templateExercises()!.length }})</h4>
 
             @for(exercise of templateExercises(); track $index) {
@@ -64,11 +71,36 @@
                         <button
                             type="button"
                             (click)="templateState.removeExerciseFromTemplate($index)"
-                            class="text-slate-500 hover:text-red-500 active:text-red-700 transition-colors duration-200 cursor-pointer p-1">
+                            class="w-10 flex justify-center cursor-pointer text-red-600 hover:opacity-70 transition duration-200 active:opacity-50 disabled:opacity-50 disabled:pointer-events-none">
                             <ng-icon name="faSolidTrash" class="text-base"></ng-icon>
                         </button>
                     </div>
                 </div>
+            }
+
+        </div>
+
+
+        <div class="flex flex-col gap-1.5">
+            <label class="text-sm font-medium text-slate-700">Notes</label>
+            <div
+                class="flex items-start gap-4 shadow-md bg-linear-to-br from-white to-slate-50 rounded-lg px-4 py-4 transition-colors duration-200 border focus-within:outline outline-amber-400"
+                [class.border-red-500]="currentTemplate.get('notes')!.invalid && currentTemplate.get('notes')!.touched"
+                [class.border-transparent]="!(currentTemplate.get('notes')!.invalid && currentTemplate.get('notes')!.touched)">
+                <div class="flex justify-center pt-0.5">
+                    <ng-icon name="faSolidNoteSticky" class="text-emerald-700! text-xl"></ng-icon>
+                </div>
+                <textarea
+                    formControlName="notes"
+                    rows="2"
+                    placeholder="Add notes (optional)..."
+                    class="flex-1 text-slate-800 font-semibold bg-transparent outline-none md:text-lg resize-none">
+                </textarea>
+            </div>
+            @if(currentTemplate.get('notes')!.invalid && currentTemplate.get('notes')!.touched) {
+                @if(currentTemplate.get('notes')!.errors?.['maxlength']) {
+                    <p class="text-xs text-red-500 font-medium px-1">Notes cannot exceed 200 characters.</p>
+                }
             }
         </div>
 

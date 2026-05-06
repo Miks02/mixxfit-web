@@ -17,6 +17,7 @@ export class TemplateState {
 
     templateName = computed(() => this.templateFormValue().name ?? "")
     templateExercises = computed(() => this.templateFormValue().exercises ?? [])
+    templateNotes = computed(() => this.templateFormValue().notes)
 
     getTemplateNameControl = () => this.form.get("name") as FormControl;
 

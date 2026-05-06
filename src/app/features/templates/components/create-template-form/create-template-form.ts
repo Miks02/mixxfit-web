@@ -5,8 +5,10 @@ import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
     faSolidChildReaching,
     faSolidDumbbell,
+    faSolidNoteSticky,
     faSolidPersonRunning,
     faSolidPersonWalkingArrowLoopLeft,
+    faSolidTag,
     faSolidTrash,
 } from '@ng-icons/font-awesome/solid';
 import { take } from 'rxjs';
@@ -25,7 +27,7 @@ import { TemplateRequest } from '../../models/template-request';
     imports: [NgIcon, FormsModule, ReactiveFormsModule, Button],
     templateUrl: './create-template-form.html',
     styleUrl: './create-template-form.css',
-    providers: [provideIcons({ faSolidDumbbell, faSolidPersonRunning, faSolidChildReaching, faSolidPersonWalkingArrowLoopLeft, faSolidTrash })],
+    providers: [provideIcons({ faSolidDumbbell, faSolidPersonRunning, faSolidChildReaching, faSolidPersonWalkingArrowLoopLeft, faSolidTrash, faSolidTag, faSolidNoteSticky })],
 })
 export class CreateTemplateForm {
     templateState = inject(TemplateState);
@@ -37,6 +39,7 @@ export class CreateTemplateForm {
     currentTemplate = this.templateState.form;
     templateExercises = this.templateState.templateExercises;
     templateName = this.templateState.templateName;
+    templateNotes = this.templateState.templateNotes;
     isFormValid = this.templateState.isFormValid;
 
     constructor() {
@@ -57,8 +60,8 @@ export class CreateTemplateForm {
             return;
         }
 
-        const mappedExercises = mapTemplateExercises(this.templateExercises()!)
-        const request = createTemplateRequestFromForm(this.templateName()!, mappedExercises)
+        const mappedExercises = mapTemplateExercises(this.templateExercises())
+        const request = createTemplateRequestFromForm(this.templateName(), mappedExercises)
 
         this.createTemplate(request);
     }
@@ -69,7 +72,10 @@ export class CreateTemplateForm {
             take(1)
         )
         .subscribe({
-            next: () => this.notificationService.showSuccess("Template created successfully!"),
+            next: () => {
+                this.notificationService.showSuccess("Template created successfully!")
+                this.router.navigate(['workout-form/templates'])
+            },
             error: () => this.notificationService.showError("Error happened while trying to create a template, try again later")
         });
     }

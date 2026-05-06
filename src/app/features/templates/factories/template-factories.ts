@@ -5,7 +5,8 @@ import { TemplateRequest } from "../models/template-request";
 
 export function createCurrentTemplate(fb: NonNullableFormBuilder) {
     return fb.group({
-        name: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(50)]],
+        name: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(100)]],
+        notes: ['', [Validators.maxLength(200)]],
         exercises: fb.array<Omit<TemplateExerciseView, 'isUserDefined' | 'order'>>([], [Validators.required])
     })
 }
