@@ -43,7 +43,6 @@ export class TemplateDetails {
                 return {
                     exerciseId: te.exerciseId,
                     setCount: te.setCount,
-                    order: te.order,
                     exerciseName: exercise.name,
                     muscleGroupName: exercise.muscleGroupName,
                     exerciseType: exercise.exerciseType,
