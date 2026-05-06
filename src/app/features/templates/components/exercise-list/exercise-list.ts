@@ -95,7 +95,6 @@ export class ExerciseList {
         let selectedExs = this.selectedExercises();
 
         if(selectedExs.size > 0) {
-            console.log(selectedExs.size + "kurac");
             return true;
         }
 
