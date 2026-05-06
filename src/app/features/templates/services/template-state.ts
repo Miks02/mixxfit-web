@@ -1,6 +1,6 @@
 import { computed, inject, Injectable } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { FormArray, NonNullableFormBuilder } from '@angular/forms';
+import { FormArray, FormControl, NonNullableFormBuilder } from '@angular/forms';
 import { ExerciseService } from '../../exercise/services/exercise-service';
 import { createCurrentTemplate } from '../factories/template-factories';
 
@@ -13,14 +13,14 @@ export class TemplateState {
 
     form = createCurrentTemplate(this.fb);
 
-    private templateFormValue = toSignal(this.form.valueChanges, {initialValue: this.form.value})
+    templateFormValue = toSignal(this.form.valueChanges, {initialValue: this.form.value})
 
     templateName = computed(() => this.templateFormValue().name)
     templateExercises = computed(() => this.templateFormValue().exercises)
 
-    getTemplateExercises() {
-        return this.form.get("exercises") as FormArray;
-    }
+    getTemplateNameControl = () => this.form.get("name") as FormControl;
+
+    getTemplateExercises = () => this.form.get("exercises") as FormArray;
 
     addExerciseToTemplate(exerciseIds: number[]) {
         exerciseIds.forEach(ex => {
@@ -28,22 +28,23 @@ export class TemplateState {
             if(!foundExercise)
                 return;
 
-            const entry: Omit<TemplateExerciseView, 'isUserDefined' | 'order'> = {
-                exerciseId: foundExercise.id,
-                setCount: 1,
-                exerciseName: foundExercise.name,
-                muscleGroupName: foundExercise.muscleGroupName,
-                exerciseType: foundExercise.exerciseType
-            }
+            const entry = this.fb.group({
+            exerciseId: [foundExercise.id],
+            setCount: [1],
+            exerciseName: [foundExercise.name],
+            muscleGroupName: [foundExercise.muscleGroupName],
+            exerciseType: [foundExercise.exerciseType]
+        });
 
-            this.getTemplateExercises()?.value.push(entry);
+            this.getTemplateExercises().push(entry);
         })
 
     }
 
-    removeExerciseFromTemplate(exerciseId: number) {
-        this.getTemplateExercises()?.value.filter((ex: any) => ex.exerciseId === exerciseId);
+    removeExerciseFromTemplate(index: number) {
+        this.getTemplateExercises()?.removeAt(index);
     }
 
+    isFormValid = () => this.form.valid;
 
 }
