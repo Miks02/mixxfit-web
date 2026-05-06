@@ -1,8 +1,9 @@
-import { inject, Injectable, signal, WritableSignal } from '@angular/core';
-import { environment } from '../../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
-import { TemplateDto } from '../models/template-dto';
+import { inject, Injectable, signal, WritableSignal } from '@angular/core';
 import { Observable, of, tap } from 'rxjs';
+import { environment } from '../../../../environments/environment';
+import { TemplateDto } from '../models/template-dto';
+import { TemplateRequest } from '../models/template-request';
 
 @Injectable({
     providedIn: 'root',
@@ -28,7 +29,7 @@ export class TemplateService {
         return this.http.get<TemplateDto>(`${this.api}/workout-templates/${id}`)
     }
 
-    addTemplate(request: Omit<TemplateDto, "id" | "isSystem" | "order">) {
+    addTemplate(request: TemplateRequest) {
         return this.http.post<TemplateDto>(`${this.api}/workout-templates/`, request);
     }
 
