@@ -30,7 +30,9 @@ export class TemplateService {
     }
 
     addTemplate(request: TemplateRequest) {
-        return this.http.post<TemplateDto>(`${this.api}/workout-templates/`, request);
+        return this.http.post<TemplateDto>(`${this.api}/workout-templates/`, request).pipe(
+            tap((res) => this._templates.update(prev => [...prev ?? [], res]))
+        );
     }
 
 }
