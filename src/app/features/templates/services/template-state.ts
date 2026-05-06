@@ -15,8 +15,8 @@ export class TemplateState {
 
     templateFormValue = toSignal(this.form.valueChanges, {initialValue: this.form.value})
 
-    templateName = computed(() => this.templateFormValue().name)
-    templateExercises = computed(() => this.templateFormValue().exercises)
+    templateName = computed(() => this.templateFormValue().name ?? "")
+    templateExercises = computed(() => this.templateFormValue().exercises ?? [])
 
     getTemplateNameControl = () => this.form.get("name") as FormControl;
 

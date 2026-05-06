@@ -121,10 +121,8 @@ export class ExerciseList {
         this.router.navigate(['workout-form/templates/create']);
     }
 
-    tempExercises = toSignal(this.templateState.getTemplateExercises().valueChanges, {initialValue: this.templateState.getTemplateExercises()})
-
     isTemplateActive = computed(() => {
-        let tempExercises = this.tempExercises().value;
+        let tempExercises = this.templateState.templateExercises();
 
         if(!tempExercises || tempExercises.length === 0)
             return false;
