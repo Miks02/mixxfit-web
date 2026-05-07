@@ -53,7 +53,10 @@
                 }
             </div>
 
-            <app-button (clicked)="addToSession()" class="mx-auto" label="Add To Session" buttonType="primary" buttonSize="sm"></app-button>
+            <div class="flex gap-4 justify-center">
+                <app-button (clicked)="addToSession()" label="Add To Session" buttonType="primary" buttonSize="sm" fontSize="sm"></app-button>
+                <app-button (clicked)="deleteTemplate(this.selectedTemplate()?.id!)" label="Delete Template" buttonType="danger" buttonSize="sm" fontSize="sm"></app-button>
+            </div>
         }
     </div>
 </div>

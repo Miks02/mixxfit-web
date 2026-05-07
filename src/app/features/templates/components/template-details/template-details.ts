@@ -4,6 +4,7 @@ import { NgIcon, provideIcons } from '@ng-icons/core';
 import { faSolidChildReaching, faSolidDumbbell, faSolidGear, faSolidPersonRunning, faSolidPersonWalkingArrowLoopLeft } from '@ng-icons/font-awesome/solid';
 import { NgxSkeletonLoaderComponent } from 'ngx-skeleton-loader';
 import { finalize, take, tap } from 'rxjs';
+import { NotificationService } from '../../../../core/services/notification-service';
 import { Button } from '../../../../shared/button/button';
 import { ExerciseService } from '../../../exercise/services/exercise-service';
 import { ExerciseSessionService } from '../../../exercise/services/exercise-session-service';
@@ -24,6 +25,7 @@ export class TemplateDetails {
     private exerciseService = inject(ExerciseService);
     private exerciseSession = inject(ExerciseSessionService);
     private activatedRoute = inject(ActivatedRoute);
+    private notificationService = inject(NotificationService);
     private router = inject(Router);
 
     isLoading: WritableSignal<boolean> = signal(true);
@@ -72,5 +74,22 @@ export class TemplateDetails {
     addToSession() {
         this.exerciseSession.addMultipleExercises(this.exerciseViews())
         this.router.navigate(['workout-form/exercises/session'])
+    }
+
+    deleteTemplate(id: number) {
+        this.isLoading.set(true);
+        this.templateService.deleteTemplate(id).pipe(
+            take(1),
+            finalize(() => this.isLoading.set(false))
+        )
+        .subscribe({
+            next: () => {
+                this.notificationService.showSuccess("Template has been deleted successfully");
+                this.router.navigate(['workout-form/templates'])
+            },
+            error: () => {
+                this.notificationService.showError("Error occurred while trying to delete the template");
+            }
+        })
     }
 }

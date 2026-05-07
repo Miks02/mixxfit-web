@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable, signal, WritableSignal } from '@angular/core';
 import { Observable, of, tap } from 'rxjs';
 import { environment } from '../../../../environments/environment';
@@ -33,6 +33,12 @@ export class TemplateService {
         return this.http.post<TemplateDto>(`${this.api}/workout-templates/`, request).pipe(
             tap((res) => this._templates.update(prev => [...prev ?? [], res]))
         );
+    }
+
+    deleteTemplate(id: number) {
+        return this.http.delete<void>(`${this.api}/workout-templates/${id}`).pipe(
+            tap(() => this._templates.update(prev => [...prev?.filter(t => t.id !== id) ?? []]))
+        )
     }
 
 }
