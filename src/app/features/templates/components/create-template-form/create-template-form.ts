@@ -74,7 +74,9 @@ export class CreateTemplateForm {
         .subscribe({
             next: () => {
                 this.notificationService.showSuccess("Template created successfully!")
+                this.templateState.clearForm();
                 this.router.navigate(['workout-form/templates'])
+
             },
             error: () => this.notificationService.showError("Error happened while trying to create a template, try again later")
         });

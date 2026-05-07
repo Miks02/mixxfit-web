@@ -48,4 +48,9 @@ export class TemplateState {
 
     isFormValid = () => this.form.valid;
 
+    clearForm = () => {
+        this.form.reset()
+        this.getTemplateExercises().clear()
+    }
+
 }
