@@ -15,7 +15,7 @@
             <div class="flex justify-between w-full items-center">
                 <h3 class="font-semibold text-gray-800 text-xl">{{ selectedTemplate()?.name }}</h3>
                 @if(!this.selectedTemplate()?.isSystem) {
-                    <button class="text-sm font-medium text-emerald-700 hover:opacity-70 active:opacity-50 transition duration-200 cursor-pointer border border-emerald-700 rounded-lg px-3 py-1">Edit</button>
+                    <button (click)="editTemplate()" class="text-sm font-medium text-emerald-700 hover:opacity-70 active:opacity-50 transition duration-200 cursor-pointer border border-emerald-700 rounded-lg px-3 py-1">Edit</button>
                 }
             </div>
 

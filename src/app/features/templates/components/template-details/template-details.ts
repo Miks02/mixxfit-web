@@ -11,6 +11,7 @@ import { ExerciseSessionService } from '../../../exercise/services/exercise-sess
 import { TemplateDto } from '../../models/template-dto';
 import { TemplateModalLayoutService } from '../../services/template-modal-layout-service';
 import { TemplateService } from '../../services/template-service';
+import { TemplateState } from '../../services/template-state';
 
 @Component({
     selector: 'app-template-details',
@@ -22,6 +23,7 @@ import { TemplateService } from '../../services/template-service';
 export class TemplateDetails {
     private templateService = inject(TemplateService);
     private templateLayout = inject(TemplateModalLayoutService);
+    private templateState = inject(TemplateState);
     private exerciseService = inject(ExerciseService);
     private exerciseSession = inject(ExerciseSessionService);
     private activatedRoute = inject(ActivatedRoute);
@@ -74,6 +76,13 @@ export class TemplateDetails {
     addToSession() {
         this.exerciseSession.addMultipleExercises(this.exerciseViews())
         this.router.navigate(['workout-form/exercises/session'])
+    }
+
+    editTemplate() {
+        const exerciseIds = this.exerciseViews().map(e => e.exerciseId);
+
+        this.templateState.addValuesToTemplateForm(this.templateId, exerciseIds, this.selectedTemplate()?.name!, this.selectedTemplate()?.notes!)
+        this.router.navigate([`workout-form/templates/edit/${this.templateId}`])
     }
 
     deleteTemplate(id: number) {
