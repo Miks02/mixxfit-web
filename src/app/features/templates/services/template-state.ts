@@ -15,6 +15,7 @@ export class TemplateState {
 
     templateFormValue = toSignal(this.form.valueChanges, {initialValue: this.form.value})
 
+    templateId = computed(() => this.templateFormValue().id ?? null);
     templateName = computed(() => this.templateFormValue().name ?? "")
     templateExercises = computed(() => this.templateFormValue().exercises ?? [])
     templateNotes = computed(() => this.templateFormValue().notes)
@@ -39,6 +40,15 @@ export class TemplateState {
 
             this.getTemplateExercises().push(entry);
         })
+
+    }
+
+    addValuesToTemplateForm(id: number, exerciseIds: number[], name: string, notes: string) {
+        this.form.get("id")?.setValue(id)
+        this.form.get("name")?.setValue(name)
+        this.form.get("notes")?.setValue(notes)
+
+        this.addExerciseToTemplate(exerciseIds)
 
     }
 
