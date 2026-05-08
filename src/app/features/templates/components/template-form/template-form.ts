@@ -12,24 +12,22 @@ import {
     faSolidTrash,
 } from '@ng-icons/font-awesome/solid';
 import { take } from 'rxjs';
+import { NotificationService } from '../../../../core/services/notification-service';
 import { Button } from '../../../../shared/button/button';
-import { TemplateDto } from '../../models/template-dto';
-import { TemplateExerciseDto } from '../../models/template-exercise-dto';
+import { createTemplateRequestFromForm, mapTemplateExercises } from '../../factories/template-factories';
+import { TemplateRequest } from '../../models/template-request';
 import { TemplateModalLayoutService } from '../../services/template-modal-layout-service';
 import { TemplateService } from '../../services/template-service';
 import { TemplateState } from '../../services/template-state';
-import { NotificationService } from '../../../../core/services/notification-service';
-import { createTemplateRequestFromForm, mapTemplateExercises } from '../../factories/template-factories';
-import { TemplateRequest } from '../../models/template-request';
 
 @Component({
-    selector: 'app-create-template-form',
+    selector: 'app-template-form',
     imports: [NgIcon, FormsModule, ReactiveFormsModule, Button],
-    templateUrl: './create-template-form.html',
-    styleUrl: './create-template-form.css',
+    templateUrl: './template-form.html',
+    styleUrl: './template-form.css',
     providers: [provideIcons({ faSolidDumbbell, faSolidPersonRunning, faSolidChildReaching, faSolidPersonWalkingArrowLoopLeft, faSolidTrash, faSolidTag, faSolidNoteSticky })],
 })
-export class CreateTemplateForm {
+export class TemplateForm {
     templateState = inject(TemplateState);
     private templateLayout = inject(TemplateModalLayoutService);
     private templateService = inject(TemplateService);
