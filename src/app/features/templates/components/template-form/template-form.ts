@@ -1,4 +1,4 @@
-import { Component, effect, inject } from '@angular/core';
+import { Component, computed, effect, inject, Signal } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
@@ -34,6 +34,8 @@ export class TemplateForm {
     private router = inject(Router);
     private notificationService = inject(NotificationService);
 
+    isEdit: Signal<boolean> = computed(() => this.templateState.templateId() ? true : false)
+
     currentTemplate = this.templateState.form;
     templateExercises = this.templateState.templateExercises;
     templateName = this.templateState.templateName;
@@ -41,7 +43,17 @@ export class TemplateForm {
     isFormValid = this.templateState.isFormValid;
 
     constructor() {
-        this.templateLayout.setConfig({ title: 'Create Template', showBackButton: true, action: [] });
+
+        effect(() => {
+            const isEdit = this.isEdit();
+            let title = "Create Template";
+
+            if(isEdit)
+                title = "Edit Template"
+
+            this.templateLayout.setConfig({ title: title, showBackButton: true, action: [] });
+
+        })
 
         effect(() => {
             const tempExercises = this.templateExercises();
@@ -59,7 +71,10 @@ export class TemplateForm {
         }
 
         const mappedExercises = mapTemplateExercises(this.templateExercises())
-        const request = createTemplateRequestFromForm(this.templateName(), mappedExercises, this.templateNotes())
+        const request = createTemplateRequestFromForm(this.templateName(), mappedExercises, this.templateNotes(), this.templateState.templateId())
+
+        if(this.isEdit())
+            this.editTemplate(request);
 
         this.createTemplate(request);
     }
@@ -78,5 +93,9 @@ export class TemplateForm {
             },
             error: () => this.notificationService.showError("Error happened while trying to create a template, try again later")
         });
+    }
+
+    editTemplate(request: TemplateRequest) {
+        // To Be Implemented...
     }
 }
