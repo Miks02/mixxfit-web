@@ -91,6 +91,10 @@ export const routes: Routes = [
                             {
                                 path: "create",
                                 component: TemplateForm
+                            },
+                            {
+                                path: "edit/:id",
+                                component: TemplateForm
                             }
                         ]
                     }
