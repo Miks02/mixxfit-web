@@ -55,7 +55,9 @@
 
             <div class="flex gap-4 justify-center">
                 <app-button (clicked)="addToSession()" label="Add To Session" buttonType="primary" buttonSize="sm" fontSize="sm"></app-button>
-                <app-button (clicked)="deleteTemplate(this.selectedTemplate()?.id!)" label="Delete Template" buttonType="danger" buttonSize="sm" fontSize="sm"></app-button>
+                @if(!this.selectedTemplate()?.isSystem) {
+                    <app-button (clicked)="deleteTemplate(this.selectedTemplate()?.id!)" label="Delete Template" buttonType="danger" buttonSize="sm" fontSize="sm"></app-button>
+                }
             </div>
         }
     </div>
