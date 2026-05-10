@@ -90,11 +90,13 @@ export const routes: Routes = [
                             },
                             {
                                 path: "create",
-                                component: TemplateForm
+                                component: TemplateForm,
+                                data: {mode: "create"}
                             },
                             {
                                 path: "edit/:id",
-                                component: TemplateForm
+                                component: TemplateForm,
+                                data: {mode: "edit"}
                             }
                         ]
                     }

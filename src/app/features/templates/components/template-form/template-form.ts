@@ -1,6 +1,6 @@
 import { Component, computed, effect, inject, Signal } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
     faSolidChildReaching,
@@ -32,9 +32,10 @@ export class TemplateForm {
     private templateLayout = inject(TemplateModalLayoutService);
     private templateService = inject(TemplateService);
     private router = inject(Router);
+    private activatedRoute = inject(ActivatedRoute);
     private notificationService = inject(NotificationService);
 
-    isEdit: Signal<boolean> = computed(() => this.templateState.templateId() ? true : false)
+    isEdit: Signal<boolean> = computed(() => this.activatedRoute.snapshot.data['mode'] === 'edit')
 
     currentTemplate = this.templateState.form;
     templateExercises = this.templateState.templateExercises;
@@ -46,10 +47,7 @@ export class TemplateForm {
 
         effect(() => {
             const isEdit = this.isEdit();
-            let title = "Create Template";
-
-            if(isEdit)
-                title = "Edit Template"
+            let title = isEdit ? "Edit Template" : "CreateTemplate";
 
             this.templateLayout.setConfig({ title: title, showBackButton: true, action: [] });
 
@@ -57,8 +55,12 @@ export class TemplateForm {
 
         effect(() => {
             const tempExercises = this.templateExercises();
+            const redirectPath = this.isEdit()
+            ? `workout-form/templates/details/${this.activatedRoute.snapshot.paramMap.get('id')}`
+            : "workout-form/templates/exercises";
+
             if (!tempExercises || tempExercises.length === 0)
-                this.router.navigate(['workout-form/templates/exercises']);
+                this.router.navigate([redirectPath]);
         });
     }
 
