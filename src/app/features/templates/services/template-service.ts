@@ -35,6 +35,12 @@ export class TemplateService {
         );
     }
 
+    updateTemplate(request: TemplateRequest) {
+        return this.http.put<TemplateDto>(`${this.api}/workout-templates/`, request).pipe(
+            tap((res) => this._templates.update(prev => [...prev?.filter(t => t.id !== request.id) ?? [], res]))
+        )
+    }
+
     deleteTemplate(id: number) {
         return this.http.delete<void>(`${this.api}/workout-templates/${id}`).pipe(
             tap(() => this._templates.update(prev => [...prev?.filter(t => t.id !== id) ?? []]))

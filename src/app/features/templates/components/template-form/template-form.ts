@@ -73,8 +73,10 @@ export class TemplateForm {
         const mappedExercises = mapTemplateExercises(this.templateExercises())
         const request = createTemplateRequestFromForm(this.templateName(), mappedExercises, this.templateNotes(), this.templateState.templateId())
 
-        if(this.isEdit())
-            this.editTemplate(request);
+        if(this.isEdit()) {
+            this.updateTemplate(request);
+            return;
+        }
 
         this.createTemplate(request);
     }
@@ -95,7 +97,18 @@ export class TemplateForm {
         });
     }
 
-    editTemplate(request: TemplateRequest) {
-        // To Be Implemented...
+    updateTemplate(request: TemplateRequest) {
+        this.templateService.updateTemplate(request).pipe(
+            take(1)
+        )
+        .subscribe({
+            next: () => {
+                this.notificationService.showSuccess("Template updated successfully!")
+                this.templateState.clearForm();
+                this.router.navigate(['workout-form/templates'])
+
+            },
+            error: () => this.notificationService.showError("Error happened while trying to create a template, try again later")
+        });
     }
 }
