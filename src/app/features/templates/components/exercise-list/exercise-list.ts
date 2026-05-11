@@ -118,7 +118,7 @@ export class ExerciseList {
     toggleExercise = this.exerciseService.toggleExercise;
 
     goToCurrentTemplate() {
-        this.router.navigate(['workout-form/templates/create']);
+        this.router.navigate([this.templateState.templateFormUrl()]);
     }
 
     isTemplateActive = computed(() => {
