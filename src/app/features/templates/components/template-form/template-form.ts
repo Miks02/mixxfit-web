@@ -14,7 +14,6 @@ import {
 import { finalize, take } from 'rxjs';
 import { ModalData } from '../../../../core/models/modal-data';
 import { ModalType } from '../../../../core/models/modal-type';
-import { NotificationService } from '../../../../core/services/notification-service';
 import { Button } from '../../../../shared/button/button';
 import { Modal } from '../../../../layout/utilities/modal/modal';
 import { createTemplateRequestFromForm, mapTemplateExercises } from '../../factories/template-factories';
@@ -36,7 +35,6 @@ export class TemplateForm {
     private templateService = inject(TemplateService);
     private router = inject(Router);
     private activatedRoute = inject(ActivatedRoute);
-    private notificationService = inject(NotificationService);
 
     isEdit: Signal<boolean> = computed(() => this.activatedRoute.snapshot.data['mode'] === 'edit')
 
@@ -100,14 +98,11 @@ export class TemplateForm {
         )
         .subscribe({
             next: () => {
-                this.notificationService.showSuccess("Template created successfully!")
                 this.templateState.clearForm();
                 this.router.navigate(['workout-form/templates'])
 
             },
-            error: () => {
-                this.notificationService.showError("Error happened while trying to create a template, try again later");
-            }
+            error: () => {}
         });
     }
 
@@ -118,14 +113,11 @@ export class TemplateForm {
         )
         .subscribe({
             next: () => {
-                this.notificationService.showSuccess("Template updated successfully!")
                 this.templateState.clearForm();
                 this.router.navigate(['workout-form/templates'])
 
             },
-            error: () => {
-                this.notificationService.showError("Error happened while trying to create a template, try again later");
-            }
+            error: () => {}
         });
     }
 
@@ -160,13 +152,10 @@ export class TemplateForm {
         )
         .subscribe({
             next: () => {
-                this.notificationService.showSuccess("Template has been deleted successfully");
                 this.router.navigate(['workout-form/templates'])
                 this.templateState.clearForm();
             },
-            error: () => {
-                this.notificationService.showError("Error occurred while trying to delete the template");
-            }
+            error: () => {}
         })
     }
 }

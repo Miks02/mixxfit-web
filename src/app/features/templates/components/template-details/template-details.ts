@@ -4,7 +4,6 @@ import { NgIcon, provideIcons } from '@ng-icons/core';
 import { faSolidChildReaching, faSolidDumbbell, faSolidGear, faSolidPersonRunning, faSolidPersonWalkingArrowLoopLeft } from '@ng-icons/font-awesome/solid';
 import { NgxSkeletonLoaderComponent } from 'ngx-skeleton-loader';
 import { finalize, take, tap } from 'rxjs';
-import { NotificationService } from '../../../../core/services/notification-service';
 import { Button } from '../../../../shared/button/button';
 import { ExerciseService } from '../../../exercise/services/exercise-service';
 import { ExerciseSessionService } from '../../../exercise/services/exercise-session-service';
@@ -27,7 +26,6 @@ export class TemplateDetails {
     private exerciseService = inject(ExerciseService);
     private exerciseSession = inject(ExerciseSessionService);
     private activatedRoute = inject(ActivatedRoute);
-    private notificationService = inject(NotificationService);
     private router = inject(Router);
 
     isLoading: WritableSignal<boolean> = signal(true);
