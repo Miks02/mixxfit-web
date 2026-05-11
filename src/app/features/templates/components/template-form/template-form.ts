@@ -11,9 +11,12 @@ import {
     faSolidTag,
     faSolidTrash,
 } from '@ng-icons/font-awesome/solid';
-import { take } from 'rxjs';
+import { finalize, take } from 'rxjs';
+import { ModalData } from '../../../../core/models/modal-data';
+import { ModalType } from '../../../../core/models/modal-type';
 import { NotificationService } from '../../../../core/services/notification-service';
 import { Button } from '../../../../shared/button/button';
+import { Modal } from '../../../../layout/utilities/modal/modal';
 import { createTemplateRequestFromForm, mapTemplateExercises } from '../../factories/template-factories';
 import { TemplateRequest } from '../../models/template-request';
 import { TemplateModalLayoutService } from '../../services/template-modal-layout-service';
@@ -22,7 +25,7 @@ import { TemplateState } from '../../services/template-state';
 
 @Component({
     selector: 'app-template-form',
-    imports: [NgIcon, FormsModule, ReactiveFormsModule, Button],
+    imports: [NgIcon, FormsModule, ReactiveFormsModule, Button, Modal],
     templateUrl: './template-form.html',
     styleUrl: './template-form.css',
     providers: [provideIcons({ faSolidDumbbell, faSolidPersonRunning, faSolidChildReaching, faSolidPersonWalkingArrowLoopLeft, faSolidTrash, faSolidTag, faSolidNoteSticky })],
@@ -43,6 +46,7 @@ export class TemplateForm {
     templateNotes = this.templateState.templateNotes;
     isFormValid = this.templateState.isFormValid;
     isLoading = signal(false);
+    isModalOpen = signal(false);
 
     constructor() {
 
@@ -91,18 +95,17 @@ export class TemplateForm {
     createTemplate(request: TemplateRequest) {
 
         this.templateService.addTemplate(request).pipe(
-            take(1)
+            take(1),
+            finalize(() => this.isLoading.set(false))
         )
         .subscribe({
             next: () => {
-                this.isLoading.set(false);
                 this.notificationService.showSuccess("Template created successfully!")
                 this.templateState.clearForm();
                 this.router.navigate(['workout-form/templates'])
 
             },
             error: () => {
-                this.isLoading.set(false);
                 this.notificationService.showError("Error happened while trying to create a template, try again later");
             }
         });
@@ -110,20 +113,60 @@ export class TemplateForm {
 
     updateTemplate(request: TemplateRequest) {
         this.templateService.updateTemplate(request).pipe(
-            take(1)
+            take(1),
+            finalize(() => this.isLoading.set(false))
         )
         .subscribe({
             next: () => {
-                this.isLoading.set(false);
                 this.notificationService.showSuccess("Template updated successfully!")
                 this.templateState.clearForm();
                 this.router.navigate(['workout-form/templates'])
 
             },
             error: () => {
-                this.isLoading.set(false);
                 this.notificationService.showError("Error happened while trying to create a template, try again later");
             }
         });
+    }
+
+    openDeleteModal() {
+        this.isModalOpen.set(true);
+    }
+
+    closeModal() {
+        this.isModalOpen.set(false);
+    }
+
+    buildModal(): ModalData {
+        return {
+            title: 'Delete Template',
+            subtitle: 'Are you sure you want to delete this template? This action cannot be undone.',
+            type: ModalType.Warning,
+            primaryActionLabel: 'Delete',
+            secondaryActionLabel: 'Cancel',
+            primaryAction: () => {
+                this.closeModal();
+                this.deleteTemplate(this.templateState.templateId()!);
+            },
+            secondaryAction: () => this.closeModal()
+        };
+    }
+
+      deleteTemplate(id: number) {
+        this.isLoading.set(true);
+        this.templateService.deleteTemplate(id).pipe(
+            take(1),
+            finalize(() => this.isLoading.set(false))
+        )
+        .subscribe({
+            next: () => {
+                this.notificationService.showSuccess("Template has been deleted successfully");
+                this.router.navigate(['workout-form/templates'])
+                this.templateState.clearForm();
+            },
+            error: () => {
+                this.notificationService.showError("Error occurred while trying to delete the template");
+            }
+        })
     }
 }

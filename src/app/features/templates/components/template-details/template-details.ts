@@ -70,7 +70,9 @@ export class TemplateDetails {
             take(1),
             tap(res => this.selectedTemplate.set(res)),
             finalize(() => this.isLoading.set(false))
-        ).subscribe();
+        ).subscribe({
+            error: () => this.router.navigate(['workout-form/templates'])
+        });
     }
 
     addToSession() {
@@ -83,22 +85,5 @@ export class TemplateDetails {
 
         this.templateState.addValuesToTemplateForm(this.templateId, exerciseIds, this.selectedTemplate()?.name!, this.selectedTemplate()?.notes!)
         this.router.navigate([`workout-form/templates/edit/${this.templateId}`])
-    }
-
-    deleteTemplate(id: number) {
-        this.isLoading.set(true);
-        this.templateService.deleteTemplate(id).pipe(
-            take(1),
-            finalize(() => this.isLoading.set(false))
-        )
-        .subscribe({
-            next: () => {
-                this.notificationService.showSuccess("Template has been deleted successfully");
-                this.router.navigate(['workout-form/templates'])
-            },
-            error: () => {
-                this.notificationService.showError("Error occurred while trying to delete the template");
-            }
-        })
     }
 }

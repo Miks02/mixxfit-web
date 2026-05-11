@@ -14,9 +14,6 @@
         } @else {
             <div class="flex justify-between w-full items-center">
                 <h3 class="font-semibold text-gray-800 text-xl">{{ selectedTemplate()?.name }}</h3>
-                @if(!this.selectedTemplate()?.isSystem) {
-                    <button (click)="editTemplate()" class="text-sm font-medium text-emerald-700 hover:opacity-70 active:opacity-50 transition duration-200 cursor-pointer border border-emerald-700 rounded-lg px-3 py-1">Edit</button>
-                }
             </div>
 
             <div class="flex flex-col gap-2">
@@ -56,7 +53,7 @@
             <div class="flex gap-4 justify-center">
                 <app-button (clicked)="addToSession()" label="Add To Session" buttonType="primary" buttonSize="sm" fontSize="sm"></app-button>
                 @if(!this.selectedTemplate()?.isSystem) {
-                    <app-button (clicked)="deleteTemplate(this.selectedTemplate()?.id!)" label="Delete Template" buttonType="danger" buttonSize="sm" fontSize="sm"></app-button>
+                    <app-button (clicked)="editTemplate()" label="Edit Template" buttonType="secondary" buttonSize="sm" fontSize="sm"></app-button>
                 }
             </div>
         }

@@ -113,11 +113,21 @@
             }
         </div>
 
- <div class="px-4 py-3 border-t border-slate-300/60 mx-auto">
+ <div class="px-4 py-3 border-t border-slate-300/60 mx-auto flex gap-4">
         <app-button htmlType="submit" [disabled]="!isFormValid() || isLoading()" label="Save Template" buttonType="primary" buttonSize="sm" fontSize="sm"></app-button>
+        @if(isEdit()) {
+            <app-button (clicked)="openDeleteModal()" [disabled]="isLoading()" label="Delete Template" buttonType="danger" buttonSize="sm" fontSize="sm"></app-button>
+        }
     </div>
     </form>
 
-
+    @if(isModalOpen()) {
+        <app-modal
+            [data]="buildModal()"
+            (primaryAction)="buildModal().primaryAction!()"
+            (secondaryAction)="buildModal().secondaryAction!()"
+            (close)="closeModal()">
+        </app-modal>
+    }
 
 </div>
