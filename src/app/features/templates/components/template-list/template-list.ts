@@ -7,18 +7,20 @@ import { faSolidGear, faSolidPlus } from '@ng-icons/font-awesome/solid';
 import { TemplateModalLayoutService } from '../../services/template-modal-layout-service';
 import { NgxSkeletonLoaderComponent } from 'ngx-skeleton-loader';
 import { Router } from '@angular/router';
+import { TemplateState } from '../../services/template-state';
 
 @Component({
     selector: 'app-template-list',
-    imports: [NgIcon, NgxSkeletonLoaderComponent],
+    imports: [NgIcon, NgxSkeletonLoaderComponent, Button],
     providers: [provideIcons({faSolidGear, faSolidPlus})],
     templateUrl: './template-list.html',
     styleUrl: './template-list.css',
 })
-export class TemplateList implements AfterViewInit, OnDestroy {
+export class TemplateList {
     @ViewChild('rootContainer') rootContainer!: ElementRef<HTMLElement>;
 
     templateService = inject(TemplateService);
+    templateState = inject(TemplateState);
     templateModal = inject(TemplateModalLayoutService);
     router = inject(Router);
     private ngZone = inject(NgZone);
@@ -74,4 +76,16 @@ export class TemplateList implements AfterViewInit, OnDestroy {
     goToTemplateCreation() {
         this.router.navigate([`workout-form/templates/exercises`])
     }
+
+    goToCurrentTemplate() {
+        this.router.navigate([this.templateState.templateFormUrl()]);
+    }
+
+    isTemplateActive = computed(() => {
+        let tempExercises = this.templateState.templateExercises();
+
+        if(!tempExercises || tempExercises.length === 0)
+            return false;
+        return true;
+    })
 }

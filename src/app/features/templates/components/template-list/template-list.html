@@ -7,7 +7,14 @@
             <div class="flex flex-col gap-4">
                 <div class="flex justify-between w-full items-center">
                     <h3 class="font-semibold text-gray-800 text-xl">My Templates</h3>
-                    <ng-icon name="faSolidPlus" (click)="goToTemplateCreation()" class="self-center text-xl text-emerald-700! hover:opacity-70 active:opacity-50 transition duration-200 cursor-pointer"></ng-icon>
+                    @if(isTemplateActive()) {
+                        <app-button (clicked)="goToCurrentTemplate()" label="Current Template" buttonSize="sm" fontSize="sm" class="mr-1">
+                        </app-button>
+                    }
+                    @else {
+                        <ng-icon name="faSolidPlus" (click)="goToTemplateCreation()" class="self-center text-xl text-emerald-700! hover:opacity-70 active:opacity-50 transition duration-200 cursor-pointer"></ng-icon>
+                    }
+
                 </div>
                 @if(isLoading()) {
                     <div class="flex flex-wrap gap-4 w-full">
