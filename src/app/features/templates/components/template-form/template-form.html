@@ -1,6 +1,12 @@
 <div class="relative h-full flex flex-col">
 
-    <form (ngSubmit)="submit()" [formGroup]="templateState.form" class="flex-1 overflow-y-auto min-h-0 p-4 flex flex-col gap-5">
+    @if(isLoading()) {
+        <div class="absolute inset-0 z-50 flex items-center justify-center bg-white/60">
+            <div class="w-10 h-10 border-4 border-slate-200 border-t-emerald-600 rounded-full animate-spin"></div>
+        </div>
+    }
+
+    <form (ngSubmit)="submit()" [formGroup]="templateState.form" class="flex-1 overflow-y-auto min-h-0 p-4 flex flex-col gap-5 w-full">
 
         <div class="flex flex-col gap-1.5">
             <label class="text-sm font-medium text-slate-700">Template Name <span class="text-red-600">*</span></label>
@@ -28,9 +34,12 @@
             }
         </div>
 
+        <div formArrayName="exercises" class="flex border border-slate-300/60 bg-slate-100/80 p-4 shadow-md rounded-lg flex-col gap-4 overflow-y-auto h-100">
+            <div class="flex w-full justify-between">
+                <h4 class="text-lg sm:text-xl text-slate-700 font-semibold">Exercises ({{ templateExercises()!.length }})</h4>
+                        <app-button (clicked)="goToExercises()" label="Add Exercise" buttonSize="sm" fontSize="sm"></app-button>
+            </div>
 
-        <div formArrayName="exercises" class="flex border border-slate-300/60 bg-slate-100/80 p-2 shadow-md rounded-lg flex-col gap-2 overflow-y-auto h-100">
-            <h4 class="text-lg sm:text-xl text-slate-700 font-semibold">Exercises ({{ templateExercises()!.length }})</h4>
 
             @for(exercise of templateExercises(); track $index) {
                 <div [formGroupName]="$index" class="flex items-center bg-slate-300 rounded-xl px-4 py-3.5 shadow-md">
@@ -105,7 +114,7 @@
         </div>
 
  <div class="px-4 py-3 border-t border-slate-300/60 mx-auto">
-        <app-button htmlType="submit" [disabled]="!isFormValid()" label="Save Template" buttonType="primary" buttonSize="sm" fontSize="sm"></app-button>
+        <app-button htmlType="submit" [disabled]="!isFormValid() || isLoading()" label="Save Template" buttonType="primary" buttonSize="sm" fontSize="sm"></app-button>
     </div>
     </form>
 

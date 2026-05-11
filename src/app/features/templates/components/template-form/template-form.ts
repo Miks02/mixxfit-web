@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject, Signal } from '@angular/core';
+import { Component, computed, effect, inject, signal, Signal } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
@@ -42,12 +42,13 @@ export class TemplateForm {
     templateName = this.templateState.templateName;
     templateNotes = this.templateState.templateNotes;
     isFormValid = this.templateState.isFormValid;
+    isLoading = signal(false);
 
     constructor() {
 
         effect(() => {
             const isEdit = this.isEdit();
-            let title = isEdit ? "Edit Template" : "CreateTemplate";
+            let title = isEdit ? "Edit Template" : "Create Template";
 
             this.templateLayout.setConfig({ title: title, showBackButton: true, action: [] });
 
@@ -64,6 +65,8 @@ export class TemplateForm {
         });
     }
 
+    goToExercises = () => this.router.navigate(['workout-form/templates/exercises']);
+
     removeExercise = () => this.templateState.removeExerciseFromTemplate;
 
     submit() {
@@ -71,6 +74,8 @@ export class TemplateForm {
             this.currentTemplate.markAllAsTouched();
             return;
         }
+
+        this.isLoading.set(true);
 
         const mappedExercises = mapTemplateExercises(this.templateExercises())
         const request = createTemplateRequestFromForm(this.templateName(), mappedExercises, this.templateNotes(), this.templateState.templateId())
@@ -90,12 +95,16 @@ export class TemplateForm {
         )
         .subscribe({
             next: () => {
+                this.isLoading.set(false);
                 this.notificationService.showSuccess("Template created successfully!")
                 this.templateState.clearForm();
                 this.router.navigate(['workout-form/templates'])
 
             },
-            error: () => this.notificationService.showError("Error happened while trying to create a template, try again later")
+            error: () => {
+                this.isLoading.set(false);
+                this.notificationService.showError("Error happened while trying to create a template, try again later");
+            }
         });
     }
 
@@ -105,12 +114,16 @@ export class TemplateForm {
         )
         .subscribe({
             next: () => {
+                this.isLoading.set(false);
                 this.notificationService.showSuccess("Template updated successfully!")
                 this.templateState.clearForm();
                 this.router.navigate(['workout-form/templates'])
 
             },
-            error: () => this.notificationService.showError("Error happened while trying to create a template, try again later")
+            error: () => {
+                this.isLoading.set(false);
+                this.notificationService.showError("Error happened while trying to create a template, try again later");
+            }
         });
     }
 }
