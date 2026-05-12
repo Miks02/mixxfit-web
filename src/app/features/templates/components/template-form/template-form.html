@@ -6,8 +6,8 @@
             <label class="text-sm font-medium text-slate-700">Template Name <span class="text-red-600">*</span></label>
             <div
                 class="flex items-center gap-4 shadow-md bg-linear-to-br from-white to-slate-50 rounded-lg px-4 py-4 transition-colors duration-200 border focus-within:outline outline-amber-400"
-                [class.border-red-500]="currentTemplate.get('name')!.invalid && currentTemplate.get('name')!.touched"
-                [class.border-transparent]="!(currentTemplate.get('name')!.invalid && currentTemplate.get('name')!.touched)">
+                [class.border-red-500]="!isControlValid('name', currentTemplate)"
+                [class.border-transparent]="isControlValid('name', currentTemplate)">
                 <div class="flex justify-center">
                     <ng-icon name="faSolidTag" class="text-emerald-700! text-xl"></ng-icon>
                 </div>
@@ -17,12 +17,12 @@
                     placeholder="Enter template name..."
                     class="flex-1 text-slate-800 font-semibold bg-transparent outline-none md:text-lg">
             </div>
-            @if(currentTemplate.get('name')!.invalid && currentTemplate.get('name')!.touched) {
-                @if(currentTemplate.get('name')!.errors?.['required']) {
+            @if(!isControlValid('name', currentTemplate)) {
+                @if(nameControl.errors?.['required']) {
                     <p class="text-xs text-red-500 font-medium px-1">Template name is required.</p>
-                } @else if(currentTemplate.get('name')!.errors?.['minlength']) {
+                } @else if(nameControl.errors?.['minlength']) {
                     <p class="text-xs text-red-500 font-medium px-1">Name must be at least 4 characters.</p>
-                } @else if(currentTemplate.get('name')!.errors?.['maxlength']) {
+                } @else if(nameControl.errors?.['maxlength']) {
                     <p class="text-xs text-red-500 font-medium px-1">Name cannot exceed 100 characters.</p>
                 }
             }
@@ -88,8 +88,8 @@
             <label class="text-sm font-medium text-slate-700">Notes</label>
             <div
                 class="flex items-start gap-4 shadow-md bg-linear-to-br from-white to-slate-50 rounded-lg px-4 py-4 transition-colors duration-200 border focus-within:outline outline-amber-400"
-                [class.border-red-500]="currentTemplate.get('notes')!.invalid && currentTemplate.get('notes')!.touched"
-                [class.border-transparent]="!(currentTemplate.get('notes')!.invalid && currentTemplate.get('notes')!.touched)">
+                [class.border-red-500]="!isControlValid('notes', currentTemplate)"
+                [class.border-transparent]="isControlValid('notes', currentTemplate)">
                 <div class="flex justify-center pt-0.5">
                     <ng-icon name="faSolidNoteSticky" class="text-emerald-700! text-xl"></ng-icon>
                 </div>
@@ -100,8 +100,8 @@
                     class="flex-1 text-slate-800 font-semibold bg-transparent outline-none md:text-lg resize-none">
                 </textarea>
             </div>
-            @if(currentTemplate.get('notes')!.invalid && currentTemplate.get('notes')!.touched) {
-                @if(currentTemplate.get('notes')!.errors?.['maxlength']) {
+            @if(!isControlValid('notes', currentTemplate)) {
+                @if(notesControl.errors?.['maxlength']) {
                     <p class="text-xs text-red-500 font-medium px-1">Notes cannot exceed 200 characters.</p>
                 }
             }

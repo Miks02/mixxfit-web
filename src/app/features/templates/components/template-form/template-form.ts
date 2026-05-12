@@ -1,5 +1,6 @@
 import { Component, computed, effect, inject, signal, Signal } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { AbstractControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { isControlValid, isControlValid as isControlValidHelper } from '../../../../core/helpers/form-helpers';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
@@ -45,6 +46,11 @@ export class TemplateForm {
     isFormValid = this.templateState.isFormValid;
     isLoading = signal(false);
     isModalOpen = signal(false);
+
+    get nameControl(): AbstractControl { return this.currentTemplate.get('name')!; }
+    get notesControl(): AbstractControl { return this.currentTemplate.get('notes')!; }
+
+    isControlValid = isControlValid;
 
     constructor() {
 

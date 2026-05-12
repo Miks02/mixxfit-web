@@ -14,12 +14,12 @@ import {
     faSolidXmark
 } from '@ng-icons/font-awesome/solid';
 import { NgxSkeletonLoaderComponent } from 'ngx-skeleton-loader';
+import { Button } from "../../../../shared/button/button";
+import { ExerciseType } from '../../../workout/models/exercise-type';
 import { ExerciseFilterType } from '../../models/exercise-filter-type';
 import { ExerciseModalLayoutService } from '../../services/exercise-modal-layout-service';
 import { ExerciseService } from '../../services/exercise-service';
 import { ExerciseSessionService } from '../../services/exercise-session-service';
-import { ExerciseType } from '../../../workout/models/exercise-type';
-import { Button } from "../../../../shared/button/button";
 
 
 @Component({
@@ -53,7 +53,6 @@ export class ExerciseList {
             action: [
                 { icon: 'faSolidMagnifyingGlass', action: this.isSearchOpen },
                 { icon: 'faSolidFilter', action: this.isFilterOpen },
-
             ],
             showBackButton: false
         });
@@ -83,10 +82,7 @@ export class ExerciseList {
 
     isLoading = computed(() => {
         const exercises = this.exercises();
-
-        if(!exercises)
-            return true;
-        return false;
+        return !exercises
     })
 
     getExerciseDetails(exerciseId: number) {

@@ -8,8 +8,8 @@ import { createCurrentTemplate } from '../factories/template-factories';
     providedIn: 'root',
 })
 export class TemplateState {
-    fb = inject(NonNullableFormBuilder);
-    exerciseService = inject(ExerciseService);
+    private fb = inject(NonNullableFormBuilder);
+    private exerciseService = inject(ExerciseService);
 
     form = createCurrentTemplate(this.fb);
 
@@ -25,9 +25,9 @@ export class TemplateState {
         : 'workout-form/templates/create'
     })
 
-    getTemplateNameControl = () => this.form.get("name") as FormControl;
-
-    getTemplateExercises = () => this.form.get("exercises") as FormArray;
+    get templateExerciseArr() {
+        return this.form.get("exercises") as FormArray;
+    }
 
     addExerciseToTemplate(exerciseIds: number[]) {
         exerciseIds.forEach(ex => {
@@ -43,7 +43,7 @@ export class TemplateState {
             exerciseType: [foundExercise.exerciseType]
         });
 
-            this.getTemplateExercises().push(entry);
+            this.templateExerciseArr.push(entry);
         })
 
     }
@@ -58,14 +58,14 @@ export class TemplateState {
     }
 
     removeExerciseFromTemplate(index: number) {
-        this.getTemplateExercises()?.removeAt(index);
+        this.templateExerciseArr.removeAt(index);
     }
 
     isFormValid = () => this.form.valid;
 
     clearForm = () => {
         this.form.reset()
-        this.getTemplateExercises().clear()
+        this.templateExerciseArr.clear()
     }
 
 }
