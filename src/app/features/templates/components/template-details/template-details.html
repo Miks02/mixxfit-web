@@ -1,0 +1,61 @@
+<div class="w-full bg-slate-200 rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl duration-200">
+    <div class="px-4 pb-6 pt-4 flex flex-col gap-4">
+        @if(isLoading()) {
+            <ngx-skeleton-loader
+                count="1"
+                [theme]="{ 'height': '28px', 'border-radius': '8px', 'background': '#cbd5e199', 'margin-bottom': '0' }"
+                appearance="line">
+            </ngx-skeleton-loader>
+            <ngx-skeleton-loader
+                count="5"
+                [theme]="{ 'height': '64px', 'border-radius': '12px', 'background': '#cbd5e199', 'margin-bottom': '0.5rem' }"
+                appearance="line">
+            </ngx-skeleton-loader>
+        } @else {
+            <div class="flex justify-between w-full items-center">
+                <h3 class="font-semibold text-gray-800 text-xl">{{ selectedTemplate()?.name }}</h3>
+            </div>
+
+            <div class="flex flex-col gap-2">
+                @for(exercise of exerciseViews(); track exercise.exerciseId) {
+                    <div class="flex items-center bg-slate-300 rounded-xl px-4 py-3.5 shadow-md">
+                        <div
+                            [class.from-yellow-400]="exercise.exerciseType === 1"
+                            [class.to-amber-500]="exercise.exerciseType === 1"
+                            [class.from-indigo-400]="exercise.exerciseType === 2"
+                            [class.to-indigo-600]="exercise.exerciseType === 2"
+                            [class.from-red-400]="exercise.exerciseType === 3"
+                            [class.to-rose-500]="exercise.exerciseType === 3"
+                            [class.from-violet-400]="exercise.exerciseType === 4"
+                            [class.to-violet-500]="exercise.exerciseType === 4"
+                            class="bg-linear-to-br w-11 h-11 rounded-xl shadow-lg flex items-center justify-center mr-4 shrink-0">
+                            @switch(exercise.exerciseType) {
+                                @case(4) { <ng-icon name="faSolidPersonWalkingArrowLoopLeft" class="text-white! text-lg"></ng-icon> }
+                                @case(3) { <ng-icon name="faSolidPersonRunning" class="text-white! text-lg"></ng-icon> }
+                                @case(2) { <ng-icon name="faSolidChildReaching" class="text-white! text-lg"></ng-icon> }
+                                @default { <ng-icon name="faSolidDumbbell" class="text-white! text-lg"></ng-icon> }
+                            }
+                        </div>
+
+                        <div class="flex flex-col flex-1 min-w-0">
+                            <p class="font-semibold text-sm sm:text-lg text-slate-900 truncate">{{ exercise.exerciseName }}</p>
+                            <p class="text-xs sm:text-sm text-slate-600 font-medium truncate mt-0.5">{{ exercise.muscleGroupName }}</p>
+                        </div>
+
+                        <div class="flex flex-col items-end shrink-0 ml-3">
+                            <p class="text-xs text-slate-500 font-medium">Sets</p>
+                            <p class="text-sm font-bold text-slate-800">{{ exercise.setCount }}</p>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <div class="flex gap-4 justify-center">
+                <app-button (clicked)="addToSession()" label="Add To Session" buttonType="primary" buttonSize="sm" fontSize="sm"></app-button>
+                @if(!this.selectedTemplate()?.isSystem) {
+                    <app-button (clicked)="editTemplate()" label="Edit Template" buttonType="secondary" buttonSize="sm" fontSize="sm"></app-button>
+                }
+            </div>
+        }
+    </div>
+</div>

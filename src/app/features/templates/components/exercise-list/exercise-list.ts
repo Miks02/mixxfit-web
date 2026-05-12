@@ -16,10 +16,12 @@ import {
 import { NgxSkeletonLoaderComponent } from 'ngx-skeleton-loader';
 import { Button } from "../../../../shared/button/button";
 import { ExerciseType } from '../../../workout/models/exercise-type';
-import { ExerciseFilterType } from '../../models/exercise-filter-type';
-import { ExerciseModalLayoutService } from '../../services/exercise-modal-layout-service';
-import { ExerciseService } from '../../services/exercise-service';
-import { ExerciseSessionService } from '../../services/exercise-session-service';
+import { ExerciseFilterType } from '../../../exercise/models/exercise-filter-type';
+import { TemplateModalLayoutService } from '../../services/template-modal-layout-service';
+import { ExerciseService } from '../../../exercise/services/exercise-service';
+import { ExerciseSessionService } from '../../../exercise/services/exercise-session-service';
+import { TemplateState } from '../../services/template-state';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 
 @Component({
@@ -33,14 +35,15 @@ export class ExerciseList {
     isSearchOpen: WritableSignal<boolean> = signal(false);
     isFilterOpen: WritableSignal<boolean> = signal(false);
 
-    private exerciseModal = inject(ExerciseModalLayoutService);
+    private exerciseModal = inject(TemplateModalLayoutService);
     private exerciseService = inject(ExerciseService);
     private router = inject(Router);
-    private exerciseSession = inject(ExerciseSessionService);
+    private templateState = inject(TemplateState);
 
     exercises = this.exerciseService.exercises;
     categories = this.exerciseService.exerciseCategories;
     muscleGroups = this.exerciseService.muscleGroups;
+    selectedExercises = this.exerciseService.selectedExercises;
 
     searchTerm: WritableSignal<string> = signal("");
     selectedMuscleGroup: WritableSignal<string> = signal("");
@@ -49,7 +52,7 @@ export class ExerciseList {
 
     constructor() {
         this.exerciseModal.setConfig({
-            title: 'Workout Exercises',
+            title: 'Template Exercises',
             action: [
                 { icon: 'faSolidMagnifyingGlass', action: this.isSearchOpen },
                 { icon: 'faSolidFilter', action: this.isFilterOpen },
@@ -82,7 +85,20 @@ export class ExerciseList {
 
     isLoading = computed(() => {
         const exercises = this.exercises();
-        return !exercises
+
+        if(!exercises)
+            return true;
+        return false;
+    })
+
+    hasSelectedExercises = computed(() => {
+        let selectedExs = this.selectedExercises();
+
+        if(selectedExs.size > 0) {
+            return true;
+        }
+
+        return false;
     })
 
     getExerciseDetails(exerciseId: number) {
@@ -93,17 +109,24 @@ export class ExerciseList {
         this.searchTerm.set(searchTerm);
     }
 
-    addExercise(id: number, name: string, type: ExerciseType) {
-        this.exerciseSession.addExercise({exerciseId: id, exerciseName: name, exerciseType: type});
-        this.router.navigate(['workout-form/exercises/session']);
+    addExercises() {
+        this.templateState.addExerciseToTemplate(Array.from(this.selectedExercises()))
+        this.selectedExercises().clear();
+        this.router.navigate(['workout-form/templates/create']);
     }
 
-    goToCurrentSession() {
-        this.router.navigate(['workout-form/exercises/session']);
+    toggleExercise = this.exerciseService.toggleExercise;
+
+    goToCurrentTemplate() {
+        this.router.navigate([this.templateState.templateFormUrl()]);
     }
 
-    isSessionActive() {
-        return this.exerciseSession.getExercises().length > 0;
-    }
+    isTemplateActive = computed(() => {
+        let tempExercises = this.templateState.templateExercises();
+
+        if(!tempExercises || tempExercises.length === 0)
+            return false;
+        return true;
+    })
 
 }

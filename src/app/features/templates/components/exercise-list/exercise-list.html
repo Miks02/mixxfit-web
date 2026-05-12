@@ -1,4 +1,5 @@
 
+<div class="relative h-full flex flex-col">
 
 @if(isSearchOpen()) {
     <div class=" border-slate-400/50 px-4 py-3">
@@ -54,25 +55,24 @@
 </div>
 }
 
-<div
-class="flex-1 overflow-y-auto p-4">
+    <div class="flex-1 overflow-y-auto min-h-0 p-4 relative">
 
-    @if(isLoading() || filteredExercises() === undefined) {
-        <div class="hidden md:block">
-            <ngx-skeleton-loader
-            count="8"
-            [theme]="{
-                'height': '56px',
-                'border-radius': '12px',
-                'background': '#cbd5e199',
-                'margin-bottom': '0.5rem'
-            }"
-            class="w-[95%] mx-auto"
-            appearance="line">
-        </ngx-skeleton-loader>
-    </div>
+        @if(isLoading() || filteredExercises() === undefined) {
+            <div class="hidden md:block">
+                <ngx-skeleton-loader
+                count="8"
+                [theme]="{
+                    'height': '56px',
+                    'border-radius': '12px',
+                    'background': '#cbd5e199',
+                    'margin-bottom': '0.5rem'
+                }"
+                class="w-[95%] mx-auto"
+                appearance="line">
+            </ngx-skeleton-loader>
+        </div>
 
-    <div class="block md:hidden">
+        <div class="block md:hidden">
             <ngx-skeleton-loader
             count="12"
             [theme]="{
@@ -94,49 +94,62 @@ class="flex-1 overflow-y-auto p-4">
     </div>
 }
 @else {
-    <div class="flex flex-col gap-2 overflow-y-auto">
+    <div class="flex flex-col gap-2 overflow-y-auto relative">
         <div class="flex justify-between items-center w-full py-1">
-            <h4 class="text-lg sm:text-xl text-slate-700 font-semibold my-2">Exercises: {{filteredExercises()?.length }}</h4>
-            @if(isSessionActive()) {
-                <app-button (clicked)="goToCurrentSession()" label="Current Session" buttonSize="sm" fontSize="sm" class="mr-1">
+            <h4 class="text-lg sm:text-xl text-slate-700 font-semibold my-2">Exercises: {{filteredExercises()?.length}}</h4>
+            @if(isTemplateActive()) {
+                <app-button (clicked)="goToCurrentTemplate()" label="Current Template" buttonSize="sm" fontSize="sm" class="mr-1">
                 </app-button>
             }
         </div>
         @for(exercise of filteredExercises(); track exercise.id) {
-            <div (click)="addExercise(exercise.id, exercise.name, exercise.exerciseType)" class="flex items-center bg-slate-300 rounded-xl px-4 py-3.5 hover:bg-amber-300/70 transition-all duration-200 cursor-pointer group shadow-md active:bg-amber-300 active:scale-[0.99]">
+            <div
+            [class.bg-amber-400!]="selectedExercises().has(exercise.id)"
+            (click)="toggleExercise(exercise.id)" class="flex items-center bg-slate-300 rounded-xl px-4 py-3.5 hover:bg-amber-300/70 transition-all duration-200 cursor-pointer group shadow-md active:bg-amber-300 active:scale-[0.99]">
 
-                <div
-                [class.from-yellow-400]="exercise.exerciseType === 1"
-                [class.to-amber-500]="exercise.exerciseType === 1"
-                [class.from-indigo-400]="exercise.exerciseType === 2"
-                [class.to-indigo-600]="exercise.exerciseType === 2"
-                [class.from-red-400]="exercise.exerciseType === 3"
-                [class.to-rose-500]="exercise.exerciseType === 3"
-                [class.from-violet-400]="exercise.exerciseType === 4"
-                [class.to-violet-500]="exercise.exerciseType === 4"
-                class="bg-linear-to-br w-11 h-11 rounded-xl shadow-lg flex items-center justify-center mr-4 shrink-0 group-hover:scale-110 transition-transform duration-200">
-                @switch(exercise.exerciseType) {
-                    @case(4) { <ng-icon name="faSolidPersonWalkingArrowLoopLeft" class="text-white! text-lg"></ng-icon> }
-                    @case(3) { <ng-icon name="faSolidPersonRunning" class="text-white! text-lg"></ng-icon> }
-                    @case(2) { <ng-icon name="faSolidChildReaching" class="text-white! text-lg"></ng-icon> }
-                    @default { <ng-icon name="faSolidDumbbell" class="text-white! text-lg"></ng-icon> }
-                }
-            </div>
-
-            <div class="flex flex-col flex-1 min-w-0">
-                <p class="font-semibold text-sm sm:text-lg text-slate-900 truncate">{{ exercise.name }}</p>
-                <p class="text-xs sm:text-sm text-slate-600 font-medium truncate mt-0.5">{{ exercise.muscleGroupName }}</p>
-            </div>
-
-            @if(exercise.isUserDefined) {
-                <div (click)="getExerciseDetails(exercise.id)" class="flex relative items-center hover:opacity-70 active:opacity-50">
-                    <ng-icon name="faSolidGear" class="text-emerald-700! text-xl shrink-0"></ng-icon>
-                </div>
+            <div
+            [class.from-yellow-400]="exercise.exerciseType === 1"
+            [class.to-amber-500]="exercise.exerciseType === 1"
+            [class.from-indigo-400]="exercise.exerciseType === 2"
+            [class.to-indigo-600]="exercise.exerciseType === 2"
+            [class.from-red-400]="exercise.exerciseType === 3"
+            [class.to-rose-500]="exercise.exerciseType === 3"
+            [class.from-violet-400]="exercise.exerciseType === 4"
+            [class.to-violet-500]="exercise.exerciseType === 4"
+            class="bg-linear-to-br w-11 h-11 rounded-xl shadow-lg flex items-center justify-center mr-4 shrink-0 group-hover:scale-110 transition-transform duration-200">
+            @switch(exercise.exerciseType) {
+                @case(4) { <ng-icon name="faSolidPersonWalkingArrowLoopLeft" class="text-white! text-lg"></ng-icon> }
+                @case(3) { <ng-icon name="faSolidPersonRunning" class="text-white! text-lg"></ng-icon> }
+                @case(2) { <ng-icon name="faSolidChildReaching" class="text-white! text-lg"></ng-icon> }
+                @default { <ng-icon name="faSolidDumbbell" class="text-white! text-lg"></ng-icon> }
             }
-
         </div>
-    }
+
+        <div class="flex flex-col flex-1 min-w-0">
+            <p class="font-semibold text-sm sm:text-lg text-slate-900 truncate">{{ exercise.name }}</p>
+            <p class="text-xs sm:text-sm text-slate-600 font-medium truncate mt-0.5">{{ exercise.muscleGroupName }}</p>
+        </div>
+
+        @if(exercise.isUserDefined) {
+            <div (click)="getExerciseDetails(exercise.id)" class="flex relative items-center hover:opacity-70 active:opacity-50">
+                <ng-icon name="faSolidGear" class="text-emerald-700! text-xl shrink-0"></ng-icon>
+            </div>
+        }
+
+    </div>
+}
 </div>
+}
+
+
+</div>
+
+@if(hasSelectedExercises()) {
+    <button
+    (click)="addExercises()"
+    class="fab-enter absolute bottom-4 right-4 w-14 h-14 rounded-full bg-amber-400 shadow-xl flex items-center justify-center cursor-pointer hover:bg-amber-500 hover:shadow-2xl hover:scale-105 active:bg-amber-600 active:scale-95 transition-all duration-200 z-10">
+        <ng-icon name="faSolidPlus" class="text-white! text-xl"></ng-icon>
+    </button>
 }
 
 </div>

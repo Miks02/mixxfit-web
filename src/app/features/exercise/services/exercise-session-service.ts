@@ -38,6 +38,18 @@ export class ExerciseSessionService {
         return this.getExercises().controls.some(e => e.get('exerciseId')?.value == exerciseIndex);
     }
 
+    addMultipleExercises(exercises: ExerciseEntryItem[]) {
+        exercises.forEach(e => {
+            if(!e.setCount || e.setCount === 0)
+                return;
+
+            this.getExercises().push(exerciseEntryFormFactory(this.fb, e))
+            for(let i = 0; i < e.setCount; i++) {
+                this.addDetails(e.exerciseType);
+            }
+        })
+    }
+
     addExercise(exercise: ExerciseEntryItem) {
         this.getExercises().push(exerciseEntryFormFactory(this.fb, exercise))
         this.addDetails(exercise.exerciseType)
