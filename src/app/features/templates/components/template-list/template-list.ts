@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, computed, ElementRef, inject, NgZone, OnDestroy, signal, ViewChild } from '@angular/core';
+import { Component, computed, ElementRef, inject, NgZone, OnDestroy, signal, ViewChild } from '@angular/core';
 import { TemplateService } from '../../services/template-service';
 import { Button } from "../../../../shared/button/button";
 import { finalize, take } from 'rxjs';
@@ -23,12 +23,9 @@ export class TemplateList {
     templateState = inject(TemplateState);
     templateModal = inject(TemplateModalLayoutService);
     router = inject(Router);
-    private ngZone = inject(NgZone);
 
     isLoading = signal(true);
     skeletonItems = [1, 2, 3, 4, 5];
-    private containerWidth = signal(0);
-    private resizeObserver?: ResizeObserver;
 
     templates = this.templateService.templates;
     userTemplates = computed(() => this.templates()?.filter(t => !t.isSystem));
@@ -51,20 +48,7 @@ export class TemplateList {
         .subscribe();
     }
 
-    ngAfterViewInit() {
-        this.resizeObserver = new ResizeObserver(entries => {
-            const width = entries[0]?.contentRect.width ?? 0;
-            this.ngZone.run(() => this.containerWidth.set(width));
-        });
-        this.resizeObserver.observe(this.rootContainer.nativeElement);
-    }
-
-    ngOnDestroy() {
-        this.resizeObserver?.disconnect();
-    }
-
     transformedName(templateName: string) {
-        if (this.containerWidth() > 400) return templateName;
         if (templateName.length <= 19) return templateName;
         return templateName.slice(0, 19) + '...';
     }
