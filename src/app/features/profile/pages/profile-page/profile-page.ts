@@ -26,16 +26,15 @@ import {
 import { take } from 'rxjs';
 import { handleValidationErrors, isControlValid } from '../../../../core/helpers/form-helpers';
 import { AccountStatus } from '../../../../core/models/account-status';
-import { ModalType } from '../../../../core/models/modal-type';
+import { ModalType, Modal, Button } from '@shared';
 import { AuthService } from '../../../../core/services/auth-service';
 import { NotificationService } from '../../../../core/services/notification-service';
 import { UserState } from '../../../../core/states/user-state';
 import { LayoutState } from '../../../../layout/services/layout-state';
-import { Modal } from '../../../../layout/utilities/modal/modal';
 import { PasswordForm } from '../../components/password-form/password-form';
 import { createDateOfBirthForm, createEmailForm, createFullNameForm, createGenderForm, createHeightForm, createUsernameForm } from '../../factories/profile-factories';
 import { ProfileService } from '../../services/profile-service';
-import { Button } from '../../../../shared/button/button';
+
 
 
 @Component({

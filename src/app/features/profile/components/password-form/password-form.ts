@@ -9,7 +9,7 @@ import { handleValidationErrors, isControlValid } from '../../../../core/helpers
 import { NotificationService } from '../../../../core/services/notification-service';
 import { ProfileService } from '../../services/profile-service';
 import { AuthService } from '../../../../core/services/auth-service';
-import { Button } from '../../../../shared/button/button';
+import { Button } from '@shared';
 
 @Component({
     selector: 'app-password-form',

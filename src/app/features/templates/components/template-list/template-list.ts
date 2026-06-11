@@ -1,12 +1,12 @@
-import { Component, computed, ElementRef, inject, NgZone, OnDestroy, signal, ViewChild } from '@angular/core';
-import { TemplateService } from '../../services/template-service';
-import { Button } from "../../../../shared/button/button";
-import { finalize, take } from 'rxjs';
+import { Component, computed, ElementRef, inject, signal, ViewChild } from '@angular/core';
+import { Router } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { faSolidGear, faSolidPlus } from '@ng-icons/font-awesome/solid';
-import { TemplateModalLayoutService } from '../../services/template-modal-layout-service';
 import { NgxSkeletonLoaderComponent } from 'ngx-skeleton-loader';
-import { Router } from '@angular/router';
+import { finalize, take } from 'rxjs';
+import { Button } from '@shared';
+import { TemplateModalLayoutService } from '../../services/template-modal-layout-service';
+import { TemplateService } from '../../services/template-service';
 import { TemplateState } from '../../services/template-state';
 
 @Component({

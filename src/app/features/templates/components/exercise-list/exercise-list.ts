@@ -14,14 +14,10 @@ import {
     faSolidXmark
 } from '@ng-icons/font-awesome/solid';
 import { NgxSkeletonLoaderComponent } from 'ngx-skeleton-loader';
-import { Button } from "../../../../shared/button/button";
-import { ExerciseType } from '../../../workout/models/exercise-type';
-import { ExerciseFilterType } from '../../../exercise/models/exercise-filter-type';
+import { Button } from '@shared';
+import { ExerciseFilterType, ExerciseService } from '@features/exercise';
 import { TemplateModalLayoutService } from '../../services/template-modal-layout-service';
-import { ExerciseService } from '../../../exercise/services/exercise-service';
-import { ExerciseSessionService } from '../../../exercise/services/exercise-session-service';
 import { TemplateState } from '../../services/template-state';
-import { toSignal } from '@angular/core/rxjs-interop';
 
 
 @Component({

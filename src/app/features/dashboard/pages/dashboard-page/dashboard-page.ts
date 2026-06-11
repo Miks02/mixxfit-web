@@ -4,20 +4,18 @@ import { faSolidDumbbell, faSolidFireFlameCurved, faSolidGlassWater, faSolidMoon
 import {
     Chart, registerables
 } from 'chart.js';
-import { WorkoutsChart } from '../../../workout/components/workouts-chart/workouts-chart';
+import { WorkoutsChart, WorkoutService } from '@features/workout';
 import { LayoutState } from '../../../../layout/services/layout-state';
 import { take } from 'rxjs';
-import { WeightChart } from '../../../weight/components/weight-chart/weight-chart';
+import { WeightChart, WeightEntryService } from '@features/weight';
 import { Router, RouterLink } from "@angular/router";
 import { DashboardState } from '../../services/dashboard-state';
 import { DatePipe } from '@angular/common';
-import { WorkoutService } from '../../../workout/services/workout-service';
 import { FormsModule } from '@angular/forms';
-import { WeightEntryService } from '../../../weight/services/weight-entry-service';
 import { NgxSkeletonLoaderModule } from 'ngx-skeleton-loader';
 import { CalorieCalculator } from '../../../nutrition/components/calorie-calculator/calorie-calculator';
 import { UserState } from '../../../../core/states/user-state';
-import { Button } from '../../../../shared/button/button';
+import { Button } from '@shared';
 import { DashboardCard } from '../../components/dashboard-card/dashboard-card';
 Chart.register(...registerables)
 

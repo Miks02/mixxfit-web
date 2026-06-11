@@ -14,8 +14,8 @@ import {
     faSolidXmark
 } from '@ng-icons/font-awesome/solid';
 import { NgxSkeletonLoaderComponent } from 'ngx-skeleton-loader';
-import { Button } from "../../../../shared/button/button";
-import { ExerciseType } from '../../../workout/models/exercise-type';
+import { Button } from '@shared';
+import { ExerciseType } from '@features/workout';
 import { ExerciseFilterType } from '../../models/exercise-filter-type';
 import { ExerciseModalLayoutService } from '../../services/exercise-modal-layout-service';
 import { ExerciseService } from '../../services/exercise-service';

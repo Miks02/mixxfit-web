@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { FormArray, FormBuilder } from '@angular/forms';
-import { ExerciseType } from '../../workout/models/exercise-type';
+import { ExerciseType } from '../../workout';
 import { cardioSetFactory, exerciseEntryFormFactory, stretchingSetFactory, weightSetFactory } from '../factories/exercise-factories';
 import { ExerciseEntryItem } from '../models/exercise-entry-item';
 

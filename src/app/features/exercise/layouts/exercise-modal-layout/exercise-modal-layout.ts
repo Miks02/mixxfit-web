@@ -1,10 +1,10 @@
 import { Component, inject } from '@angular/core';
-import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
-import { ExerciseModalLayoutService } from '../../services/exercise-modal-layout-service';
+import { Router, RouterOutlet } from '@angular/router';
 import { NgIcon, provideIcons } from "@ng-icons/core";
 import { faSolidDumbbell, faSolidFilter, faSolidLeftLong, faSolidMagnifyingGlass, faSolidPlus, faSolidXmark } from '@ng-icons/font-awesome/solid';
-import { ExerciseService } from '../../services/exercise-service';
 import { take } from 'rxjs';
+import { ExerciseModalLayoutService } from '../../services/exercise-modal-layout-service';
+import { ExerciseService } from '../../services/exercise-service';
 
 @Component({
     selector: 'app-exercise-modal-layout',

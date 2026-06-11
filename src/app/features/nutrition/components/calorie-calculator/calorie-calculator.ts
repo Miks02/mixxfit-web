@@ -26,7 +26,7 @@ import { SetDailyCaloriesRequest } from '../../models/set-daily-calories-request
 import { UnitSystem } from '../../models/unit-system';
 import { NutritionService } from '../../services/nutrition-service';
 import { CaloriesSummary } from '../calories-summary/calories-summary';
-import { Button } from '../../../../shared/button/button';
+import { Button } from '@shared';
 
 @Component({
     selector: 'app-calorie-calculator',

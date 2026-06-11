@@ -17,7 +17,7 @@ import { NgxSkeletonLoaderComponent } from 'ngx-skeleton-loader';
 import { debounceTime, distinctUntilChanged, finalize, Subject, take } from 'rxjs';
 import { LayoutState } from '../../../../layout/services/layout-state';
 import { WorkoutService } from '../../services/workout-service';
-import { Button } from "../../../../shared/button/button";
+import { Button } from '@shared';
 import { Month } from '../../../../core/models/month';
 
 @Component({

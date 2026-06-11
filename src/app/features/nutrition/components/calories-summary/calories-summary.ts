@@ -3,7 +3,7 @@ import { CalorieResult } from '../../models/calorie-result';
 import { NgIcon, provideIcons } from "@ng-icons/core";
 import { faSolidArrowDown, faSolidArrowLeft, faSolidArrowUp, faSolidBoltLightning, faSolidCalculator, faSolidCheck, faSolidFireFlameCurved, faSolidHourglass, faSolidMinus, faSolidPerson, faSolidRulerVertical, faSolidScaleUnbalanced, faSolidXmark } from '@ng-icons/font-awesome/solid';
 import { FormsModule } from '@angular/forms';
-import { Button } from '../../../../shared/button/button';
+import { Button } from '@shared';
 
 @Component({
   selector: 'app-calories-summary',

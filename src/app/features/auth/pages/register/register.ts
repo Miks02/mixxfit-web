@@ -7,7 +7,7 @@ import { faSolidEnvelope, faSolidLock, faSolidUser, faSolidUserTag } from '@ng-i
 import { finalize, take } from 'rxjs';
 import { RegisterRequest } from '../../models/register-request';
 import { AuthService } from '../../../../core/services/auth-service';
-import { Button } from '../../../../shared/button/button';
+import { Button } from '@shared';
 
 @Component({
     selector: 'app-register',

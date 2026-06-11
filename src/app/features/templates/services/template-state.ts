@@ -1,7 +1,7 @@
 import { computed, inject, Injectable } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { FormArray, FormControl, NonNullableFormBuilder } from '@angular/forms';
-import { ExerciseService } from '../../exercise/services/exercise-service';
+import { FormArray, NonNullableFormBuilder } from '@angular/forms';
+import { ExerciseService } from '@features/exercise';
 import { createCurrentTemplate } from '../factories/template-factories';
 
 @Injectable({

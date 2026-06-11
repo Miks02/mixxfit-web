@@ -4,11 +4,8 @@ import { ReactiveFormsModule, ɵInternalFormsSharedModule } from '@angular/forms
 import { Router } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { faSolidBackwardStep, faSolidTrash } from '@ng-icons/font-awesome/solid';
-import { ModalData } from '../../../../core/models/modal-data';
-import { ModalType } from '../../../../core/models/modal-type';
-import { Modal } from '../../../../layout/utilities/modal/modal';
-import { Button } from '../../../../shared/button/button';
-import { ExerciseType } from '../../../workout/models/exercise-type';
+import { ModalData, ModalType, Button, Modal } from '@shared';
+import { ExerciseType } from '@features/workout';
 import { ExerciseModalLayoutService } from '../../services/exercise-modal-layout-service';
 import { ExerciseSessionService } from '../../services/exercise-session-service';
 

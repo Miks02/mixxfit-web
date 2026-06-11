@@ -13,13 +13,9 @@ import {
     faSolidTag
 } from "@ng-icons/font-awesome/solid";
 import { finalize, take, tap } from 'rxjs';
-
-import { ModalData } from '../../../../core/models/modal-data';
-import { ModalType } from '../../../../core/models/modal-type';
+import { ModalData, ModalType, Button, Modal } from '@shared';
 import { NotificationService } from '../../../../core/services/notification-service';
 import { LayoutState } from '../../../../layout/services/layout-state';
-import { Modal } from "../../../../layout/utilities/modal/modal";
-import { Button } from '../../../../shared/button/button';
 import { WorkoutDetailsSkeleton } from '../../components/workout-details-skeleton/workout-details-skeleton';
 import { ExerciseEntry } from '../../models/exercise-entry';
 import { ExerciseType } from '../../models/exercise-type';

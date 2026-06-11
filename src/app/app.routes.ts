@@ -16,9 +16,7 @@ import { TemplateDetails } from './features/templates/components/template-detail
 import { TemplateList } from './features/templates/components/template-list/template-list';
 import { TemplateModalLayout } from './features/templates/layouts/template-modal-layout/template-modal-layout';
 import { WeightPage } from './features/weight/pages/weight-page/weight-page';
-import { WorkoutDetails } from './features/workout/pages/workout-details/workout-details';
-import { WorkoutForm } from './features/workout/pages/workout-form/workout-form';
-import { WorkoutList } from './features/workout/pages/workout-list/workout-list';
+import { WorkoutDetails, WorkoutForm, WorkoutList } from './features/workout';
 import { AppLayout } from './layout/app-layout/app-layout';
 import { TemplateForm } from './features/templates/components/template-form/template-form';
 

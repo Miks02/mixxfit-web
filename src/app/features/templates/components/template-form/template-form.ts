@@ -1,6 +1,5 @@
 import { Component, computed, effect, inject, signal, Signal } from '@angular/core';
 import { AbstractControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { isControlValid, isControlValid as isControlValidHelper } from '../../../../core/helpers/form-helpers';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
@@ -13,10 +12,8 @@ import {
     faSolidTrash,
 } from '@ng-icons/font-awesome/solid';
 import { finalize, take } from 'rxjs';
-import { ModalData } from '../../../../core/models/modal-data';
-import { ModalType } from '../../../../core/models/modal-type';
-import { Button } from '../../../../shared/button/button';
-import { Modal } from '../../../../layout/utilities/modal/modal';
+import { isControlValid } from '../../../../core/helpers/form-helpers';
+import { ModalData, ModalType, Button, Modal } from '@shared';
 import { createTemplateRequestFromForm, mapTemplateExercises } from '../../factories/template-factories';
 import { TemplateRequest } from '../../models/template-request';
 import { TemplateModalLayoutService } from '../../services/template-modal-layout-service';

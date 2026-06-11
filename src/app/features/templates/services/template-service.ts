@@ -1,10 +1,10 @@
-import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { inject, Injectable, signal, WritableSignal } from '@angular/core';
 import { catchError, Observable, of, tap, throwError } from 'rxjs';
 import { environment } from '../../../../environments/environment';
+import { NotificationService } from '../../../core/services/notification-service';
 import { TemplateDto } from '../models/template-dto';
 import { TemplateRequest } from '../models/template-request';
-import { NotificationService } from '../../../core/services/notification-service';
 
 @Injectable({
     providedIn: 'root',

@@ -7,7 +7,7 @@ import { faSolidCheck, faSolidEnvelope, faSolidLock } from '@ng-icons/font-aweso
 import { finalize, take } from 'rxjs';
 import { LoginRequest } from '../../models/login-request';
 import { AuthService } from '../../../../core/services/auth-service';
-import { Button } from '../../../../shared/button/button';
+import { Button } from '@shared';
 
 @Component({
     selector: 'app-login',

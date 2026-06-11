@@ -4,9 +4,8 @@ import { NgIcon, provideIcons } from '@ng-icons/core';
 import { faSolidChildReaching, faSolidDumbbell, faSolidGear, faSolidPersonRunning, faSolidPersonWalkingArrowLoopLeft } from '@ng-icons/font-awesome/solid';
 import { NgxSkeletonLoaderComponent } from 'ngx-skeleton-loader';
 import { finalize, take, tap } from 'rxjs';
-import { Button } from '../../../../shared/button/button';
-import { ExerciseService } from '../../../exercise/services/exercise-service';
-import { ExerciseSessionService } from '../../../exercise/services/exercise-session-service';
+import { Button } from '@shared';
+import { ExerciseService, ExerciseSessionService } from '@features/exercise'
 import { TemplateDto } from '../../models/template-dto';
 import { TemplateModalLayoutService } from '../../services/template-modal-layout-service';
 import { TemplateService } from '../../services/template-service';

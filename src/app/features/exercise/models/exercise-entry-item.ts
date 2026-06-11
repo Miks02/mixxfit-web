@@ -1,4 +1,4 @@
-import { ExerciseType } from "../../workout/models/exercise-type"
+import { ExerciseType } from "@features/workout"
 
 export type ExerciseEntryItem = {
     exerciseId: number,
