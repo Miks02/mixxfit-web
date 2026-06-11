@@ -153,11 +153,11 @@ export class WorkoutForm {
     }
 
     openExerciseList() {
-        this.router.navigate(['/workout-form/exercises']);
+        this.router.navigate(['/workouts/create/exercises']);
     }
 
     openTemplateList() {
-        this.router.navigate(['/workout-form/templates']);
+        this.router.navigate(['/workouts/create/templates']);
     }
 
     isFormValid(): boolean {

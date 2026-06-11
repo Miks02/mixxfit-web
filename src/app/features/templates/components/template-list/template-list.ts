@@ -54,11 +54,11 @@ export class TemplateList {
     }
 
     getTemplateDetails(id: number) {
-        this.router.navigate([`workout-form/templates/details/${id}`]);
+        this.router.navigate([`workouts/create/templates/details/${id}`]);
     }
 
     goToTemplateCreation() {
-        this.router.navigate([`workout-form/templates/exercises`])
+        this.router.navigate([`workouts/create/templates/exercises`])
     }
 
     goToCurrentTemplate() {

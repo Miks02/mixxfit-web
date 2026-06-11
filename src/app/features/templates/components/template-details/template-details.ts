@@ -68,19 +68,19 @@ export class TemplateDetails {
             tap(res => this.selectedTemplate.set(res)),
             finalize(() => this.isLoading.set(false))
         ).subscribe({
-            error: () => this.router.navigate(['workout-form/templates'])
+            error: () => this.router.navigate(['workouts/create/templates'])
         });
     }
 
     addToSession() {
         this.exerciseSession.addMultipleExercises(this.exerciseViews())
-        this.router.navigate(['workout-form/exercises/session'])
+        this.router.navigate(['workouts/create/exercises/session'])
     }
 
     editTemplate() {
         const exerciseIds = this.exerciseViews().map(e => e.exerciseId);
 
         this.templateState.addValuesToTemplateForm(this.templateId, exerciseIds, this.selectedTemplate()?.name!, this.selectedTemplate()?.notes!)
-        this.router.navigate([`workout-form/templates/edit/${this.templateId}`])
+        this.router.navigate([`workouts/create/templates/edit/${this.templateId}`])
     }
 }

@@ -98,7 +98,7 @@ export class ExerciseList {
     })
 
     getExerciseDetails(exerciseId: number) {
-        this.router.navigate([`workout-form/exercises/edit/${exerciseId}`])
+        this.router.navigate([`workouts/create/exercises/edit/${exerciseId}`])
     }
 
     onSearchChange(searchTerm: string) {
@@ -108,7 +108,7 @@ export class ExerciseList {
     addExercises() {
         this.templateState.addExerciseToTemplate(Array.from(this.selectedExercises()))
         this.selectedExercises().clear();
-        this.router.navigate(['workout-form/templates/create']);
+        this.router.navigate(['workouts/create/templates/create']);
     }
 
     toggleExercise = this.exerciseService.toggleExercise;

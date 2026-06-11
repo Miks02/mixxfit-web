@@ -62,15 +62,15 @@ export class TemplateForm {
         effect(() => {
             const tempExercises = this.templateExercises();
             const redirectPath = this.isEdit()
-            ? `workout-form/templates/details/${this.activatedRoute.snapshot.paramMap.get('id')}`
-            : "workout-form/templates/exercises";
+            ? `workouts/create/templates/details/${this.activatedRoute.snapshot.paramMap.get('id')}`
+            : "workouts/create/templates/exercises";
 
             if (!tempExercises || tempExercises.length === 0)
                 this.router.navigate([redirectPath]);
         });
     }
 
-    goToExercises = () => this.router.navigate(['workout-form/templates/exercises']);
+    goToExercises = () => this.router.navigate(['workouts/create/templates/exercises']);
 
     removeExercise = () => this.templateState.removeExerciseFromTemplate;
 
@@ -102,7 +102,7 @@ export class TemplateForm {
         .subscribe({
             next: () => {
                 this.templateState.clearForm();
-                this.router.navigate(['workout-form/templates'])
+                this.router.navigate(['workouts/create/templates'])
 
             },
             error: () => {}
@@ -117,7 +117,7 @@ export class TemplateForm {
         .subscribe({
             next: () => {
                 this.templateState.clearForm();
-                this.router.navigate(['workout-form/templates'])
+                this.router.navigate(['workouts/create/templates'])
 
             },
             error: () => {}
@@ -155,7 +155,7 @@ export class TemplateForm {
         )
         .subscribe({
             next: () => {
-                this.router.navigate(['workout-form/templates'])
+                this.router.navigate(['workouts/create/templates'])
                 this.templateState.clearForm();
             },
             error: () => {}

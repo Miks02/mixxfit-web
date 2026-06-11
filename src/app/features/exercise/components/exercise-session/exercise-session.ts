@@ -137,6 +137,6 @@ export class ExerciseSession {
     }
 
     backToExerciseList() {
-        this.router.navigate(['workout-form/exercises']);
+        this.router.navigate(['/workouts/create/exercises']);
     }
 }

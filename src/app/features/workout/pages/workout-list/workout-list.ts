@@ -150,7 +150,7 @@ export class WorkoutList {
     }
 
     toWorkoutForm() {
-        this.router.navigate(['/workout-form']);
+        this.router.navigate(['/workouts/create']);
     }
 
     onSearchChange(value: string) {

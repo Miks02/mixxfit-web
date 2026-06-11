@@ -118,7 +118,7 @@ export class EditExerciseForm {
                 }
 
                 this.notification.showSuccess(updateMessage);
-                this.router.navigate(['workout-form/exercises']);
+                this.router.navigate(['workouts/create/exercises']);
             },
             error: err => {
                 let errorMessage = "An error occurred while updating the exercise";
@@ -155,7 +155,7 @@ export class EditExerciseForm {
                 }
 
                 this.notification.showSuccess(deleteMessage);
-                this.router.navigate(['workout-form/exercises']);
+                this.router.navigate(['workouts/create/exercises']);
             },
             error: err => {
                 let errorMessage = "An error occurred while deleting the exercise";

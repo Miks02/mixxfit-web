@@ -21,8 +21,8 @@ export class TemplateState {
     templateNotes = computed(() => this.templateFormValue().notes)
     templateFormUrl = computed(() => {
         return this.templateId()
-        ? `workout-form/templates/edit/${this.templateId()}`
-        : 'workout-form/templates/create'
+        ? `workouts/create/templates/edit/${this.templateId()}`
+        : 'workouts/create/templates/create'
     })
 
     get templateExerciseArr() {

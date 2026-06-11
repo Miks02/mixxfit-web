@@ -31,7 +31,7 @@ export class TemplateModalLayout {
     }
 
     onClose() {
-        this.router.navigate(['workout-form']);
+        this.router.navigate(['workouts/create']);
     }
 
     onBack() {

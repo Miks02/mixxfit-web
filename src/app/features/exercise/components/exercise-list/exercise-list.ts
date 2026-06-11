@@ -86,7 +86,7 @@ export class ExerciseList {
     })
 
     getExerciseDetails(exerciseId: number) {
-        this.router.navigate([`workout-form/exercises/edit/${exerciseId}`])
+        this.router.navigate([`workouts/create/exercises/edit/${exerciseId}`])
     }
 
     onSearchChange(searchTerm: string) {
@@ -95,11 +95,11 @@ export class ExerciseList {
 
     addExercise(id: number, name: string, type: ExerciseType) {
         this.exerciseSession.addExercise({exerciseId: id, exerciseName: name, exerciseType: type});
-        this.router.navigate(['workout-form/exercises/session']);
+        this.router.navigate(['workouts/create/exercises/session']);
     }
 
     goToCurrentSession() {
-        this.router.navigate(['workout-form/exercises/session']);
+        this.router.navigate(['workouts/create/exercises/session']);
     }
 
     isSessionActive() {

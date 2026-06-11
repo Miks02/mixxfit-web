@@ -31,11 +31,11 @@ export class ExerciseModalLayout {
     }
 
     onClose() {
-        this.router.navigate(['workout-form']);
+        this.router.navigate(['workouts/create']);
     }
 
     onCreateExercise() {
-        this.router.navigate(['/workout-form/exercises/create'])
+        this.router.navigate(['workouts/create/exercises/create'])
     }
 
     onBack() {
