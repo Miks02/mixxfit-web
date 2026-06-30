@@ -7,18 +7,12 @@ import { DashboardDto } from '../models/dasbhoard-dto';
 @Injectable({
     providedIn: 'root',
 })
-export class DashboardState {
+export class DashboardService {
     private api = environment.apiUrl;
-
-    private _dashboard: WritableSignal<DashboardDto | undefined> = signal(undefined);
-    public dashboard = this._dashboard.asReadonly();
-
     private http = inject(HttpClient);
 
     getDashboard() {
-        return this.http.get<DashboardDto>(`${this.api}/dashboard`).pipe(
-            tap((res) => this._dashboard.set(res))
-        )
+        return this.http.get<DashboardDto>(`${this.api}/dashboard`)
     }
 
 }

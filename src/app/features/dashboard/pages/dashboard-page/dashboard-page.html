@@ -5,7 +5,7 @@
     [initialHeight]="userDetails()?.height"
     [initialGender]="userDetails()?.gender"
     (close)="isCalorieCalculatorOpen.set(false)"
-    (caloriesUpdated)="loadDashboard()">
+    >
 </app-calorie-calculator>
 }
 
@@ -26,7 +26,7 @@
             <app-dashboard-card
                 title="Workout Streak"
                 icon="faSolidBolt"
-                [value]="dashboardSource()?.workoutStreak ? getWorkoutStreakMessage() : null"
+                [value]="dashboard()?.workoutStreak ? getWorkoutStreakMessage() : null"
                 unavailableText="Not on a streak"
                 cardClass="bg-linear-to-br from-teal-500/90 to-teal-600"
                 valueClass="text-xl font-semibold overflow-hidden whitespace-nowrap"
@@ -37,7 +37,7 @@
             <app-dashboard-card
                 title="Last workout"
                 icon="faSolidDumbbell"
-                [value]="dashboardSource()?.lastWorkoutDate ? (dashboardSource()?.lastWorkoutDate | date) : null"
+                [value]="dashboard()?.lastWorkoutDate ? (dashboard()?.lastWorkoutDate | date) : null"
                 unavailableText="No Data Yet..."
                 cardClass="bg-linear-to-br from-slate-500/90 to-slate-600"
                 valueClass="text-xl font-semibold overflow-hidden whitespace-nowrap w-[12ch]"
@@ -53,7 +53,6 @@
             <h1 class="font-bold text-xl">Workout chart</h1>
             @if(years()?.length! > 0) {
                 <select
-                (change)="loadCounts(selectedYear)"
                 [(ngModel)]="selectedYear"
                 class="px-2 py-1 bg-slate-100 rounded-md shadow-md text-slate-800 font-semibold">
                 @for(year of years(); track $index) {
@@ -74,7 +73,7 @@
                 </div>
             }
             @else if(years()?.length! > 0) {
-                <app-workouts-chart [workoutCountsSource]="workoutsPerMonth" class="flex-1 min-w-full sm:min-w-85 max-w-[99%] grow w-[26vw] mx-auto"></app-workouts-chart>
+                <app-workouts-chart [workoutCountsSource]="workoutChart" class="flex-1 min-w-full sm:min-w-85 max-w-[99%] grow w-[26vw] mx-auto"></app-workouts-chart>
             } @else {
                 <ngx-skeleton-loader
                 count="7"
@@ -220,7 +219,7 @@
             <div class="max-h-90 overflow-y-auto">
                 <div class="p-4 flex flex-col gap-4">
 
-                    @if(!recentWorkouts()) {
+                    @if(!dashboard()?.recentWorkouts) {
                         <ngx-skeleton-loader
                         count="3"
                         [theme]="{
@@ -231,7 +230,7 @@
                         >
                     </ngx-skeleton-loader>
                 }
-                @else if(recentWorkouts()?.length! == 0) {
+                @else if(dashboard()?.recentWorkouts?.length! == 0) {
 
                     <div class="flex flex-col gap-2 justify-center items-center py-15">
                         <ng-icon name="faSolidDumbbell" class="text-6xl opacity-50"></ng-icon>
@@ -240,7 +239,7 @@
                     </div>
                 }
                 @else {
-                    @for(workout of recentWorkouts(); track $index) {
+                    @for(workout of dashboard()?.recentWorkouts; track $index) {
                         <div
                         (click)="getToWorkout(workout.id)"
                         class="bg-white rounded-xl p-4 text-slate-800 shadow-lg flex justify-between items-center transition hover:-translate-y-1 hover:bg-amber-200 cursor-pointer active:bg-amber-300">
