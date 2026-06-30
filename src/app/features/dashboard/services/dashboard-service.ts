@@ -7,7 +7,7 @@ import { DashboardDto } from '../models/dasbhoard-dto';
 @Injectable({
     providedIn: 'root',
 })
-export class DashboardState {
+export class DashboardService {
     private api = environment.apiUrl;
 
     private _dashboard: WritableSignal<DashboardDto | undefined> = signal(undefined);
