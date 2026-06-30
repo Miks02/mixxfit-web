@@ -9,7 +9,7 @@ import { LayoutState } from '../../../../layout/services/layout-state';
 import { take } from 'rxjs';
 import { WeightChart, WeightEntryService } from '@features/weight';
 import { Router, RouterLink } from "@angular/router";
-import { DashboardState } from '../../services/dashboard-state';
+import { DashboardService } from '../../services/dashboard-service';
 import { DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NgxSkeletonLoaderModule } from 'ngx-skeleton-loader';
@@ -17,6 +17,7 @@ import { CalorieCalculator } from '../../../nutrition/components/calorie-calcula
 import { UserState } from '../../../../core/states/user-state';
 import { Button } from '@shared';
 import { DashboardCard } from '../../components/dashboard-card/dashboard-card';
+import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 Chart.register(...registerables)
 
 @Component({
@@ -28,23 +29,33 @@ Chart.register(...registerables)
 })
 export class Dashboard {
     private layoutState = inject(LayoutState);
-    private dashboardState = inject(DashboardState);
+    private dashboardState = inject(DashboardService);
     private userState = inject(UserState);
     private workoutService = inject(WorkoutService);
     private weightService = inject(WeightEntryService);
     private router = inject(Router)
+    selectedYear: WritableSignal<number> = signal(new Date().getFullYear());
 
-    isLoading: boolean = false;
+    dashboardResource = rxResource({
+        stream: () => this.dashboardState.getDashboard()
+    })
+    workoutChartResource = rxResource({
+        params: () => ({year: this.selectedYear()}),
+        stream: ({params}) => this.workoutService.getUserWorkoutCountsByMonth(params.year)
+    })
+
+    weightChartResource = rxResource({
+        stream: () => this.weightService.getMyWeightChart()
+    })
+
+    dashboard = this.dashboardResource.value;
+    workoutChart = this.workoutChartResource.value;
+    weightChart = this.weightChartResource.value;
+
     isCalorieCalculatorOpen: WritableSignal<boolean> = signal(false);
 
-    dashboardSource = this.dashboardState.dashboard;
-    workoutsPerMonth = this.workoutService.workoutCounts;
-    weightChart = this.weightService.weightChart;
+    years = computed(() => this.workoutChart()?.years)
 
-    years = computed(() => this.workoutsPerMonth()?.years)
-    recentWorkouts = computed(() => this.dashboardSource()?.recentWorkouts)
-
-    selectedYear: number = new Date().getFullYear();
     private yearInitialized = false;
 
     userDetails = this.userState.userDetails;
@@ -57,7 +68,7 @@ export class Dashboard {
         effect(() => {
             const years = this.years();
             if (years && years.length > 0 && !this.yearInitialized) {
-                this.selectedYear = years[0];
+                this.selectedYear.set(years[0]);
                 this.yearInitialized = true;
             }
         });
@@ -68,33 +79,9 @@ export class Dashboard {
             });
         });
     }
-    ngOnInit() {
-        this.loadDashboard();
-        this.loadCounts();
-        this.loadWeightChart();
-    }
-
-    loadDashboard() {
-        return this.dashboardState.getDashboard()
-        .pipe(take(1))
-        .subscribe();
-    }
-
-    loadCounts(year: number | null = null) {
-        return this.workoutService.getUserWorkoutCountsByMonth(year)
-        .pipe(take(1))
-        .subscribe();
-    }
-
-    loadWeightChart() {
-        const targetWeight = this.userDetails()?.targetWeight;
-        return this.weightService.getMyWeightChart(targetWeight)
-        .pipe(take(1))
-        .subscribe();
-    }
 
     getToWorkout(id: number) {
-        this.router.navigate(['/workouts/', id])
+        this.router.navigate(['/workouts/details', id])
     }
 
     getUserWeight = computed(() => {
@@ -125,7 +112,7 @@ export class Dashboard {
     })
 
     getWorkoutStreakMessage = computed(() => {
-        const streak = this.dashboardSource()?.workoutStreak;
+        const streak = this.dashboard()?.workoutStreak;
 
         if(!streak || streak === 0)
             return `Not on a streak`;
