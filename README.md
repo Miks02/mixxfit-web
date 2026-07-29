@@ -26,7 +26,7 @@ I am trying to make a fitness tracking web application that is intended to be as
 - Work in progress — expect improvements and new pages over time.
 
 ## Check it out
-- https://vitalops-web.onrender.com/
+- https://app.getmixxfit.com
 
 ## Screenshots
 
