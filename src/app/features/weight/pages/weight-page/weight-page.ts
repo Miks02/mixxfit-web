@@ -22,7 +22,7 @@ import { formatDate } from '../../../../core/helpers/utility';
 import { ModalData, ModalType, Button, Modal } from '@shared';
 import { NotificationService } from '../../../../core/services/notification-service';
 import { UserState } from '../../../../core/states/user-state';
-import { LayoutState } from '../../../../layout/services/layout-state';
+import { LayoutState } from '../../../../layout/services/layout-state';``
 import { WeightChart } from "../../components/weight-chart/weight-chart";
 import { createTargetWeightForm, createWeightEntryForm } from "../../factories/weight-form-factories";
 import { WeightEntryDetails } from '../../models/weight-entry-details';
@@ -159,7 +159,7 @@ export class WeightPage  {
                 this.loadWeightSummary();
             },
             error: (err) => {
-                if(err.error.errorCode === "General.LimitReached")
+                 if(err.error.errorCode === "WeightEntry.LimitReached")
                     this.notificationService.showInfo("You can only log weight once per day")
             }
         });
