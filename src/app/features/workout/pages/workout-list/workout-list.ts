@@ -207,7 +207,7 @@ export class WorkoutList {
     }
 
     getWorkoutDetails(id: number) {
-        this.router.navigate(['/workouts', id])
+        this.router.navigate(['/workouts/details/', id])
     }
 
     getMonthLabel(month: number): string {
