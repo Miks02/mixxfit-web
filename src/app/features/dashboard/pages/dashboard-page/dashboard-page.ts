@@ -108,7 +108,7 @@ export class Dashboard {
 
     getProfileImageSrc = computed(() => {
         if (this.userDetails()?.imagePath && this.userDetails()?.imagePath !== null) return this.userDetails()!.imagePath as string;
-        return this.userDetails()?.gender === 1 ? 'user_male.png' : (this.userDetails()?.gender === 2 ? 'user_female.png' : 'user_other.png');
+        return this.userDetails()?.gender === "Male" ? 'user_male.png' : (this.userDetails()?.gender === "Female" ? 'user_female.png' : 'user_other.png');
     })
 
     getWorkoutStreakMessage = computed(() => {

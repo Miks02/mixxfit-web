@@ -275,7 +275,7 @@ export class ProfilePage {
     getProfileImageSrc(): string {
         if (this.previewImage() !== "") return this.previewImage();
         if (this.userData()?.imagePath  && this.userData()?.imagePath !== null) return this.userData()!.imagePath as string;
-        return this.userData()?.gender === 1 ? 'user_male.png' : (this.userData()?.gender === 2 ? 'user_female.png' : 'user_other.png');
+        return this.userData()?.gender === "Male" ? 'user_male.png' : (this.userData()?.gender === "Female" ? 'user_female.png' : 'user_other.png');
     }
 
     onProfilePictureSelected(event: Event) {
@@ -385,11 +385,11 @@ export class ProfilePage {
 
      genderLabel = computed(() => {
         switch(this.userData()?.gender) {
-            case 1:
+            case "Male":
             return "Male";
-            case 2:
+            case "Female":
             return "Female";
-            case 3:
+            case "Other":
             return "Other";
             default:
             return "Not specified";
