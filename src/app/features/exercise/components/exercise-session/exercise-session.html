@@ -12,7 +12,7 @@
             </div>
 
             @for (exercise of exerciseSession.getExercises().controls; track $index; let exIdx = $index) {
-                @if (getExerciseType(exIdx) !== ExerciseType.Other) {
+                @if (this.exerciseSession.getExerciseType(exIdx) !== ExerciseType.Other) {
                     <div [formGroupName]="exIdx" class="flex flex-col w-full bg-gray-100 rounded-xl shadow-lg  hover:shadow-xl transition duration-200 px-4 py-2">
                         <div class="flex justify-between items-center w-full">
                             <h1 class="text-lg sm:text-xl text-slate-800 font-semibold mb-3">{{ exercise.get('exerciseName')?.value }}</h1>
@@ -22,7 +22,7 @@
                         </div>
 
                         <div class="w-full mt-2" formArrayName="details">
-                            @switch (getExerciseType(exIdx)) {
+                            @switch (this.exerciseSession.getExerciseType(exIdx)) {
                                 @case (ExerciseType.Weights) {
                                     <div class="flex items-center py-2 border-b-2 border-gray-300 text-xs font-bold text-amber-600 uppercase tracking-wide">
                                         <span class="w-10 text-center">Set</span>
@@ -65,7 +65,7 @@
                                     <span class="w-10 text-center font-bold text-slate-500">{{ setIdx + 1 }}</span>
                                     <span class="flex-1"></span>
 
-                                    @switch (getExerciseType(exIdx)) {
+                                    @switch (this.exerciseSession.getExerciseType(exIdx)) {
                                         @case (ExerciseType.Weights) {
                                             <input type="number" formControlName="weight" placeholder="0" class="w-20 mx-1 py-1.5 text-center rounded-lg border border-gray-300 bg-white text-sm focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500" />
                                             <input type="number" formControlName="reps" placeholder="0" class="w-20 mx-1 py-1.5 text-center rounded-lg border border-gray-300 bg-white text-sm focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500" />
