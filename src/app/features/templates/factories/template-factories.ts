@@ -1,6 +1,7 @@
 import {NonNullableFormBuilder, Validators } from "@angular/forms";
 import { TemplateExerciseDto } from "../models/template-exercise-dto";
 import { TemplateRequest } from "../models/template-request";
+import { TemplateExerciseView } from "../models/template-exercise-view";
 
 
 export function createCurrentTemplate(fb: NonNullableFormBuilder) {
