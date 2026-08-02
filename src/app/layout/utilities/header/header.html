@@ -9,9 +9,9 @@
             <img src="{{getProfileImageSrc()}}" class="rounded-full object-cover w-11 h-11 opacity-90 shadow-all">
 
             <p
-            [class.text-blue-100]="userGender() === 1"
-            [class.text-rose-100]="userGender() === 2"
-            [class.text-slate-100]="userGender() === 3"
+            [class.text-blue-100]="userGender() === 'Male'"
+            [class.text-rose-100]="userGender() === 'Female'"
+            [class.text-slate-100]="userGender() === 'Other'"
             class="hidden lg:block">{{fullName()}}</p>
         </a>
     </div>

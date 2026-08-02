@@ -52,12 +52,25 @@ export class ExerciseSession {
         this.container.nativeElement.scrollTo({top: containerHeight, behavior: 'smooth'})
     }
 
-    getExerciseType(index: number): ExerciseType {
-        return this.exerciseSession.getExerciseType(index);
-    }
+    getExerciseType = this.exerciseSession.getExerciseType;
 
     getExerciseTypeLabel(index: number): string {
-        return ExerciseType[this.getExerciseType(index)];
+        const type = this.getExerciseType(index);
+
+        switch(type) {
+            case ExerciseType.Other:
+                return "Other";
+            case ExerciseType.Weights:
+                return "Weight Lifting";
+            case ExerciseType.Bodyweight:
+                return "Body Weight";
+            case ExerciseType.Cardio:
+                return "Cardio";
+            case ExerciseType.Stretching:
+                return "Stretching";
+            default:
+                return "Unknown";
+        }
     }
 
     addSet(exerciseIndex: number) {

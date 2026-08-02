@@ -188,10 +188,10 @@
             <img
             routerLink="/profile"
             src="{{getProfileImageSrc()}}"
-            [class.active:shadow-blue-600]="userDetails()?.gender == 1"
-            [class.hover:shadow-blue-300]="userDetails()?.gender == 1"
-            [class.active:shadow-rose-600]="userDetails()?.gender == 2"
-            [class.hover:shadow-rose-300]="userDetails()?.gender == 2"
+            [class.active:shadow-blue-600]="userDetails()?.gender == 'Male'"
+            [class.hover:shadow-blue-300]="userDetails()?.gender == 'Male'"
+            [class.active:shadow-rose-600]="userDetails()?.gender == 'Female'"
+            [class.hover:shadow-rose-300]="userDetails()?.gender == 'Female'"
             class="rounded-full w-25 h-25 shadow-all bg-slate-600 flex items-center justify-center text-white text-2xl font-semibold hover:opacity-70 active:opacity-50 transition duration-200 cursor-pointer object-cover">
             <h4 class="mt-4 text-lg font-semibold text-slate-800">{{this.userDetails()?.fullName }}</h4>
             <div class="mt-3 w-full grid grid-cols-3 gap-4 text-center">

@@ -10,6 +10,7 @@ import { TemplateDto } from '../../models/template-dto';
 import { TemplateModalLayoutService } from '../../services/template-modal-layout-service';
 import { TemplateService } from '../../services/template-service';
 import { TemplateState } from '../../services/template-state';
+import { TemplateExerciseView } from '../../models/template-exercise-view';
 
 @Component({
     selector: 'app-template-details',

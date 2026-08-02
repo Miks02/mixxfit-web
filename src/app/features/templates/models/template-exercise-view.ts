@@ -1,9 +1,11 @@
-type TemplateExerciseView = {
+import { ExerciseType } from "@features/workout";
+
+export type TemplateExerciseView = {
     exerciseId: number;
     setCount: number;
     order: number;
     exerciseName: string;
     muscleGroupName: string;
-    exerciseType: number;
+    exerciseType: ExerciseType;
     isUserDefined: boolean;
 };
