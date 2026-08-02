@@ -80,17 +80,17 @@
                         <div class="flex items-center gap-4">
                             <div
                             [class.bg-linear-to-br]="true"
-                            [class.from-yellow-400]="getExerciseType(exercise) === 1"
-                            [class.to-amber-500]="getExerciseType(exercise) === 1"
-                            [class.from-indigo-400]="getExerciseType(exercise) === 2"
-                            [class.to-indigo-600]="getExerciseType(exercise) === 2"
-                            [class.from-red-400]="getExerciseType(exercise) === 3"
-                            [class.to-rose-500]="getExerciseType(exercise) === 3"
-                            [class.from-purple-400]="getExerciseType(exercise) === 4"
-                            [class.to-purple-600]="getExerciseType(exercise) === 4"
+                            [class.from-yellow-400]="getExerciseType(exercise) === 'WeightLifting'"
+                            [class.to-amber-500]="getExerciseType(exercise) === 'WeightLifting'"
+                            [class.from-indigo-400]="getExerciseType(exercise) === 'BodyWeight'"
+                            [class.to-indigo-600]="getExerciseType(exercise) === 'BodyWeight'"
+                            [class.from-red-400]="getExerciseType(exercise) === 'Cardio'"
+                            [class.to-rose-500]="getExerciseType(exercise) === 'Cardio'"
+                            [class.from-purple-400]="getExerciseType(exercise) === 'Stretching'"
+                            [class.to-purple-600]="getExerciseType(exercise) === 'Stretching'"
                             class="w-12 h-12 rounded-xl shadow-lg flex items-center justify-center group-hover:scale-105 transition-transform">
-                            @if(getExerciseType(exercise) === 3) { <ng-icon name="faSolidPersonRunning" class="text-white! text-xl"></ng-icon> }
-                            @else if(getExerciseType(exercise) === 2) { <ng-icon name="faSolidChildReaching" class="text-white! text-xl"></ng-icon> }
+                            @if(getExerciseType(exercise) === 'Cardio') { <ng-icon name="faSolidPersonRunning" class="text-white! text-xl"></ng-icon> }
+                            @else if(getExerciseType(exercise) === 'BodyWeight') { <ng-icon name="faSolidChildReaching" class="text-white! text-xl"></ng-icon> }
                             @else { <ng-icon name="faSolidDumbbell" class="text-white! text-xl"></ng-icon> }
                         </div>
                         <div>
@@ -114,19 +114,19 @@
                         [class.border-blue-200]="set.valid"
                         class="bg-white border-2 border-amber-200 text-slate-700 px-4 py-2 rounded-xl text-sm font-semibold shadow-sm hover:shadow-md hover:border-amber-300 transition-all">
                         @switch(getExerciseType(exercise)) {
-                            @case (1) {
+                            @case ('WeightLifting') {
                                 Set {{$index + 1}}: {{ set.get("weight")!.value ?? '0'}} kg | {{ set.get("reps")?.value ?? '0'}} reps
 
                             }
-                            @case (2) {
+                            @case ('BodyWeight') {
                                 Set {{$index + 1}}: {{ set.get("weight")!.value ?? '0'}} kg | {{ set.get("reps")?.value ?? '0'}} reps
 
                             }
-                            @case (3) {
+                            @case ('Cardio') {
                                 Set {{$index + 1}}: {{ set.get("durationMinutes")?.value ?? '0' }} minutes | {{ set.get("durationSeconds")?.value ?? '0'}} seconds | {{set.get("distance")?.value ?? '0'}} km
 
                             }
-                            @case (4) {
+                            @case ('Stretching') {
                                 Set {{$index + 1}}: {{ set.get("durationMinutes")?.value }} minutes | {{ set.get("durationSeconds")?.value}} seconds
 
                             }

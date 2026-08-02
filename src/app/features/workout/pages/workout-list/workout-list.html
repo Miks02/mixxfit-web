@@ -284,14 +284,17 @@
             </p>
             <p class="text-2xl font-bold text-slate-900">
               @switch (workoutSummary()?.favoriteExerciseType) {
-                @case (1) {
+                @case ("WeightLifting") {
                   Weights
                 }
-                @case (2) {
+                @case ("BodyWeight") {
                   Bodyweight / calisthenics
                 }
-                @case (3) {
+                @case ("Cardio") {
                   Cardio
+                }
+                @case ("Stretching") {
+                  Stretching
                 }
                 @default {
                   N/A
