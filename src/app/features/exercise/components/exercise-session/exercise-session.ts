@@ -52,10 +52,8 @@ export class ExerciseSession {
         this.container.nativeElement.scrollTo({top: containerHeight, behavior: 'smooth'})
     }
 
-    getExerciseType = this.exerciseSession.getExerciseType;
-
     getExerciseTypeLabel(index: number): string {
-        const type = this.getExerciseType(index);
+        const type = this.exerciseSession.getExerciseType(index);
 
         switch(type) {
             case ExerciseType.Other:
@@ -74,7 +72,7 @@ export class ExerciseSession {
     }
 
     addSet(exerciseIndex: number) {
-        const type = this.getExerciseType(exerciseIndex);
+        const type = this.exerciseSession.getExerciseType(exerciseIndex);
         this.exerciseSession.addDetails(type, exerciseIndex);
 
         requestAnimationFrame(() => {
