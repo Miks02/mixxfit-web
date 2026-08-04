@@ -48,7 +48,7 @@ export class ExerciseList {
 
     constructor() {
         this.exerciseModal.setConfig({
-            title: 'Template Exercises',
+            title: 'Exercises',
             action: [
                 { icon: 'faSolidMagnifyingGlass', action: this.isSearchOpen },
                 { icon: 'faSolidFilter', action: this.isFilterOpen },

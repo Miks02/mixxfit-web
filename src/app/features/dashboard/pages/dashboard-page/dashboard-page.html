@@ -48,8 +48,8 @@
 </div>
 
 <div class="flex gap-4 flex-wrap">
-    <div class="bg-slate-200 rounded-2xl shadow-xl transition-shadow duration-200 hover:shadow-2xl grow">
-        <div class="flex justify-between bg-linear-to-br from-amber-500 to-amber-400 w-full rounded-t-2xl px-4 py-2 text-slate-800">
+    <div class="bg-slate-200 rounded-lg md:rounded-2xl shadow-xl transition-shadow duration-200 hover:shadow-2xl grow">
+        <div class="flex justify-between bg-amber-400 md:bg-linear-to-br from-yellow-500 to-yellow-400 w-full rounded-t-lg md:rounded-t-2xl px-4 py-2 text-slate-800">
             <h1 class="font-bold text-xl">Workout chart</h1>
             @if(years()?.length! > 0) {
                 <select
@@ -91,8 +91,8 @@
 
 </div>
 </div>
-<div class="bg-slate-200 rounded-2xl shadow-xl transition-shadow duration-200 hover:shadow-2xl grow">
-    <div class="flex justify-between bg-linear-to-br from-violet-500 to-violet-400 w-full rounded-t-2xl px-4 py-2">
+<div class="bg-slate-200 rounded-lg md:rounded-2xl shadow-xl transition-shadow duration-200 hover:shadow-2xl grow">
+    <div class="flex justify-between bg-violet-500 md:bg-linear-to-br from-violet-500 to-violet-400 w-full rounded-t-lg md:rounded-t-2xl px-4 py-2">
         <h1 class="font-bold text-xl text-slate-200">Weight progress chart</h1>
     </div>
 
@@ -129,8 +129,8 @@
 </div>
 
 </div>
-<div class="bg-slate-200 rounded-2xl shadow-xl transition-all duration-200 hover:shadow-2xl grow flex flex-col ">
-    <div class="flex flex-wrap bg-linear-to-br from-yellow-500 to-yellow-400 w-full rounded-t-2xl px-4 py-2">
+<div class="bg-slate-200 rounded-t-lg md:rounded-2xl shadow-xl transition-all duration-200 hover:shadow-2xl grow flex flex-col ">
+    <div class="flex flex-wrap bg-amber-400 md:bg-linear-to-br from-yellow-500 to-yellow-400 w-full rounded-t-lg md:rounded-t-2xl px-4 py-2">
         <h1 class="font-bold text-xl text-slate-800">Quick actions</h1>
     </div>
 
@@ -182,9 +182,9 @@
 </div>
 </div>
 
-<div class="flex flex-col gap-5 justify-between  rounded-2xl  grow">
+<div class="flex flex-col gap-5 justify-between grow">
     <div class="flex flex-col  w-full gap-4">
-        <div class="bg-slate-200 rounded-2xl shadow-lg p-8 flex flex-col w-full grow items-center text-center hover:shadow-xl transition-all duration-200">
+        <div class="bg-slate-200 rounded-lg md:rounded-2xl shadow-lg p-8 flex flex-col w-full grow items-center text-center hover:shadow-xl transition-all duration-200">
             <img
             routerLink="/profile"
             src="{{getProfileImageSrc()}}"
@@ -210,8 +210,8 @@
             </div>
         </div>
 
-        <div class="bg-slate-200 rounded-2xl shadow-xl transition-all duration-200 hover:shadow-2xl">
-            <div class="flex bg-linear-to-br from-yellow-500 to-yellow-400 w-full rounded-t-2xl px-4 py-2">
+        <div class="bg-slate-200 rounded-lg md:rounded-2xl shadow-xl transition-all duration-200 hover:shadow-2xl">
+            <div class="flex bg-linear-to-br from-yellow-500 to-yellow-400 w-full rounded-t-lg md:rounded-t-2xl px-4 py-2">
                 <h1 class="font-bold text-xl text-slate-800">Last 10 workouts</h1>
             </div>
 

@@ -35,7 +35,7 @@
                         </div>
             }
             @if(userData()?.imagePath !== null && previewImage() === "") {
-                <app-button label="Remove picture" buttonType="secondary" (clicked)="removeProfilePicture()">
+                <app-button label="Remove picture" buttonSize="sm" fontSize="xs" buttonType="secondary" (clicked)="removeProfilePicture()">
                     <ng-icon name="faSolidTrash" slot="icon"></ng-icon>
                 </app-button>
             }
@@ -343,10 +343,10 @@
                     </div>
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <app-button label="Enable 2FA" [isFullWidth]="true" [disabled]="true">
+                    <app-button buttonSize="sm" fontSize="sm" label="Enable 2FA" [isFullWidth]="true" [disabled]="true">
                         <ng-icon class="self-center!" name="faSolidShieldHalved" slot="icon"></ng-icon>
                     </app-button>
-                    <app-button label="Change Password" [isFullWidth]="true" (clicked)="isPasswordFormOpen.set(true)">
+                    <app-button buttonSize="sm" fontSize="sm" label="Change Password" [isFullWidth]="true" (clicked)="isPasswordFormOpen.set(true)">
                         <ng-icon class="self-center!" name="faSolidKey" slot="icon"></ng-icon>
                     </app-button>
                 </div>
@@ -362,7 +362,7 @@
                         <p class="text-sm text-slate-500">Irreversible account actions</p>
                     </div>
                 </div>
-                <app-button label="Delete Account" buttonType="danger" [isFullWidth]="true" (clicked)="openDeleteAccountModal()">
+                <app-button buttonSize="sm" fontSize="sm" label="Delete Account" buttonType="danger" [isFullWidth]="true" (clicked)="openDeleteAccountModal()">
                     <ng-icon class="self-center!" name="faSolidTrash" slot="icon"></ng-icon>
                 </app-button>
             </div>
