@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, effect, inject, signal, WritableSignal } from '@angular/core';
+import { Component, computed, effect, inject, signal, WritableSignal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { AbstractControl, FormArray, FormBuilder, FormsModule, ReactiveFormsModule, } from '@angular/forms';
 import { Router, RouterOutlet } from '@angular/router';
@@ -29,6 +29,17 @@ import { ExerciseService, ExerciseSessionService } from '@features/exercise';
 import { createExerciseGroup, createWorkoutForm, createWorkoutObject } from '../../factories/workout-factories';
 import { ExerciseType } from '../../models/exercise-type';
 import { WorkoutService } from '../../services/workout-service';
+
+const QUICK_TIPS = [
+    "Keep rest times consistent and log weights for progressive overload. Warm up before heavy lifts.",
+    "Prioritize full range of motion over adding more weight.",
+    "Leave 1–2 reps in the tank on most sets to avoid burnout.",
+    "Hit each muscle group twice a week for maximum growth.",
+    "Focus on mind-muscle connection, not just moving the bar.",
+    "Control the eccentric phase for 2–3 seconds on every rep.",
+    "Take at least one full deload week every 6–8 weeks.",
+    "Eat a solid meal with protein and carbs 1–2 hours before training."
+]
 
 @Component({
     selector: 'app-workout-form',
@@ -201,4 +212,8 @@ export class WorkoutForm {
 
         })
     }
+
+    getQuickTips = computed(() => {
+        return QUICK_TIPS[Math.floor(Math.random() * QUICK_TIPS.length)]
+    })
 }

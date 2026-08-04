@@ -3,8 +3,8 @@
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-        <div class="bg-slate-200 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden">
-            <div class="bg-linear-to-br from-yellow-500 to-yellow-400 px-4 py-2">
+        <div class="bg-slate-200 rounded-lg md:rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden">
+            <div class="md:bg-linear-to-br from-yellow-500 to-yellow-400 px-4 py-2">
                 <h2 class="text-xl font-bold text-slate-800">Profile Avatar</h2>
             </div>
             <div class="p-6 h-full">
@@ -26,16 +26,16 @@
 
                     @if(previewImage() != "") {
                         <div class="flex gap-3">
-                            <app-button label="Save" buttonType="primary" (clicked)="saveProfilePicture()">
-                                <ng-icon name="faSolidCheck" slot="icon"></ng-icon>
+                            <app-button buttonSize="sm" fontSize="sm" label="Save" buttonType="primary" (clicked)="saveProfilePicture()">
+                                <ng-icon name="faSolidCheck" slot="icon" class="self-center"></ng-icon>
                             </app-button>
-                            <app-button label="Cancel" buttonType="danger" (clicked)="cancelProfilePicture()">
-                                <ng-icon name="faSolidXmark" slot="icon"></ng-icon>
+                            <app-button buttonSize="sm" fontSize="sm" label="Cancel" buttonType="danger" (clicked)="cancelProfilePicture()">
+                                <ng-icon name="faSolidXmark" slot="icon" class="self-center"></ng-icon>
                             </app-button>
                         </div>
             }
             @if(userData()?.imagePath !== null && previewImage() === "") {
-                <app-button label="Remove picture" buttonType="secondary" (clicked)="removeProfilePicture()">
+                <app-button label="Remove picture" buttonSize="sm" fontSize="xs" buttonType="secondary" (clicked)="removeProfilePicture()">
                     <ng-icon name="faSolidTrash" slot="icon"></ng-icon>
                 </app-button>
             }
@@ -44,8 +44,8 @@
 </div>
 
 
-<div class="lg:col-span-2 bg-slate-200 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden">
-    <div class="bg-linear-to-br from-yellow-500 to-yellow-400 px-4 py-2">
+<div class="lg:col-span-2 bg-slate-200 rounded-lg md:rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden">
+    <div class="md:bg-linear-to-br from-yellow-500 to-yellow-400 px-4 py-2">
         <h2 class="text-xl font-bold text-slate-800">User Information</h2>
     </div>
     <div class="p-4 md:p-6">
@@ -252,8 +252,8 @@
 </div>
 
 
-<div class="bg-slate-200 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden">
-    <div class="bg-linear-to-br from-yellow-500 to-yellow-400 px-4 py-2">
+<div class="bg-slate-200 rounded-lg md:rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden">
+    <div class="md:bg-linear-to-br from-yellow-500 to-yellow-400 px-4 py-2">
         <h2 class="text-xl font-bold text-slate-800 flex items-center gap-2">
             Body Metrics
         </h2>
@@ -323,8 +323,8 @@
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
 
-    <div class="bg-slate-200 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden">
-        <div class="bg-linear-to-br from-yellow-500 to-yellow-400 px-4 py-2">
+    <div class="bg-slate-200 rounded-lg md:rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden">
+        <div class="md:bg-linear-to-br from-yellow-500 to-yellow-400 px-4 py-2">
             <h2 class="text-xl font-bold text-slate-800 flex items-center gap-2">
                 Settings
             </h2>
@@ -343,10 +343,10 @@
                     </div>
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <app-button label="Enable 2FA" [isFullWidth]="true" [disabled]="true">
+                    <app-button buttonSize="sm" fontSize="sm" label="Enable 2FA" [isFullWidth]="true" [disabled]="true">
                         <ng-icon class="self-center!" name="faSolidShieldHalved" slot="icon"></ng-icon>
                     </app-button>
-                    <app-button label="Change Password" [isFullWidth]="true" (clicked)="isPasswordFormOpen.set(true)">
+                    <app-button buttonSize="sm" fontSize="sm" label="Change Password" [isFullWidth]="true" (clicked)="isPasswordFormOpen.set(true)">
                         <ng-icon class="self-center!" name="faSolidKey" slot="icon"></ng-icon>
                     </app-button>
                 </div>
@@ -362,7 +362,7 @@
                         <p class="text-sm text-slate-500">Irreversible account actions</p>
                     </div>
                 </div>
-                <app-button label="Delete Account" buttonType="danger" [isFullWidth]="true" (clicked)="openDeleteAccountModal()">
+                <app-button buttonSize="sm" fontSize="sm" label="Delete Account" buttonType="danger" [isFullWidth]="true" (clicked)="openDeleteAccountModal()">
                     <ng-icon class="self-center!" name="faSolidTrash" slot="icon"></ng-icon>
                 </app-button>
             </div>
@@ -371,8 +371,8 @@
 
     </div>
 
-    <div class="bg-slate-200 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 opacity-90 overflow-hidden flex flex-col items-center ">
-        <div class="bg-linear-to-br from-yellow-500 to-yellow-400 px-4 py-2 flex items-center gap-2 w-full">
+    <div class="bg-slate-200 rounded-lg md:rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 opacity-90 overflow-hidden flex flex-col items-center ">
+        <div class="md:bg-linear-to-br from-yellow-500 to-yellow-400 px-4 py-2 flex items-center gap-2 w-full">
             <h2 class="text-xl font-bold text-slate-800 gap-2">Preferences</h2>
             <span class="ml-2 px-2 py-1 text-xs bg-emerald-700 text-slate-100 rounded-full font-semibold self-center">Coming Soon</span>
         </div>

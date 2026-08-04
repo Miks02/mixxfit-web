@@ -31,15 +31,15 @@ export class Button {
     getColors = computed(() => {
         switch(this.buttonType()) {
             case "default":
-                return "bg-linear-to-br from-yellow-400 to-yellow-500 text-slate-800"
+                return "bg-yellow-500 md:bg-linear-to-br from-yellow-400 to-yellow-500 text-slate-800"
             case "primary":
-                return "bg-linear-to-br from-emerald-400 to-emerald-500 text-white"
+                return "bg-emerald-400 md:bg-linear-to-br from-emerald-400 to-emerald-500 text-white"
             case "secondary":
-                return "bg-linear-to-br from-amber-400 to-amber-500 text-slate-800"
+                return "bg-amber-400 md:bg-linear-to-br from-amber-400 to-amber-500 text-slate-800"
             case "danger":
-                return "bg-linear-to-br from-red-600 to-red-700  text-slate-100"
+                return "bg-red-600 md:bg-linear-to-br from-red-600 to-red-700  text-slate-100"
             default:
-                 return "bg-linear-to-br from-yellow-400 to-yellow-500  text-slate-800"
+                return "bg-yellow-400 md:bg-linear-to-br from-yellow-400 to-yellow-500  text-slate-800"
         }
     })
 
