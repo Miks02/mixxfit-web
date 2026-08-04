@@ -26,11 +26,11 @@
 
                     @if(previewImage() != "") {
                         <div class="flex gap-3">
-                            <app-button label="Save" buttonType="primary" (clicked)="saveProfilePicture()">
-                                <ng-icon name="faSolidCheck" slot="icon"></ng-icon>
+                            <app-button buttonSize="sm" fontSize="sm" label="Save" buttonType="primary" (clicked)="saveProfilePicture()">
+                                <ng-icon name="faSolidCheck" slot="icon" class="self-center"></ng-icon>
                             </app-button>
-                            <app-button label="Cancel" buttonType="danger" (clicked)="cancelProfilePicture()">
-                                <ng-icon name="faSolidXmark" slot="icon"></ng-icon>
+                            <app-button buttonSize="sm" fontSize="sm" label="Cancel" buttonType="danger" (clicked)="cancelProfilePicture()">
+                                <ng-icon name="faSolidXmark" slot="icon" class="self-center"></ng-icon>
                             </app-button>
                         </div>
             }
