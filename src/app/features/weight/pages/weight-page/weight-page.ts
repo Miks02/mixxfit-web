@@ -1,5 +1,5 @@
 import { DatePipe, DecimalPipe, SlicePipe } from "@angular/common";
-import { afterNextRender, Component, computed, effect, ElementRef, inject, signal, viewChildren, WritableSignal } from '@angular/core';
+import { afterNextRender, Component, computed, effect, ElementRef, inject, Signal, signal, viewChildren, WritableSignal } from '@angular/core';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from "@angular/router";
 import { NgIcon, provideIcons } from "@ng-icons/core";
@@ -49,8 +49,8 @@ export class WeightPage  {
     isModalOpen = signal(false);
     selectedWeightEntry: WritableSignal<WeightEntryDetails | null> = signal(null);
     user = this.userState.userDetails;
-    weightSummary = this.weightService.weightSummary;
-    weightListDetails = this.weightService.weightListDetails;
+    // weightSummary = this.weightService.weightSummary;
+    // weightListDetails = this.weightService.weightListDetails;
 
     form = createWeightEntryForm(this.fb);
     targetWeightForm = createTargetWeightForm(this.fb);
@@ -59,15 +59,18 @@ export class WeightPage  {
     selectedYear: WritableSignal<number | null> = signal(null);
     selectedMonth: WritableSignal<number | null> = signal(null);
 
-    months = computed(() => this.weightListDetails()?.months);
-    years = computed(() => this.weightSummary()?.years);
-
-    weightLogs = computed(() => this.weightListDetails()?.weightLogs);
-    firstEntry = computed(() => this.weightSummary()?.firstEntry);
-    currentWeight = computed(() => this.weightSummary()?.currentWeight);
-    progress = computed(() => this.weightSummary()?.progress);
+    months = computed(() => this.weightSummary.data()?.weightListDetails.months);
+    years = computed(() => this.weightSummary.data()?.years);
     targetWeight = computed(() => this.user()?.targetWeight);
-    weightChart = computed(() => this.weightSummary()?.weightChart);
+
+    weightSummary = this.weightService.weightSummaryQuery(this.selectedMonth, this.selectedYear, this.targetWeight as Signal<number | null>);
+    weightListDetails = this.weightService.weightListDetailsQuery(this.selectedMonth, this.selectedYear);
+
+    weightLogs = computed(() => this.weightListDetails.data()?.weightLogs);
+    firstEntry = computed(() => this.weightSummary.data()?.firstEntry);
+    currentWeight = computed(() => this.weightSummary.data()?.currentWeight);
+    progress = computed(() => this.weightSummary.data()?.progress);
+    weightChart = computed(() => this.weightSummary.data()?.weightChart);
     typewriterElements = viewChildren<ElementRef>('typewriter');
 
     constructor() {
@@ -76,6 +79,8 @@ export class WeightPage  {
         effect(() => {
             const month = this.selectedMonth()
             const year = this.selectedYear()
+
+            console.log("Mesec: ", month, "Godina: ", year)
 
             this.router.navigate([], {
                 relativeTo: this.activatedroute,
@@ -94,73 +99,87 @@ export class WeightPage  {
         });
     }
 
-    ngOnInit() {
-        this.activatedroute.queryParams
-        .pipe(take(1))
-        .subscribe((params) => {
-            this.selectedMonth.set(params['month'] ? +params['month'] : null)
-            this.selectedYear.set(params['year'] ? +params['year'] : null)
-            this.loadWeightSummary();
-        })
-    }
+    // ngOnInit() {
+    //     this.activatedroute.queryParams
+    //     .pipe(take(1))
+    //     .subscribe((params) => {
+    //         this.selectedMonth.set(params['month'] ? +params['month'] : null)
+    //         this.selectedYear.set(params['year'] ? +params['year'] : null)
+    //         this.loadWeightSummary();
+    //     })
+    // }
 
-    loadWeightSummary() {
-        this.weightService.getMyWeightSummary(this.selectedMonth(), this.selectedYear(), this.targetWeight())
-        .pipe(take(1))
-        .subscribe(() => {
-            this.syncFilters();
-        })
-    }
+    // loadWeightSummary() {
+    //     this.weightService.getMyWeightSummary(this.selectedMonth(), this.selectedYear(), this.targetWeight())
+    //     .pipe(take(1))
+    //     .subscribe(() => {
+    //         this.syncFilters();
+    //     })
+    // }
 
-    private syncFilters() {
-        const availableMonths = this.months();
-        const availableYears = this.years();
-        const currentMonth = this.selectedMonth();
-        const currentYear = this.selectedYear();
-        let filtersChanged = false;
+    // private syncFilters() {
+    //     const availableMonths = this.months();
+    //     const availableYears = this.years();
+    //     const currentMonth = this.selectedMonth();
+    //     const currentYear = this.selectedYear();
+    //     let filtersChanged = false;
 
-        if (currentYear !== null && availableYears && !availableYears.includes(currentYear)) {
-            this.selectedYear.set(availableYears.length > 0 ? availableYears[0] : null);
-            filtersChanged = true;
-        }
+    //     if (currentYear !== null && availableYears && !availableYears.includes(currentYear)) {
+    //         this.selectedYear.set(availableYears.length > 0 ? availableYears[0] : null);
+    //         filtersChanged = true;
+    //     }
 
-        if (currentMonth !== null && availableMonths && !availableMonths.includes(currentMonth)) {
-            this.selectedMonth.set(availableMonths.length > 0 ? availableMonths[0] : null);
-            filtersChanged = true;
-        }
+    //     if (currentMonth !== null && availableMonths && !availableMonths.includes(currentMonth)) {
+    //         this.selectedMonth.set(availableMonths.length > 0 ? availableMonths[0] : null);
+    //         filtersChanged = true;
+    //     }
 
-        if (filtersChanged) {
-            this.loadWeightLogs();
-        }
-    }
+    //     if (filtersChanged) {
+    //         this.loadWeightLogs();
+    //     }
+    // }
 
-    loadWeightLogs() {
-        this.weightService.getMyWeightLogs(this.selectedMonth(), this.selectedYear())
-        .pipe(take(1))
-        .subscribe()
-    }
+    // loadWeightLogs() {
+    //     this.weightService.getMyWeightLogs(this.selectedMonth(), this.selectedYear())
+    //     .pipe(take(1))
+    //     .subscribe()
+    // }
 
-    loadWeightChart(targetWeight: number | null = null) {
-        this.weightService.getMyWeightChart(targetWeight ?? this.targetWeight())
-        .pipe(take(1))
-        .subscribe()
-    }
+    // loadWeightChart(targetWeight: number | null = null) {
+    //     this.weightService.getMyWeightChart(targetWeight ?? this.targetWeight())
+    //     .pipe(take(1))
+    //     .subscribe()
+    // }
 
     onSubmit() {
         if(this.form.invalid)
             return;
 
-        this.weightService.addWeightEntry(this.form.value)
-        .pipe(take(1))
-        .subscribe({
-            next: () => {
+        // this.weightService.addWeightEntry(this.form.value)
+        // .pipe(take(1))
+        // .subscribe({
+        //     next: () => {
+        //         this.form.reset();
+        //         this.notificationService.showSuccess("Weight logged successfully");
+        //         //this.loadWeightSummary();
+        //     },
+        //     error: (err) => {
+        //          if(err.error.errorCode === "WeightEntry.LimitReached")
+        //             this.notificationService.showInfo("You can only log weight once per day")
+        //     }
+        // });
+        //
+        this.weightService.addWeightEntryMutation.mutate(this.form.value, {
+            onSuccess: () => {
                 this.form.reset();
-                this.notificationService.showSuccess("Weight logged successfully");
-                this.loadWeightSummary();
-            },
-            error: (err) => {
-                 if(err.error.errorCode === "WeightEntry.LimitReached")
-                    this.notificationService.showInfo("You can only log weight once per day")
+                const selMonth = this.selectedMonth();
+                const selYear = this.selectedYear();
+
+                if (selMonth === null && selYear === null) {
+                    this.notificationService.showSuccess("Weight entry saved");
+                    return;
+                }
+                this.notificationService.showSuccess("New weight entry saved. Update your filters");
             }
         });
 
@@ -189,7 +208,7 @@ export class WeightPage  {
             next: (res) => {
                 this.notificationService.showSuccess("Target weight updated successfully");
                 this.isTargetFormOpen.set(false);
-                this.loadWeightChart(res.targetWeight);
+                //this.loadWeightChart(res.targetWeight);
             }
         });
     }
@@ -217,7 +236,7 @@ export class WeightPage  {
         this.weightService.deleteWeightEntry(selected.id)
         .pipe(take(1))
         .subscribe(() => {
-            this.loadWeightSummary()
+            //this.loadWeightSummary()
             this.isModalOpen.set(false);
             this.notificationService.showSuccess("Weight log has been deleted successfully")
         })

@@ -171,7 +171,6 @@
             <div class="flex gap-2 flex-wrap items-center">
                 <select
                 [(ngModel)]="selectedMonth"
-                (change)="loadWeightLogs()"
                 class="px-2 py-1 bg-slate-100 rounded-md shadow-md text-slate-800 font-semibold text-sm max-w-25 text-center">
                 <option [ngValue]="null" selected disabled hidden>{{convertedMonths()?.at(0)?.label}}</option>
                 @for(month of convertedMonths(); track month) {
@@ -180,7 +179,6 @@
             </select>
             <select
             [(ngModel)]="selectedYear"
-            (change)="loadWeightLogs()"
             class="px-2 py-1 bg-slate-100 rounded-md shadow-md text-slate-800 font-semibold text-sm text-center">
             <option [ngValue]="null" selected disabled hidden>{{years()?.at(0)}}</option>
             @for(year of years(); track year) {

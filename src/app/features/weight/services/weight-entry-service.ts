@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { inject, Injectable, signal, WritableSignal } from '@angular/core';
-import {  tap } from 'rxjs';
+import { inject, Injectable, Signal, signal, WritableSignal } from '@angular/core';
+import {  lastValueFrom, shareReplay, tap } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { WeightChartDto } from '../models/weight-chart';
 import { CreateWeightRequest } from '../models/weight-create-request';
@@ -9,6 +9,7 @@ import { WeightListDetails } from '../models/weight-list-details';
 import { WeightSummary } from '../models/weight-summary';
 import {UserState} from '../../../core/states/user-state';
 import {TargetWeightDto} from '../models/target-weight-dto';
+import { injectMutation, injectQuery, QueryClient } from '@tanstack/angular-query-experimental';
 
 @Injectable({
     providedIn: 'root',
@@ -16,6 +17,7 @@ import {TargetWeightDto} from '../models/target-weight-dto';
 export class WeightEntryService {
     private api = environment.apiUrl;
 
+    private queryClient = inject(QueryClient);
     private http = inject(HttpClient);
     private userState = inject(UserState);
 
@@ -26,6 +28,52 @@ export class WeightEntryService {
     readonly weightSummary = this._weightSummary.asReadonly();
     readonly weightListDetails = this._weightListDetails.asReadonly();
     readonly weightChart = this._weightChart.asReadonly();
+
+    weightSummaryQuery(month: Signal<number | null>, year: Signal<number | null>, targetWeight: Signal<number | null>) {
+        const query = injectQuery(() => ({
+            queryKey: ['weight-summary', targetWeight()],
+            queryFn: async () => {
+                const res = await lastValueFrom(this.getMyWeightSummary(month(), year(), targetWeight()));
+                this.queryClient.setQueryData(['weight-list-details', month(), year()], res.weightListDetails);
+                return res;
+            },
+            enabled: targetWeight() !== undefined
+        }));
+
+        return {
+            data: query.data,
+            isLoading: query.isLoading,
+            isError: query.isError,
+            isSuccess: query.isSuccess,
+            error: query.error,
+            status: query.status,
+        };
+    }
+
+    weightListDetailsQuery(month: Signal<number | null>, year: Signal<number | null>) {
+        const query = injectQuery(() => ({
+            queryKey: ['weight-list-details', month(), year()],
+            queryFn: async () => await lastValueFrom(this.getMyWeightLogs(month(), year())),
+            enabled: month() !== null || year() !== null
+        }));
+
+        return {
+            data: query.data,
+            isLoading: query.isLoading,
+            isError: query.isError,
+            isSuccess: query.isSuccess,
+            error: query.error,
+            status: query.status,
+        };
+    }
+
+    addWeightEntryMutation = injectMutation(() => ({
+        mutationFn: async (request: CreateWeightRequest) => await lastValueFrom(this.http.post<WeightEntryDetails>(`${this.api}/weight-entries`, request)),
+        onSuccess: () => {
+            this.queryClient.invalidateQueries({queryKey: ['weight-list-details']})
+            this.queryClient.invalidateQueries({queryKey: ['weight-summary']})
+        }
+    }));
 
 
     setWeightSummary(summary: Partial<WeightSummary>) {
@@ -48,20 +96,6 @@ export class WeightEntryService {
         }
 
         return this.http.get<WeightSummary>(`${this.api}/weight-entries`, {params})
-        .pipe(
-            tap(res => {
-                this.setWeightSummary({
-                    firstEntry: res.firstEntry,
-                    currentWeight: res.currentWeight,
-                    progress: res.progress,
-                    years: res.years,
-                    weightChart: res.weightChart
-
-                });
-                this._weightListDetails.set(res.weightListDetails);
-                this._weightChart.set(res.weightChart);
-            })
-        )
     }
 
     getMyWeightLogs(month: number | null = null, year: number | null = null) {
@@ -77,11 +111,6 @@ export class WeightEntryService {
         }
 
         return this.http.get<WeightListDetails>(`${this.api}/weight-entries/logs`, {params})
-        .pipe(
-            tap(res => {
-                this._weightListDetails.set(res);
-            })
-        );
     }
 
     getMyWeightLog(id: number) {
@@ -97,14 +126,6 @@ export class WeightEntryService {
         }
 
         return this.http.get<WeightChartDto>(`${this.api}/weight-entries/weight-chart`, {params})
-        .pipe(
-            tap(res => {
-                this._weightChart.set(res);
-                this.setWeightSummary({
-                    weightChart: res
-                });
-            })
-        )
     }
 
     addWeightEntry(request: CreateWeightRequest) {
