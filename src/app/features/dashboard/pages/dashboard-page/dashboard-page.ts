@@ -36,9 +36,6 @@ export class Dashboard {
     private router = inject(Router)
     selectedYear: WritableSignal<number> = signal(new Date().getFullYear());
 
-    dashboardResource = rxResource({
-        stream: () => this.dashboardState.getDashboard()
-    })
     workoutChartResource = rxResource({
         params: () => ({year: this.selectedYear()}),
         stream: ({params}) => this.workoutService.getUserWorkoutCountsByMonth(params.year)
@@ -48,7 +45,7 @@ export class Dashboard {
         stream: () => this.weightService.getMyWeightChart()
     })
 
-    dashboard = this.dashboardResource.value;
+    dashboard = this.dashboardState.dashboardData;
     workoutChart = this.workoutChartResource.value;
     weightChart = this.weightChartResource.value;
 
