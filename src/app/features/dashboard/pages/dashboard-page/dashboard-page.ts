@@ -41,13 +41,11 @@ export class Dashboard {
         stream: ({params}) => this.workoutService.getUserWorkoutCountsByMonth(params.year)
     })
 
-    weightChartResource = rxResource({
-        stream: () => this.weightService.getMyWeightChart()
-    })
+    weightChartResource = this.weightService.weightChartQuery(signal(50))?.data;
 
     dashboard = this.dashboardState.dashboardData;
     workoutChart = this.workoutChartResource.value;
-    weightChart = this.weightChartResource.value;
+    weightChart = this.weightChartResource;
 
     isCalorieCalculatorOpen: WritableSignal<boolean> = signal(false);
 

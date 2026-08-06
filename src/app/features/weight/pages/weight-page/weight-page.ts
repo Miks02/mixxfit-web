@@ -75,33 +75,26 @@ export class WeightPage  {
         this.layoutState.setTitle("Weight Tracking");
 
         effect(() => {
-            const month = this.selectedMonth()
-            const year = this.selectedYear()
+            const months = this.convertedMonths();
+            const selected = this.selectedMonth();
+            if (selected !== null && months && !months.some(m => m.value === selected)) {
+                this.selectedMonth.set(null);
+            }
+        });
 
-            this.router.navigate([], {
-                relativeTo: this.activatedroute,
-                queryParams: {
-                    month: month,
-                    year: year
-                },
-                queryParamsHandling: 'merge'
-            });
-        })
+        effect(() => {
+            const years = this.years();
+            const selected = this.selectedYear();
+            if (selected !== null && years && !years.includes(selected)) {
+                this.selectedYear.set(null);
+            }
+        });
 
         afterNextRender(() => {
             this.typewriterElements().forEach((el: ElementRef) => {
                 el.nativeElement.style.setProperty('--target-width', el.nativeElement.scrollWidth + 'px');
             });
         });
-    }
-
-    ngOnInit() {
-        this.activatedroute.queryParams
-        .pipe(take(1))
-        .subscribe((params) => {
-            this.selectedMonth.set(params['month'] ? +params['month'] : null)
-            this.selectedYear.set(params['year'] ? +params['year'] : null)
-        })
     }
 
     onSubmit() {

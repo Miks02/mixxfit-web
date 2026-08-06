@@ -60,7 +60,6 @@ export class WeightEntryService {
     deleteWeightEntryMutation = injectMutation<void, ProblemDetails, number>(() => ({
         mutationFn: async (id: number) => await lastValueFrom(this.deleteWeightEntry(id)),
         onSuccess: () => {
-            this.queryClient.invalidateQueries({queryKey: ['weight-list-details']})
             this.queryClient.invalidateQueries({queryKey: ['weight-summary']})
         }
     }));
