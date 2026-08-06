@@ -1,15 +1,16 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { inject, Injectable, Signal, signal, WritableSignal } from '@angular/core';
-import {  lastValueFrom, shareReplay, tap } from 'rxjs';
+import { inject, Injectable, Signal } from '@angular/core';
+import { injectMutation, injectQuery, QueryClient } from '@tanstack/angular-query-experimental';
+import { lastValueFrom, tap } from 'rxjs';
 import { environment } from '../../../../environments/environment';
-import { WeightChartDto } from '../models/weight-chart';
+import { ProblemDetails } from '../../../core/models/problem-details';
+import { UserState } from '../../../core/states/user-state';
+import { TargetWeightDto } from '../models/target-weight-dto';
+import { WeightChart } from '../models/weight-chart';
 import { CreateWeightRequest } from '../models/weight-create-request';
 import { WeightEntryDetails } from '../models/weight-entry-details';
 import { WeightListDetails } from '../models/weight-list-details';
 import { WeightSummary } from '../models/weight-summary';
-import {UserState} from '../../../core/states/user-state';
-import {TargetWeightDto} from '../models/target-weight-dto';
-import { injectMutation, injectQuery, QueryClient } from '@tanstack/angular-query-experimental';
 
 @Injectable({
     providedIn: 'root',
@@ -21,16 +22,8 @@ export class WeightEntryService {
     private http = inject(HttpClient);
     private userState = inject(UserState);
 
-    private _weightSummary: WritableSignal<WeightSummary | undefined> = signal(undefined);
-    private _weightListDetails: WritableSignal<WeightListDetails | undefined> = signal(undefined);
-    private _weightChart: WritableSignal<WeightChartDto | undefined> = signal(undefined);
-
-    readonly weightSummary = this._weightSummary.asReadonly();
-    readonly weightListDetails = this._weightListDetails.asReadonly();
-    readonly weightChart = this._weightChart.asReadonly();
-
     weightSummaryQuery(month: Signal<number | null>, year: Signal<number | null>, targetWeight: Signal<number | null>) {
-        const query = injectQuery(() => ({
+        return injectQuery<WeightSummary, ProblemDetails>(() => ({
             queryKey: ['weight-summary', targetWeight()],
             queryFn: async () => {
                 const res = await lastValueFrom(this.getMyWeightSummary(month(), year(), targetWeight()));
@@ -39,104 +32,92 @@ export class WeightEntryService {
             },
             enabled: targetWeight() !== undefined
         }));
-
-        return {
-            data: query.data,
-            isLoading: query.isLoading,
-            isError: query.isError,
-            isSuccess: query.isSuccess,
-            error: query.error,
-            status: query.status,
-        };
     }
 
     weightListDetailsQuery(month: Signal<number | null>, year: Signal<number | null>) {
-        const query = injectQuery(() => ({
+        return injectQuery<WeightListDetails, ProblemDetails>(() => ({
             queryKey: ['weight-list-details', month(), year()],
             queryFn: async () => await lastValueFrom(this.getMyWeightLogs(month(), year())),
             enabled: month() !== null || year() !== null
         }));
 
-        return {
-            data: query.data,
-            isLoading: query.isLoading,
-            isError: query.isError,
-            isSuccess: query.isSuccess,
-            error: query.error,
-            status: query.status,
-        };
     }
 
-    addWeightEntryMutation = injectMutation(() => ({
-        mutationFn: async (request: CreateWeightRequest) => await lastValueFrom(this.http.post<WeightEntryDetails>(`${this.api}/weight-entries`, request)),
+    weightChartQuery(targetWeight: Signal<number | null>) {
+        return injectQuery<WeightChart, ProblemDetails>(() => ({
+            queryKey: ['weight-chart', targetWeight()],
+            queryFn: async () => await lastValueFrom(this.getMyWeightChart(targetWeight())),
+        }));
+    }
+
+    addWeightEntryMutation = injectMutation<WeightEntryDetails, ProblemDetails, CreateWeightRequest>(() => ({
+        mutationFn: async (request: CreateWeightRequest) => await lastValueFrom(this.addWeightEntry(request)),
+        onSuccess: () => {
+            this.queryClient.invalidateQueries({queryKey: ['weight-summary']})
+        }
+    }));
+
+    deleteWeightEntryMutation = injectMutation<void, ProblemDetails, number>(() => ({
+        mutationFn: async (id: number) => await lastValueFrom(this.deleteWeightEntry(id)),
         onSuccess: () => {
             this.queryClient.invalidateQueries({queryKey: ['weight-list-details']})
             this.queryClient.invalidateQueries({queryKey: ['weight-summary']})
         }
     }));
 
+    updateTargetWeightMutation = injectMutation<TargetWeightDto, ProblemDetails, TargetWeightDto>(() => ({
+        mutationFn: async (targetWeight: TargetWeightDto) => await lastValueFrom(this.updateTargetWeight(targetWeight)),
+        onSuccess: () => {
+            this.queryClient.invalidateQueries({ queryKey: ['weight-chart'] })
+        }
+    }));
 
-    setWeightSummary(summary: Partial<WeightSummary>) {
-        this._weightSummary.update((current) => ({...current, ...summary} as WeightSummary));
-    }
-
-    getMyWeightSummary(month: number | null = null, year: number | null = null, targetWeight: number | null = null) {
+    private getMyWeightSummary(month: number | null = null, year: number | null = null, targetWeight: number | null = null) {
         let params = new HttpParams()
 
-        if(month !== null && month !== undefined) {
+        if(month !== null)
             params = params.set('month', month as number)
-        }
 
-        if(year !== null && year !== undefined) {
+        if(year !== null)
             params = params.set('year', year as number)
-        }
 
-        if(targetWeight !== null && targetWeight !== undefined) {
+        if(targetWeight !== null)
             params = params.set('targetWeight', targetWeight as number)
-        }
 
         return this.http.get<WeightSummary>(`${this.api}/weight-entries`, {params})
     }
 
-    getMyWeightLogs(month: number | null = null, year: number | null = null) {
+    private getMyWeightLogs(month: number | null = null, year: number | null = null) {
         let params = new HttpParams();
 
-        if(month !== null && month !== undefined) {
+        if(month !== null)
             params = params.set('month', month as number)
-        }
 
-        if(year !== null && year !== undefined) {
+        if(year !== null)
             params = params.set('year', year as number)
-
-        }
 
         return this.http.get<WeightListDetails>(`${this.api}/weight-entries/logs`, {params})
     }
 
-    getMyWeightLog(id: number) {
-        return this.http.get<WeightEntryDetails>(`${this.api}/weight-entries/${id}`);
-    }
-
-    getMyWeightChart(targetWeight: number | null = null) {
-        this._weightChart.set(undefined);
+    private getMyWeightChart(targetWeight: number | null = null) {
         let params = new HttpParams();
 
         if(targetWeight != null) {
             params = params.set('targetWeight', targetWeight as number)
         }
 
-        return this.http.get<WeightChartDto>(`${this.api}/weight-entries/weight-chart`, {params})
+        return this.http.get<WeightChart>(`${this.api}/weight-entries/weight-chart`, {params})
     }
 
-    addWeightEntry(request: CreateWeightRequest) {
+    private addWeightEntry(request: CreateWeightRequest) {
         return this.http.post<WeightEntryDetails>(`${this.api}/weight-entries`, request);
     }
 
-    deleteWeightEntry(id: number) {
+    private deleteWeightEntry(id: number) {
         return this.http.delete<void>(`${this.api}/weight-entries/${id}`);
     }
 
-    updateTargetWeight(targetWeight: TargetWeightDto) {
+    private updateTargetWeight(targetWeight: TargetWeightDto) {
         return this.http.patch<TargetWeightDto>(`${this.api}/fitness-profile/target-weight`, targetWeight)
             .pipe(
                 tap((res) => {
