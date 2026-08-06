@@ -1,4 +1,4 @@
-import { WeightChartDto } from "./weight-chart"
+import { WeightChart } from "./weight-chart"
 import { WeightListDetails} from "./weight-list-details"
 import { WeightRecord } from "./weight-record"
 
@@ -8,5 +8,5 @@ export type WeightSummary = {
     progress: number,
     years: number[],
     weightListDetails: WeightListDetails,
-    weightChart: WeightChartDto
+    weightChart: WeightChart
 }

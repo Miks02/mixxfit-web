@@ -1,6 +1,6 @@
 import { WeightRecord } from "./weight-record"
 
-export type WeightChartDto = {
+export type WeightChart = {
     entries: WeightRecord[]
     targetWeight: number | null
 }

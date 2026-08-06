@@ -5,7 +5,7 @@ import {
     ChartOptions,
     Chart, registerables
 } from 'chart.js';
-import { WeightChartDto } from '../../models/weight-chart';
+import { WeightChart as WeightChartModel } from '../../models/weight-chart';
 
 Chart.register(...registerables);
 
@@ -19,7 +19,7 @@ export class WeightChart {
     public chartType: 'line' = 'line';
 
     @Input()
-    weightDataSource: Signal<WeightChartDto | undefined> = signal(undefined);
+    weightDataSource: Signal<WeightChartModel | undefined> = signal(undefined);
 
     public chartData = computed<ChartConfiguration<'line'>['data']>(() => {
         const data = this.weightDataSource();
