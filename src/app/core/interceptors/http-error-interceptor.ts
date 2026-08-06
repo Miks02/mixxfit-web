@@ -2,6 +2,7 @@ import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
 import { catchError, throwError } from 'rxjs';
 import { NotificationService } from '../services/notification-service';
 import { inject } from '@angular/core';
+import { ProblemDetails } from '../models/problem-details';
 
 export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {
 
@@ -10,8 +11,8 @@ export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {
     return next(req).pipe(
         catchError((error: HttpErrorResponse) => {
             handleErrors(error, notificationService)
-
-            return throwError(() => error)
+            const problemDetails = error.error as ProblemDetails
+            return throwError(() => problemDetails)
         })
     );
 };
@@ -30,7 +31,6 @@ function handleErrors(error: HttpErrorResponse, notificationService: Notificatio
 
             if(errorCode === "Auth.LoginFailed") {
                 notificationService.showError("Invalid email address or password.");
-                errorMessage = "Invalid email address or password."
                 return;
             }
             notificationService.showInfo("Your session has expired or is no longer valid. Please sign in again");
@@ -64,15 +64,4 @@ function handleErrors(error: HttpErrorResponse, notificationService: Notificatio
     }
 
     notificationService.showError(errorMessage, notificationDuration)
-}
-
-function getAuthError(errorCode: string): string {
-
-    switch(errorCode) {
-        case "Auth.LoginFailed":
-        return "Invalid email address or password.";
-        default:
-        return "Unexpected error happened during authentication. Try again later.";
-    }
-
 }
