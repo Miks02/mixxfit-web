@@ -293,5 +293,5 @@
 </div>
 
 @if(isModalOpen()) {
-    <app-modal (close)="closeModal()" [data]="buildModal()"></app-modal>
+    <app-modal (close)="isModalOpen.set(false)" [data]="buildModal()"></app-modal>
 }
