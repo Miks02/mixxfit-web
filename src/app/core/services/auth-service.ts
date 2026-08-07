@@ -1,11 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, Signal, signal, WritableSignal } from '@angular/core';
-import { map, Observable, tap } from 'rxjs';
+import { lastValueFrom, map, Observable, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { AuthResponse } from '../../features/auth/models/auth-response';
 import { LoginRequest } from '../../features/auth/models/login-request';
 import { RegisterRequest } from '../../features/auth/models/register-request';
 import { UserState } from '../states/user-state';
+import { injectMutation, injectQuery } from '@tanstack/angular-query-experimental';
+import { ProblemDetails } from '../models/problem-details';
 
 @Injectable({
     providedIn: 'root',
@@ -27,32 +29,40 @@ export class AuthService {
             localStorage.setItem('token', accessToken as string)
     }
 
-    register(model: RegisterRequest): Observable<AuthResponse> {
+    registerMutation = injectMutation<AuthResponse, ProblemDetails, RegisterRequest>(() => ({
+        mutationFn: async (model: RegisterRequest) => await lastValueFrom(this.register(model)),
+        onSuccess: (res) => {
+            this.setAccessToken(res.accessToken);
+            this.userState.setUserDetails(res.user);
+        }
+    }))
+
+    loginMutation = injectMutation<AuthResponse, ProblemDetails, LoginRequest>(() => ({
+        mutationFn: async (model: LoginRequest) => await lastValueFrom(this.login(model)),
+        onSuccess: (res) => {
+            this.setAccessToken(res.accessToken);
+            this.userState.setUserDetails(res.user);
+        }
+    }))
+
+    logoutMutation = injectMutation<void, ProblemDetails, void>(() => ({
+        mutationFn: async () => await lastValueFrom(this.logout()),
+        onMutate: () => {
+            this.clearAuthData()
+            window.location.href = '/';
+        }
+    }))
+
+    private register(model: RegisterRequest): Observable<AuthResponse> {
         return this.http.post<AuthResponse>(`${this.api}/auth/register`, model, {withCredentials: true})
-        .pipe(
-            tap(res => {
-                this.setAccessToken(res.accessToken);
-                this.userState.setUserDetails(res.user);
-            })
-        )
     }
 
-    login(model: LoginRequest): Observable<AuthResponse> {
+    private login(model: LoginRequest): Observable<AuthResponse> {
         return this.http.post<AuthResponse>(`${this.api}/auth/login`, model , {withCredentials: true})
-        .pipe(
-            tap(res => {
-                this.setAccessToken(res.accessToken);
-                this.userState.setUserDetails(res.user);
-            })
-        )
     }
 
-    logout(): Observable<void> {
-
+    private logout(): Observable<void> {
         return this.http.post<void>(`${this.api}/auth/logout`,{}, {withCredentials: true})
-        .pipe(
-            tap(() => this.clearAuthData())
-        )
     }
 
     rotateAuthTokens(): Observable<string> {

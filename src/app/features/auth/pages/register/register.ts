@@ -21,7 +21,7 @@ export class Register {
     private fb = inject(FormBuilder)
     private authService = inject(AuthService)
     private router = inject(Router)
-    isLoading: WritableSignal<boolean> = signal(false);
+    isLoading = this.authService.registerMutation.isPending;
 
     form = this.fb.group({
         firstName: ['', [
@@ -79,21 +79,16 @@ export class Register {
             return;
         }
 
-        this.isLoading.set(true);
-
-        this.authService.register(this.form.value as RegisterRequest)
-        .pipe(take(1), finalize(() => this.isLoading.set(false)))
-        .subscribe({
-            next: () => {
+        this.authService.registerMutation.mutate(this.form.value as RegisterRequest, {
+            onSuccess: () => {
                 this.router.navigate(['/dashboard']);
             },
-            error: (err: HttpErrorResponse) => {
-                let errorCode = err.error.errorCode;
-                if(errorCode === "User.UsernameAlreadyExists") {
+            onError: (err) => {
+                if (err.errorCode === "User.UsernameAlreadyExists") {
                     this.userName?.setErrors({usernameTaken: true})
                     return;
                 }
-                if(errorCode === "User.EmailAlreadyExists") {
+                if(err.errorCode === "User.EmailAlreadyExists") {
                     this.email?.setErrors({emailTaken: true})
                     return;
                 }

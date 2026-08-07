@@ -1,6 +1,7 @@
-import { Component, computed, ElementRef, inject, Signal, ViewChild } from '@angular/core';
+ import { Component, computed, ElementRef, inject, Signal, ViewChild } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router, RouterOutlet } from "@angular/router";
-import { filter, Subject, takeUntil } from 'rxjs';
+import { filter, take } from 'rxjs';
 import { Gender } from '../../core/models/gender';
 import { AuthService } from '../../core/services/auth-service';
 import { UserService } from '../../core/services/user-service';
@@ -23,8 +24,6 @@ export class AppLayout {
     userState = inject(UserState);
     router = inject(Router);
 
-    private destroy$ = new Subject<void>();
-
     isSidebarOpen: boolean = false;
     fullName: Signal<string> = computed(() => this.userState.userDetails()?.fullName ?? "");
     userImage: Signal<string> = computed(() => this.userState.userDetails()?.imagePath ?? "")
@@ -38,14 +37,9 @@ export class AppLayout {
         this.router.events
         .pipe(
             filter(e => e instanceof NavigationEnd && !e.url.includes('?')),
-            takeUntil(this.destroy$)
+            take(1)
         )
         .subscribe(() => this.content.nativeElement.scrollTo({top: 0}))
-    }
-
-    ngOnDestroy() {
-        this.destroy$.next();
-        this.destroy$.complete();
     }
 
     closeSidebar() {
@@ -57,14 +51,12 @@ export class AppLayout {
     }
 
     logout() {
-        this.authService.logout()
-        .pipe(takeUntil(this.destroy$))
-        .subscribe(() => this.router.navigate(['/login']));
+        this.authService.logoutMutation.mutate();
     }
 
     private loadUser() {
         return this.userService.getMe()
-        .pipe(takeUntil(this.destroy$))
+        .pipe(take(1))
         .subscribe();
     }
 
