@@ -19,8 +19,6 @@ export class DashboardService {
         }));
     }
 
-    readonly dashboardData = this.dashboardQuery().data;
-
     private getDashboard() {
         return this.http.get<DashboardDto>(`${this.api}/dashboard`)
     }
