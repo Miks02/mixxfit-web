@@ -10,7 +10,7 @@ import { QueryParams } from '../models/query-params';
 import { WorkoutsPerMonthDto } from '../models/workouts-per-month-dto';
 import { environment } from '../../../../environments/environment';
 import { WorkoutListResponseDto } from '../models/workout-list-response-dto';
-import { CreateQueryResult, injectQuery, QueryClient } from '@tanstack/angular-query-experimental';
+import { CreateQueryResult, injectMutation, injectQuery, QueryClient } from '@tanstack/angular-query-experimental';
 import { ProblemDetails } from '../../../core/models/problem-details';
 
 @Injectable({
@@ -80,6 +80,16 @@ export class WorkoutService {
         });
     }
 
+    deleteWorkoutMutation = injectMutation(() => ({
+        mutationFn: async (id: number) => {
+            const res = await lastValueFrom(this.deleteWorkout(id));
+            return res;
+        },
+        onSuccess: () => {
+           this.queryClient.invalidateQueries({queryKey: ['workouts-summary']})
+        },
+    }))
+
     private http = inject(HttpClient);
     private queryClient = inject(QueryClient);
 
@@ -122,7 +132,7 @@ export class WorkoutService {
         return this.http.post<WorkoutDetailsDto>(`${this.api}/workouts`, model);
     }
 
-    deleteWorkout(id: number): Observable<void> {
+    private deleteWorkout(id: number): Observable<void> {
         return this.http.delete<void>(`${this.api}/workouts/${id}`);
     }
 

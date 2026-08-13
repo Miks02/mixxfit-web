@@ -115,19 +115,22 @@ export class WorkoutDetails  {
         return this.exercises.filter(ex => ex.exerciseType === type).length;
     }
 
-    deleteWorkout(id: number) {
+    private deleteWorkout(id: number) {
         this.isModalOpen.set(true);
 
-        this.workoutService
-        .deleteWorkout(id)
-        .pipe(take(1))
-        .subscribe(() => {
-            this.notificationService.showSuccess(
-                'Workout has been deleted successfully.'
-            );
-            this.router.navigate(['/workouts'])
-            this.closeModal();
-        });
+        this.workoutService.deleteWorkoutMutation.mutate(id, {
+            onSuccess: () => {
+                this.notificationService.showSuccess('Workout has been deleted successfully.');
+                this.router.navigate(['/workouts'])
+            },
+            onError: () => {
+                this.notificationService.showError('An unexpected error occurred while deleting the workout. Please try again later.');
+            },
+            onSettled: () => {
+                this.closeModal();
+            },
+        })
+
     }
 
     openDeleteModal() {
