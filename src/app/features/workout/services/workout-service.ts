@@ -19,17 +19,9 @@ import { ProblemDetails } from '../../../core/models/problem-details';
 export class WorkoutService {
     private readonly api: string = environment.apiUrl;
 
-    private _workouts: WritableSignal<WorkoutListItemDto[] | undefined> = signal(undefined);
-    private _workoutSummary: WritableSignal<WorkoutSummaryDto | undefined> = signal(undefined);
-    private _queryParams: WritableSignal<QueryParams> = signal({
-        search: null,
-        sort: 'newest',
-        year: null,
-        month: null,
-    });
+    private http = inject(HttpClient);
+    private queryClient = inject(QueryClient);
     private _workoutCounts: WritableSignal<WorkoutsPerMonthDto | undefined> = signal(undefined);
-    readonly workouts = this._workouts.asReadonly();
-    readonly workoutSummary = this._workoutSummary.asReadonly();
     readonly workoutCounts = this._workoutCounts.asReadonly();
 
     workoutsPageQuery(month: Signal<number | null>, year: Signal<number | null>, sort: Signal<string | null>, search: Signal<string | null>) {
@@ -90,24 +82,14 @@ export class WorkoutService {
         },
     }))
 
-    private http = inject(HttpClient);
-    private queryClient = inject(QueryClient);
-
-    getQueryParams() {
-        return this._queryParams();
-    }
-    setQueryParams(queryParams: QueryParams) {
-        this._queryParams.set(queryParams);
-    }
-
     private getUserWorkoutsPage(params: Partial<QueryParams>): Observable<WorkoutPageDto> {
-        const httpParams = this.getHttpQueryParams2(params);
+        const httpParams = this.getHttpQueryParams(params);
 
         return this.http.get<WorkoutPageDto>(`${this.api}/workouts/overview`, { params: httpParams });
     }
 
     private getUserWorkoutsByQuery(params: Partial<QueryParams>): Observable<WorkoutListResponseDto> {
-        const httpParams = this.getHttpQueryParams2(params)
+        const httpParams = this.getHttpQueryParams(params)
         return this.http.get<WorkoutListResponseDto>(`${this.api}/workouts`, { params: httpParams })
     }
 
@@ -136,26 +118,7 @@ export class WorkoutService {
         return this.http.delete<void>(`${this.api}/workouts/${id}`);
     }
 
-    private getHttpQueryParams(): HttpParams {
-        const queryParams = this.getQueryParams();
-        let params = new HttpParams();
-
-        if (queryParams.sort !== null && queryParams.sort !== undefined)
-            params = params.set('sort', queryParams.sort);
-
-        if (queryParams.search !== null && queryParams.search !== undefined)
-            params = params.set('search', queryParams.search);
-
-        if (queryParams.year !== null && queryParams.year !== undefined)
-            params = params.set('year', queryParams.year);
-
-        if (queryParams.month !== null && queryParams.month !== undefined)
-            params = params.set('month', queryParams.month);
-
-        return params;
-    }
-
-    private getHttpQueryParams2(params: Partial<QueryParams>): HttpParams {
+    private getHttpQueryParams(params: Partial<QueryParams>): HttpParams {
         let httpParams = new HttpParams();
 
         if (params.sort !== null && params.sort !== undefined)
