@@ -19,6 +19,7 @@ import { Button } from '@shared';
 })
 export class CaloriesSummary {
     result = input.required<CalorieResult>();
+    isSaving = input<boolean>(false);
 
     back = output<void>();
     updateDailyCalories = output<number>();
