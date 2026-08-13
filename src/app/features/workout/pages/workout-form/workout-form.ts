@@ -109,14 +109,6 @@ export class WorkoutForm {
         });
     }
 
-    ngOnInit() {
-        this.loadExercises();
-    }
-
-    loadExercises() {
-        this.exerciseService.getExercises().pipe(take(1)).subscribe();
-    }
-
     getTotalSets(): number {
         let total = 0;
         for (const exercise of this.exerciseSession.getExercises().controls) {
