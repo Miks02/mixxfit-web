@@ -52,36 +52,33 @@ export class WorkoutList {
     isSortOpen: WritableSignal<boolean> = signal(false);
     isFilterOpen: WritableSignal<boolean> = signal(false);
 
-    workoutSummarySource = this.workoutService.workoutSummary;
-    workoutsSource = this.workoutService.workouts;
-    availableYearsSource = this.workoutService.availableYears;
-    availableMonthsSource = this.workoutService.availableMonths;
-    selectedYearSource = this.workoutService.selectedYear;
-    selectedMonthSource = this.workoutService.selectedMonth;
-
     search: string | null = null;
     sort: string = 'newest';
     year: WritableSignal<number | null> = signal(null);
     month: WritableSignal<number | null> = signal(null);
 
-    workoutList = computed(() => this.workoutsSource());
-    workoutSummary = computed(() => this.workoutSummarySource());
-    availableYears = computed(() => this.availableYearsSource() ?? []);
-    availableMonths = computed(() => this.availableMonthsSource() ?? []);
+    workoutSummarySource = this.workoutService.workoutsPageQuery(this.month, this.year);
+    workoutsSource = this.workoutService.workoutsByParamsQuery(this.month, this.year);
+    // selectedYearSource = this.workoutService.selectedYear;
+    // selectedMonthSource = this.workoutService.selectedMonth;
+    workoutSummary = computed(() => this.workoutSummarySource.data()?.workoutSummary);
+    workoutList = computed(() => this.workoutsSource.data()?.workouts);
+    availableYears = computed(() => this.workoutSummarySource.data()?.availableYears ?? []);
+    availableMonths = computed(() => this.workoutSummarySource.data()?.availableMonths ?? []);
     selectedYearValue = computed(() => this.year() ?? this.availableYears()[0] ?? null);
     selectedMonthValue = computed(() => this.month() ?? this.availableMonths()[0] ?? null);
 
-    constructor() {
-        effect(() => {
-            this.year.set(this.selectedYearSource());
-            this.month.set(this.selectedMonthSource());
+    // constructor() {
+    //     effect(() => {
+    //         this.year.set(this.selectedYearSource());
+    //         this.month.set(this.selectedMonthSource());
 
-        });
-    }
+    //     });
+    // }
 
     ngOnInit() {
         this.layoutState.setTitle('Workouts');
-        this.readQueryParams();
+        //this.readQueryParams();
 
         this.search$
         .pipe(
@@ -114,13 +111,6 @@ export class WorkoutList {
                 year: this.year(),
                 month: this.month()
             });
-
-            if (!this.isLoaded()) {
-                this.isLoaded.set(true);
-                this.loadWorkoutOverview();
-                return;
-            }
-            this.loadWorkouts();
         });
     }
 
@@ -130,23 +120,6 @@ export class WorkoutList {
             queryParams: params,
             queryParamsHandling: 'merge'
         });
-    }
-
-    loadWorkoutOverview() {
-        this.workoutService.getUserWorkoutsPage()
-        .pipe(take(1))
-        .subscribe();
-    }
-
-    loadWorkouts() {
-        this.isSearching.set(true);
-        this.workoutService
-        .getUserWorkoutsByQuery()
-        .pipe(
-            take(1),
-            finalize(() => this.isSearching.set(false))
-        )
-        .subscribe();
     }
 
     toWorkoutForm() {
@@ -169,7 +142,9 @@ export class WorkoutList {
 
     onYearChange(value: string) {
         const nextYear = this.parseNullableNumber(value);
-        this.updateQueryParams({ year: nextYear, month: null });
+        this.year.set(Number(value))
+        console.log(value);
+       // this.updateQueryParams({ year: nextYear, month: null });
     }
 
     onMonthChange(value: string) {
@@ -228,7 +203,6 @@ export class WorkoutList {
     }
 
     getWorkoutCardClass() {
-
         return this.workoutList()!.length < 2
         ? 'w-full'
         : 'w-full md:w-[calc(50%-0.375rem)]';
