@@ -33,26 +33,22 @@ export class Dashboard {
     private workoutService = inject(WorkoutService);
     private weightService = inject(WeightEntryService);
     private router = inject(Router)
-    selectedYear: WritableSignal<number> = signal(new Date().getFullYear());
     userDetails = this.userState.userDetails;
+    selectedYear: WritableSignal<number> = signal(new Date().getFullYear());
 
-    workoutChartResource = rxResource({
-        params: () => ({year: this.selectedYear()}),
-        stream: ({params}) => this.workoutService.getUserWorkoutCountsByMonth(params.year)
-    })
+    workoutChartResource = this.workoutService.getWorkoutChartDataQuery(this.selectedYear);
 
-    weightChartResource = this.weightService.weightChartQuery(signal(this.userDetails()?.targetWeight!))?.data;
+    weightChartResource = this.weightService.weightChartQuery(signal(this.userDetails()?.targetWeight!));
 
     dashboard = this.dashboardState.dashboardQuery().data;
-    workoutChart = this.workoutChartResource.value;
-    weightChart = this.weightChartResource;
+    workoutChart = this.workoutChartResource.data;
+    weightChart = this.weightChartResource.data;
 
     isCalorieCalculatorOpen: WritableSignal<boolean> = signal(false);
 
     years = computed(() => this.workoutChart()?.years)
 
     private yearInitialized = false;
-
 
     typewriterElements = viewChildren<ElementRef>('typewriter');
 
@@ -66,6 +62,10 @@ export class Dashboard {
                 this.yearInitialized = true;
             }
         });
+        effect(() => {
+            const selYear = this.selectedYear();
+            console.log(selYear)
+        })
 
         afterNextRender(() => {
             this.typewriterElements().forEach((el: ElementRef) => {

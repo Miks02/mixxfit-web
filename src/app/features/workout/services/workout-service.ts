@@ -21,8 +21,6 @@ export class WorkoutService {
 
     private http = inject(HttpClient);
     private queryClient = inject(QueryClient);
-    private _workoutCounts: WritableSignal<WorkoutsPerMonthDto | undefined> = signal(undefined);
-    readonly workoutCounts = this._workoutCounts.asReadonly();
 
     workoutsPageQuery(month: Signal<number | null>, year: Signal<number | null>, sort: Signal<string | null>, search: Signal<string | null>) {
         return injectQuery<WorkoutPageDto, ProblemDetails>(() => {
@@ -34,8 +32,6 @@ export class WorkoutService {
                         ['workouts-list', month(), year(), sort(), search()],
                         res,
                     );
-
-                    console.log('Summary res', res);
                     return res;
                 }
             };
@@ -51,7 +47,6 @@ export class WorkoutService {
                 queryKey: ['workouts-list', month(), year(), sort(), search()],
                 queryFn: async () => {
                     const res = await lastValueFrom(this.getUserWorkoutsByQuery({month: month(), year: year(), sort: sort(), search: search()}));
-                    console.log('Querying workouts by params', res);
                     return res;
                 },
                 enabled: (month() !== null || year() !== null) && summaryQuery.isSuccess(),
@@ -70,6 +65,16 @@ export class WorkoutService {
                 enabled: id !== undefined
             };
         });
+    }
+
+    getWorkoutChartDataQuery(year: Signal<number | null>) {
+        return injectQuery(() => ({
+            queryKey: ['workout-chart', year()],
+            queryFn: async () => {
+                const res = await lastValueFrom(this.getUserWorkoutCountsByMonth(year()));
+                return res;
+            },
+        }));
     }
 
     createWorkoutMutation = injectMutation<WorkoutDetailsDto, ProblemDetails, CreateWorkoutDto>(() => ({
@@ -107,17 +112,14 @@ export class WorkoutService {
         return this.http.get<WorkoutDetailsDto>(`${this.api}/workouts/${id}`);
     }
 
-    getUserWorkoutCountsByMonth(year: number | null = null) {
-        this._workoutCounts.set(undefined);
+    private getUserWorkoutCountsByMonth(year: number | null = null) {
         let params = new HttpParams();
 
         if (year !== null && year !== undefined) {
             params = params.set('year', year.toString());
         }
 
-        return this.http
-            .get<WorkoutsPerMonthDto>(`${this.api}/workouts/workout-chart`, { params })
-            .pipe(tap((res) => this._workoutCounts.set(res)));
+        return this.http.get<WorkoutsPerMonthDto>(`${this.api}/workouts/workout-chart`, { params })
     }
 
     private addWorkout(model: CreateWorkoutDto): Observable<WorkoutDetailsDto> {
