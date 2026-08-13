@@ -16,19 +16,8 @@ import { faSolidDumbbell, faSolidFilter, faSolidLeftLong, faSolidMagnifyingGlass
 export class TemplateModalLayout {
     private modalLayout = inject(TemplateModalLayoutService);
     private router = inject(Router);
-    private templateService = inject(TemplateService);
 
     config = this.modalLayout.config;
-
-    ngOnInit() {
-        this.loadTemplates();
-    }
-
-    loadTemplates() {
-        this.templateService.getTemplates()
-        .pipe(take(1))
-        .subscribe();
-    }
 
     onClose() {
         this.router.navigate(['workouts/create']);

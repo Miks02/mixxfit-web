@@ -1,10 +1,11 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { inject, Injectable, signal, WritableSignal } from '@angular/core';
-import { catchError, Observable, of, tap, throwError } from 'rxjs';
+import { catchError, lastValueFrom, Observable, of, tap, throwError } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { NotificationService } from '../../../core/services/notification-service';
 import { TemplateDto } from '../models/template-dto';
 import { TemplateRequest } from '../models/template-request';
+import { injectQuery, QueryClient } from '@tanstack/angular-query-experimental';
 
 @Injectable({
     providedIn: 'root',
@@ -17,14 +18,24 @@ export class TemplateService {
 
     private http = inject(HttpClient);
     private notification = inject(NotificationService);
+    private queryClient = inject(QueryClient);
+    
+    getTemplatesQuery = injectQuery(() => ({
+        queryKey: ['templates'],
+        queryFn: async () => await lastValueFrom(this.getTemplates()),
+        staleTime: Infinity,
+    }));
+
+    getTemplateByIdQuery(id: number) {
+        return injectQuery(() => ({
+            queryKey: ['template', id],
+            queryFn: async () => await lastValueFrom(this.getTemplateById(id)),
+            staleTime: Infinity,
+        }));
+    }
 
     getTemplates(): Observable<TemplateDto[]> {
-        if(this.templates())
-            return of(this.templates()!)
-
-        return this.http.get<TemplateDto[]>(`${this.api}/workout-templates`).pipe(
-            tap((res) => this._templates.set(res))
-        );
+        return this.http.get<TemplateDto[]>(`${this.api}/workout-templates`)
     }
 
     getTemplateById(id: number): Observable<TemplateDto> {
