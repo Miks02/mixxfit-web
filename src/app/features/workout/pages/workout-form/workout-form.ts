@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, computed, effect, inject, signal, WritableSignal } from '@angular/core';
+import { Component, computed, effect, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import {
     AbstractControl,
@@ -9,6 +9,7 @@ import {
     ReactiveFormsModule,
 } from '@angular/forms';
 import { Router, RouterOutlet } from '@angular/router';
+import { ExerciseService, ExerciseSessionService } from '@features/exercise';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
     faSolidBars,
@@ -26,12 +27,11 @@ import {
     faSolidTrash,
     faSolidXmark,
 } from '@ng-icons/font-awesome/solid';
+import { Button } from '@shared';
 import { take } from 'rxjs';
 import { handleValidationErrors, isControlValid } from '../../../../core/helpers/form-helpers';
 import { NotificationService } from '../../../../core/services/notification-service';
 import { LayoutState } from '../../../../layout/services/layout-state';
-import { Button } from '@shared';
-import { ExerciseService, ExerciseSessionService } from '@features/exercise';
 import {
     createExerciseGroup,
     createWorkoutForm,
@@ -235,6 +235,7 @@ export class WorkoutForm {
                     this.notificationService.showError(errorMessage);
                     return;
                 }
+                handleValidationErrors(err, this.form);
             },
         });
     }
