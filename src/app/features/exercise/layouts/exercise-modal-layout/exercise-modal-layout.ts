@@ -16,19 +16,8 @@ import { ExerciseService } from '../../services/exercise-service';
 export class ExerciseModalLayout {
     private modalLayout = inject(ExerciseModalLayoutService);
     private router = inject(Router);
-    private exerciseSerivec = inject(ExerciseService);
 
     config = this.modalLayout.config;
-
-    ngOnInit() {
-        this.loadExercises();
-    }
-
-    loadExercises() {
-        this.exerciseSerivec.getExercises()
-        .pipe(take(1))
-        .subscribe();
-    }
 
     onClose() {
         this.router.navigate(['workouts/create']);
