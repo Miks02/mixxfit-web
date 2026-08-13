@@ -1,9 +1,15 @@
 import { DatePipe } from '@angular/common';
 import { Component, computed, effect, inject, signal, WritableSignal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { AbstractControl, FormArray, FormBuilder, FormsModule, ReactiveFormsModule, } from '@angular/forms';
+import {
+    AbstractControl,
+    FormArray,
+    FormBuilder,
+    FormsModule,
+    ReactiveFormsModule,
+} from '@angular/forms';
 import { Router, RouterOutlet } from '@angular/router';
-import { NgIcon, provideIcons } from "@ng-icons/core";
+import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
     faSolidBars,
     faSolidBookOpen,
@@ -18,35 +24,56 @@ import {
     faSolidPersonWalkingArrowLoopLeft,
     faSolidTag,
     faSolidTrash,
-    faSolidXmark
-} from "@ng-icons/font-awesome/solid";
+    faSolidXmark,
+} from '@ng-icons/font-awesome/solid';
 import { take } from 'rxjs';
 import { handleValidationErrors, isControlValid } from '../../../../core/helpers/form-helpers';
 import { NotificationService } from '../../../../core/services/notification-service';
 import { LayoutState } from '../../../../layout/services/layout-state';
 import { Button } from '@shared';
 import { ExerciseService, ExerciseSessionService } from '@features/exercise';
-import { createExerciseGroup, createWorkoutForm, createWorkoutObject } from '../../factories/workout-factories';
+import {
+    createExerciseGroup,
+    createWorkoutForm,
+    createWorkoutObject,
+} from '../../factories/workout-factories';
 import { ExerciseType } from '../../models/exercise-type';
 import { WorkoutService } from '../../services/workout-service';
 
 const QUICK_TIPS = [
-    "Keep rest times consistent and log weights for progressive overload. Warm up before heavy lifts.",
-    "Prioritize full range of motion over adding more weight.",
-    "Leave 1–2 reps in the tank on most sets to avoid burnout.",
-    "Hit each muscle group twice a week for maximum growth.",
-    "Focus on mind-muscle connection, not just moving the bar.",
-    "Control the eccentric phase for 2–3 seconds on every rep.",
-    "Take at least one full deload week every 6–8 weeks.",
-    "Eat a solid meal with protein and carbs 1–2 hours before training."
-]
+    'Keep rest times consistent and log weights for progressive overload. Warm up before heavy lifts.',
+    'Prioritize full range of motion over adding more weight.',
+    'Leave 1–2 reps in the tank on most sets to avoid burnout.',
+    'Hit each muscle group twice a week for maximum growth.',
+    'Focus on mind-muscle connection, not just moving the bar.',
+    'Control the eccentric phase for 2–3 seconds on every rep.',
+    'Take at least one full deload week every 6–8 weeks.',
+    'Eat a solid meal with protein and carbs 1–2 hours before training.',
+];
 
 @Component({
     selector: 'app-workout-form',
     imports: [NgIcon, FormsModule, ReactiveFormsModule, DatePipe, Button, RouterOutlet],
     templateUrl: './workout-form.html',
     styleUrl: './workout-form.css',
-    providers: [provideIcons({faSolidTag, faSolidCalendarDay, faSolidDumbbell, faSolidFireFlameCurved, faSolidBookOpen, faSolidBars, faSolidNoteSticky, faSolidXmark, faSolidCircle, faSolidPersonRunning, faSolidChildReaching, faSolidPersonWalkingArrowLoopLeft, faSolidEllipsis, faSolidTrash})]
+    providers: [
+        provideIcons({
+            faSolidTag,
+            faSolidCalendarDay,
+            faSolidDumbbell,
+            faSolidFireFlameCurved,
+            faSolidBookOpen,
+            faSolidBars,
+            faSolidNoteSticky,
+            faSolidXmark,
+            faSolidCircle,
+            faSolidPersonRunning,
+            faSolidChildReaching,
+            faSolidPersonWalkingArrowLoopLeft,
+            faSolidEllipsis,
+            faSolidTrash,
+        }),
+    ],
 })
 export class WorkoutForm {
     isControlValid = isControlValid;
@@ -61,24 +88,25 @@ export class WorkoutForm {
 
     form = createWorkoutForm(this.fb);
 
-    isLoading: WritableSignal<boolean> = signal(false);
+    isLoading = this.workoutService.createWorkoutMutation.isPending;
 
     get exercises() {
         return this.exerciseSession.getExercises();
     }
-    private exerciseSource = toSignal(this.exerciseSession.getExercises().valueChanges,
-    {initialValue: this.exerciseSession.getExercises().value});;
+    private exerciseSource = toSignal(this.exerciseSession.getExercises().valueChanges, {
+        initialValue: this.exerciseSession.getExercises().value,
+    });
 
     constructor() {
-        this.layoutState.setTitle("Workout Form")
+        this.layoutState.setTitle('Workout Form');
 
         effect(() => {
             const exercises = this.exerciseSource();
 
-            const data = exercises.map((ex: any) => createExerciseGroup(this.fb, ex))
+            const data = exercises.map((ex: any) => createExerciseGroup(this.fb, ex));
 
-            this.form.setControl('exercises', new FormArray(data), {emitEvent: false})
-        })
+            this.form.setControl('exercises', new FormArray(data), { emitEvent: false });
+        });
     }
 
     ngOnInit() {
@@ -86,9 +114,7 @@ export class WorkoutForm {
     }
 
     loadExercises() {
-        this.exerciseService.getExercises()
-        .pipe(take(1))
-        .subscribe();
+        this.exerciseService.getExercises().pipe(take(1)).subscribe();
     }
 
     getTotalSets(): number {
@@ -136,15 +162,15 @@ export class WorkoutForm {
     }
 
     getExerciseSets(exerciseId: number) {
-        return this.exerciseSession.getExerciseDetails(exerciseId).value
+        return this.exerciseSession.getExerciseDetails(exerciseId).value;
     }
 
     getExerciseType(exercise: AbstractControl) {
-        return exercise.get("exerciseType")?.value;
+        return exercise.get('exerciseType')?.value;
     }
 
     exerciseTypeLabel(exercise: AbstractControl): string {
-        const type = exercise.get("exerciseType")?.value;
+        const type = exercise.get('exerciseType')?.value;
         if (type === ExerciseType.Cardio) {
             return 'Cardio';
         }
@@ -172,48 +198,48 @@ export class WorkoutForm {
     }
 
     isFormValid(): boolean {
-        return this.exerciseSession.getExercises().length > 0 && this.form.valid && this.exerciseSession.form.valid
+        return (
+            this.exerciseSession.getExercises().length > 0 &&
+            this.form.valid &&
+            this.exerciseSession.form.valid
+        );
     }
 
     onSubmit() {
-        if(!this.isFormValid())
-            return;
+        if (!this.isFormValid()) return;
 
-        this.isLoading.set(true);
         const workout = createWorkoutObject(this.form);
         this.form.disable();
-        this.workoutService.addWorkout(workout)
-        .subscribe({
-            next: () => {
-                this.notificationService.showSuccess("Workout logged successfully!")
-                this.router.navigate(['/workouts'])
-                this.isLoading.set(false);
+        this.workoutService.createWorkoutMutation.mutate(workout, {
+            onSuccess: () => {
+                this.notificationService.showSuccess('Workout logged successfully!');
+                this.router.navigate(['/workouts']);
                 this.exerciseSession.clearSession();
             },
-            error: err  => {
+            onError: (err) => {
                 this.form.enable();
-                this.isLoading.set(false);
-                let errorCode = err.error.errorCode;
+                const errorCode = err.errorCode;
 
-                if(errorCode === "Workout.LimitReached") {
-                    this.notificationService.showWarning("Slow down! You've logged 5 workouts today. Rest is just as important as the grind. Try again tomorrow!");
+                if (errorCode === 'Workout.LimitReached') {
+                    this.notificationService.showWarning(
+                        "Slow down! You've logged 5 workouts today. Rest is just as important as the grind. Try again tomorrow!",
+                    );
                     return;
                 }
-                if(errorCode === "Exercise.NotFound") {
-                    const errorMessage = this.exerciseSession.getExercises().length > 1
-                    ? "One or more selected exercises are no longer available"
-                    : "The selected exercise is no longer available"
+                if (errorCode === 'Exercise.NotFound') {
+                    const errorMessage =
+                        this.exerciseSession.getExercises().length > 1
+                            ? 'One or more selected exercises are no longer available'
+                            : 'The selected exercise is no longer available';
 
                     this.notificationService.showError(errorMessage);
                     return;
                 }
-                handleValidationErrors(err, this.form);
-            }
-
-        })
+            },
+        });
     }
 
     getQuickTips = computed(() => {
-        return QUICK_TIPS[Math.floor(Math.random() * QUICK_TIPS.length)]
-    })
+        return QUICK_TIPS[Math.floor(Math.random() * QUICK_TIPS.length)];
+    });
 }
