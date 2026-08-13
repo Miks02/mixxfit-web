@@ -28,7 +28,7 @@ export class TemplateList {
     isLoading = this.templateSource.isLoading;
     skeletonItems = [1, 2, 3, 4, 5];
 
-    templates = computed(() => this.templateSource.data());
+    templates = this.templateSource.data;
     userTemplates = computed(() => this.templates()?.filter(t => !t.isSystem));
     systemTemplates = computed(() => this.templates()?.filter(t => t.isSystem));
 
