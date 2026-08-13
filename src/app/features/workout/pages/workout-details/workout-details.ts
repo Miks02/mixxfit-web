@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, effect, inject, signal, WritableSignal } from '@angular/core';
+import { Component, computed, effect, inject, signal, WritableSignal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
@@ -73,29 +73,12 @@ export class WorkoutDetails  {
         return this.workout()?.exercises ?? [];
     }
 
-    getTotalSets(): number {
-        return this.exercises.reduce((total, exercise) => total + (exercise.sets?.length ?? 0), 0);
-    }
-
-    getWeightExerciseCount(): number {
-        return this.getExerciseTypeCount(ExerciseType.Weights);
-    }
-
-    getBodyweightExerciseCount(): number {
-        return this.getExerciseTypeCount(ExerciseType.Bodyweight);
-    }
-
-    getCardioExerciseCount(): number {
-        return this.getExerciseTypeCount(ExerciseType.Cardio);
-    }
-
-    getStretchingExerciseCount(): number {
-        return this.getExerciseTypeCount(ExerciseType.Stretching);
-    }
-
-    getOtherExerciseCount(): number {
-        return this.getExerciseTypeCount(ExerciseType.Other);
-    }
+    getTotalSets = computed((): number => this.exercises.reduce((total, exercise) => total + (exercise.sets?.length ?? 0), 0));
+    getWeightExerciseCount = computed(() => this.getExerciseTypeCount(ExerciseType.Weights));
+    getBodyweightExerciseCount = computed(() => this.getExerciseTypeCount(ExerciseType.Bodyweight));
+    getCardioExerciseCount = computed(() => this.getExerciseTypeCount(ExerciseType.Cardio));
+    getStretchingExerciseCount = computed(() => this.getExerciseTypeCount(ExerciseType.Stretching));
+    getOtherExerciseCount = computed(() => this.getExerciseTypeCount(ExerciseType.Other));
 
     exerciseTypeLabel(exercise: ExerciseEntry): string {
         switch (exercise.exerciseType) {
