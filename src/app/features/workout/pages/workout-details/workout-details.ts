@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, inject, signal, WritableSignal } from '@angular/core';
+import { Component, effect, inject, signal, WritableSignal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
@@ -49,22 +49,28 @@ export class WorkoutDetails  {
     private layoutState = inject(LayoutState);
 
     isModalOpen: WritableSignal<boolean> = signal(false);
-    isLoading: WritableSignal<boolean> = signal(true);
 
-    id!: number;
-    workout$: WritableSignal<WorkoutDetailsDto | null> = signal(null);
+    id: WritableSignal<number> = signal(Number(this.route.snapshot.paramMap.get('id')));
+    workoutSource = this.workoutService.getWorkoutByIdQuery(this.id())
+    workout = this.workoutSource.data;
 
     constructor() {
-        this.id = Number(this.route.snapshot.paramMap.get('id'));
         this.layoutState.setTitle("Workout Details");
-    }
 
-    ngOnInit() {
-        this.loadWorkout(this.id);
+        effect(() => {
+            const error = this.workoutSource.error();
+            if (error) {
+                if (error.errorCode === "Workout.NotFound")
+                    this.notificationService.showError("Selected workout was not found. Please try again");
+                else
+                    this.notificationService.showError("An error occurred while loading the workout. Please try again.");
+                this.router.navigate(['/workouts']);
+            }
+        })
     }
 
     get exercises(): ExerciseEntry[] {
-        return this.workout$()?.exercises ?? [];
+        return this.workout()?.exercises ?? [];
     }
 
     getTotalSets(): number {
@@ -133,7 +139,7 @@ export class WorkoutDetails  {
     }
 
     buildModal(): ModalData {
-        const workoutDate = new Date(this.workout$()?.workoutDate as string);
+        const workoutDate = new Date(this.workout()?.workoutDate as string);
         const formattedDate = new Intl.DateTimeFormat(navigator.language, {
             year: 'numeric',
             month: 'long',
@@ -141,27 +147,15 @@ export class WorkoutDetails  {
         }).format(workoutDate);
 
         return {
-            title: `${this.workout$()?.name} | ${formattedDate}`,
+            title: `${this.workout()?.name} | ${formattedDate}`,
             subtitle: 'You are about to delete this workout and all associated exercise data',
             type: ModalType.Warning,
             primaryActionLabel: 'Confirm',
             secondaryActionLabel: 'Close',
-            primaryAction: () => this.deleteWorkout(this.id),
+            primaryAction: () => this.deleteWorkout(this.id()),
             secondaryAction: () => this.isModalOpen.set(false)
         };
     }
 
-    loadWorkout(id: number) {
-        this.isLoading.set(true);
-
-        return this.workoutService
-        .getUserWorkout(id)
-        .pipe(
-            take(1),
-            tap(res => this.workout$.set(res)),
-            finalize(() => this.isLoading.set(false))
-        )
-        .subscribe();
-    }
 
 }

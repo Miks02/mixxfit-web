@@ -67,6 +67,19 @@ export class WorkoutService {
         });
     }
 
+    getWorkoutByIdQuery(id: number) {
+        return injectQuery<WorkoutDetailsDto, ProblemDetails>(() => {
+            return {
+                queryKey: ['workout', id],
+                queryFn: async () => {
+                    const res = await lastValueFrom(this.getUserWorkout(id));
+                    return res;
+                },
+                enabled: id !== undefined
+            };
+        });
+    }
+
     private http = inject(HttpClient);
     private queryClient = inject(QueryClient);
 
@@ -77,18 +90,18 @@ export class WorkoutService {
         this._queryParams.set(queryParams);
     }
 
-    getUserWorkoutsPage(params: Partial<QueryParams>): Observable<WorkoutPageDto> {
+    private getUserWorkoutsPage(params: Partial<QueryParams>): Observable<WorkoutPageDto> {
         const httpParams = this.getHttpQueryParams2(params);
 
         return this.http.get<WorkoutPageDto>(`${this.api}/workouts/overview`, { params: httpParams });
     }
 
-    getUserWorkoutsByQuery(params: Partial<QueryParams>): Observable<WorkoutListResponseDto> {
+    private getUserWorkoutsByQuery(params: Partial<QueryParams>): Observable<WorkoutListResponseDto> {
         const httpParams = this.getHttpQueryParams2(params)
         return this.http.get<WorkoutListResponseDto>(`${this.api}/workouts`, { params: httpParams })
     }
 
-    getUserWorkout(id: number): Observable<WorkoutDetailsDto> {
+    private getUserWorkout(id: number): Observable<WorkoutDetailsDto> {
         return this.http.get<WorkoutDetailsDto>(`${this.api}/workouts/${id}`);
     }
 
