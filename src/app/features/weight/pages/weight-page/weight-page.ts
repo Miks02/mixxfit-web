@@ -1,7 +1,6 @@
 import { DatePipe, DecimalPipe, SlicePipe } from "@angular/common";
 import { afterNextRender, Component, computed, effect, ElementRef, inject, Signal, signal, viewChildren, WritableSignal } from '@angular/core';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from "@angular/router";
 import { WeightRecord } from "@features/weight/models/weight-record";
 import { NgIcon, provideIcons } from "@ng-icons/core";
 import {
@@ -18,7 +17,6 @@ import {
 } from "@ng-icons/font-awesome/solid";
 import { Button, Modal, ModalData, ModalType } from '@shared';
 import { NgxSkeletonLoaderComponent } from 'ngx-skeleton-loader';
-import { take } from 'rxjs';
 import { isControlValid } from '../../../../core/helpers/form-helpers';
 import { formatDate } from '../../../../core/helpers/utility';
 import { NotificationService } from '../../../../core/services/notification-service';
@@ -43,8 +41,6 @@ export class WeightPage  {
     private userState = inject(UserState);
     private fb = inject(FormBuilder);
     private notificationService = inject(NotificationService);
-    private router = inject(Router);
-    private activatedroute = inject(ActivatedRoute);
 
     isModalOpen = signal(false);
     selectedWeightEntry: WritableSignal<WeightRecord | null> = signal(null);
@@ -57,7 +53,7 @@ export class WeightPage  {
     selectedYear: WritableSignal<number | null> = signal(null);
     selectedMonth: WritableSignal<number | null> = signal(null);
 
-    months = computed(() => this.weightSummary.data()?.weightListDetails.months);
+    months = computed(() => this.weightListDetails.data()?.months);
     years = computed(() => this.weightSummary.data()?.years);
     targetWeight = computed(() => this.user()?.targetWeight);
 
