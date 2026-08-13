@@ -6,7 +6,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { faSolidPersonWalkingArrowLoopLeft } from '@ng-icons/font-awesome/solid';
 import { NgxSkeletonLoaderComponent } from 'ngx-skeleton-loader';
-import { finalize, take } from 'rxjs';
 import { isControlValid } from '../../../../core/helpers/form-helpers';
 import { NotificationService } from '../../../../core/services/notification-service';
 import { Button } from '@shared';
@@ -46,8 +45,8 @@ export class EditExerciseForm {
     muscleGroupId = toSignal(this.form.get('muscleGroupId')?.valueChanges!);
 
     exercise: WritableSignal<ExerciseDto | undefined> = signal(undefined);
-    isLoading: WritableSignal<boolean> = signal(false);
-    isDeleting: WritableSignal<boolean> = signal(false);
+    isLoading = this.exerciseService.updateExerciseMutation.isPending;
+    isDeleting = this.exerciseService.deleteExerciseMutation.isPending;
 
     isUserDefined = computed(() => this.exercise()?.isUserDefined ?? false);
 
@@ -99,17 +98,13 @@ export class EditExerciseForm {
     onSubmit() {
         if (this.form.invalid) return;
 
-        this.isLoading.set(true);
-
         const request = {
             id: this.exercise()!.id,
             ...this.form.value,
         };
 
-        this.exerciseService.updateExercise(request)
-        .pipe(take(1), finalize(() => this.isLoading.set(false)))
-        .subscribe({
-            next: () => {
+        this.exerciseService.updateExerciseMutation.mutate(request, {
+            onSuccess: () => {
                 let updateMessage = "Exercise updated successfully";
 
                 if(this.exerciseSession.isExerciseInSession(this.exercise()!.id)) {
@@ -120,33 +115,24 @@ export class EditExerciseForm {
                 this.notification.showSuccess(updateMessage);
                 this.router.navigate(['workouts/create/exercises']);
             },
-            error: err => {
-                let errorMessage = "An error occurred while updating the exercise";
-                const errorCode = err.error.errorCode;
-
-                if(errorCode === "Exercise.NotFound") {
-                    errorMessage = "Exercise not found";
-                    this.notification.showError(errorMessage);
-                    return;
+            onError: (err) => {
+                switch(err.errorCode) {
+                    case "Exercise.NotFound":
+                        this.notification.showError("Exercise not found");
+                        break;
+                    case "Exercise.AlreadyExists":
+                        this.notification.showError("Exercise with the selected name already exists");
+                        break;
+                    default:
+                        this.notification.showError("An error occurred while updating the exercise");
                 }
-
-                if(errorCode === "Exercise.AlreadyExists") {
-                    errorMessage = "Exercise with the selected name already exists";
-                    this.notification.showError(errorMessage);
-                    return;
-                }
-                this.notification.showError(errorMessage);
             }
         });
     }
 
     onDelete() {
-        this.isDeleting.set(true);
-
-        this.exerciseService.deleteExercise(this.exercise()!.id)
-        .pipe(take(1), finalize(() => this.isDeleting.set(false)))
-        .subscribe({
-            next: () => {
+        this.exerciseService.deleteExerciseMutation.mutate(this.exercise()!.id, {
+            onSuccess: () => {
                 let deleteMessage = "Exercise deleted successfully";
 
                 if(this.exerciseSession.isExerciseInSession(this.exercise()!.id)) {
@@ -157,14 +143,11 @@ export class EditExerciseForm {
                 this.notification.showSuccess(deleteMessage);
                 this.router.navigate(['workouts/create/exercises']);
             },
-            error: err => {
-                let errorMessage = "An error occurred while deleting the exercise";
-                const errorCode = err.error.errorCode;
-
-                if(errorCode === "Exercise.NotFound")
-                    errorMessage = "Exercise not found";
-
-                this.notification.showError(errorMessage);
+            onError: (err) => {
+                if(err.errorCode === "Exercise.NotFound")
+                    this.notification.showError("Exercise not found");
+                else
+                    this.notification.showError("An error occurred while deleting the exercise");
             },
         });
     }

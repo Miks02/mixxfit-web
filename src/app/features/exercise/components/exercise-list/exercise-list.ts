@@ -38,6 +38,8 @@ export class ExerciseList {
     private router = inject(Router);
     private exerciseSession = inject(ExerciseSessionService);
 
+    exerciseSource = this.exerciseService.getExercisesQuery;
+
     exercises = this.exerciseService.exercises;
     categories = this.exerciseService.exerciseCategories;
     muscleGroups = this.exerciseService.muscleGroups;
