@@ -108,9 +108,9 @@
         </div>
 
  <div class="px-4 py-3 border-t border-slate-300/60 mx-auto flex gap-4">
-        <app-button htmlType="submit" [disabled]="!isFormValid() || isLoading()" [isLoading]="isLoading()" label="Save Template" buttonType="primary" buttonSize="sm" fontSize="sm"></app-button>
+        <app-button htmlType="submit" [disabled]="!isFormValid() || isSaving() || isDeleting()" [isLoading]="isSaving()" label="Save Template" buttonType="primary" buttonSize="sm" fontSize="sm"></app-button>
         @if(isEdit()) {
-            <app-button (clicked)="openDeleteModal()" [disabled]="isLoading()" label="Delete Template" buttonType="danger" buttonSize="sm" fontSize="sm"></app-button>
+            <app-button (clicked)="openDeleteModal()" [disabled]="isSaving() || isDeleting()" [isLoading]="isDeleting()" label="Delete Template" buttonType="danger" buttonSize="sm" fontSize="sm"></app-button>
         }
     </div>
     </form>
