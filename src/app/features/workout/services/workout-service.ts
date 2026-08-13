@@ -72,7 +72,17 @@ export class WorkoutService {
         });
     }
 
-    deleteWorkoutMutation = injectMutation(() => ({
+    createWorkoutMutation = injectMutation<WorkoutDetailsDto, ProblemDetails, CreateWorkoutDto>(() => ({
+        mutationFn: async (model: CreateWorkoutDto) => {
+            const res = await lastValueFrom(this.addWorkout(model));
+            return res;
+        },
+        onSuccess: () => {
+           this.queryClient.invalidateQueries({queryKey: ['workouts-summary']})
+        },
+    }))
+
+    deleteWorkoutMutation = injectMutation<void, ProblemDetails, number>(() => ({
         mutationFn: async (id: number) => {
             const res = await lastValueFrom(this.deleteWorkout(id));
             return res;
@@ -110,7 +120,7 @@ export class WorkoutService {
             .pipe(tap((res) => this._workoutCounts.set(res)));
     }
 
-    addWorkout(model: CreateWorkoutDto): Observable<WorkoutDetailsDto> {
+    private addWorkout(model: CreateWorkoutDto): Observable<WorkoutDetailsDto> {
         return this.http.post<WorkoutDetailsDto>(`${this.api}/workouts`, model);
     }
 
