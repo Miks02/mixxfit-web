@@ -10,7 +10,7 @@ import { QueryParams } from '../models/query-params';
 import { WorkoutsPerMonthDto } from '../models/workouts-per-month-dto';
 import { environment } from '../../../../environments/environment';
 import { WorkoutListResponseDto } from '../models/workout-list-response-dto';
-import { injectQuery, QueryClient } from '@tanstack/angular-query-experimental';
+import { CreateQueryResult, injectQuery, QueryClient } from '@tanstack/angular-query-experimental';
 import { ProblemDetails } from '../../../core/models/problem-details';
 
 @Injectable({
@@ -28,51 +28,41 @@ export class WorkoutService {
         month: null,
     });
     private _workoutCounts: WritableSignal<WorkoutsPerMonthDto | undefined> = signal(undefined);
-    private _selectedYear: WritableSignal<number | null> = signal(null);
-    private _selectedMonth: WritableSignal<number | null> = signal(null);
-    private _isSummaryLoaded: WritableSignal<boolean> = signal(false);
-
     readonly workouts = this._workouts.asReadonly();
     readonly workoutSummary = this._workoutSummary.asReadonly();
     readonly workoutCounts = this._workoutCounts.asReadonly();
-    // readonly availableYears = computed(() => this.workoutsPageQuery.data()?.availableYears);
-    // readonly availableMonths = computed(() => this.workoutsPageQuery.data()?.availableMonths);
-    readonly selectedYear = this._selectedYear.asReadonly();
-    readonly selectedMonth = this._selectedMonth.asReadonly();
 
-    workoutsPageQuery(month: Signal<number | null>, year: Signal<number | null>) {
+    workoutsPageQuery(month: Signal<number | null>, year: Signal<number | null>, sort: Signal<string | null>, search: Signal<string | null>) {
         return injectQuery<WorkoutPageDto, ProblemDetails>(() => {
             return {
                 queryKey: ['workouts-summary'],
                 queryFn: async () => {
-                    const res = await lastValueFrom(this.getUserWorkoutsPage({month: month(), year: year()}));
+                    const res = await lastValueFrom(this.getUserWorkoutsPage({month: month(), year: year(), sort: sort(), search: search()}));
                     this.queryClient.setQueryData(
-                        ['workouts-list', month(), year()],
+                        ['workouts-list', month(), year(), sort(), search()],
                         res,
                     );
+
                     console.log('Summary res', res);
                     return res;
-                },
-                onSuccess: () => {
-                    this._isSummaryLoaded.set(true);
-                },
+                }
             };
         });
     }
 
-    workoutsByParamsQuery(month: Signal<number | null>, year: Signal<number | null>) {
+    workoutsByParamsQuery(
+        month: Signal<number | null>, year: Signal<number | null>, sort: Signal<string | null>, search: Signal<string | null>,
+        summaryQuery: CreateQueryResult<WorkoutPageDto, ProblemDetails>
+    ) {
         return injectQuery<WorkoutListResponseDto, ProblemDetails>(() => {
-            console.log("rar")
             return {
-                queryKey: ['workouts-list', month(), year()],
+                queryKey: ['workouts-list', month(), year(), sort(), search()],
                 queryFn: async () => {
-                    console.log("Year and month params: ", year(), month())
-
-                    const res = await lastValueFrom(this.getUserWorkoutsByQuery({month: month(), year: year()}));
+                    const res = await lastValueFrom(this.getUserWorkoutsByQuery({month: month(), year: year(), sort: sort(), search: search()}));
                     console.log('Querying workouts by params', res);
                     return res;
                 },
-                enabled: month() !== null || year() !== null,
+                enabled: (month() !== null || year() !== null) && summaryQuery.isSuccess(),
             };
         });
     }
