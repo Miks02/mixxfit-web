@@ -26,16 +26,16 @@
 
                     @if(previewImage() != "") {
                         <div class="flex gap-3">
-                            <app-button buttonSize="sm" fontSize="sm" label="Save" buttonType="primary" (clicked)="saveProfilePicture()">
+                            <app-button buttonSize="sm" fontSize="sm" label="Save" buttonType="primary" [isLoading]="isProfilePictureSaving()" [disabled]="isProfilePictureSaving()" (clicked)="saveProfilePicture()">
                                 <ng-icon name="faSolidCheck" slot="icon" class="self-center"></ng-icon>
                             </app-button>
-                            <app-button buttonSize="sm" fontSize="sm" label="Cancel" buttonType="danger" (clicked)="cancelProfilePicture()">
+                            <app-button buttonSize="sm" fontSize="sm" label="Cancel" buttonType="danger" [disabled]="isProfilePictureSaving()" (clicked)="cancelProfilePicture()">
                                 <ng-icon name="faSolidXmark" slot="icon" class="self-center"></ng-icon>
                             </app-button>
                         </div>
             }
             @if(userData()?.imagePath !== null && previewImage() === "") {
-                <app-button label="Remove picture" buttonSize="sm" fontSize="xs" buttonType="secondary" (clicked)="removeProfilePicture()">
+                <app-button label="Remove picture" buttonSize="sm" fontSize="xs" buttonType="secondary" [isLoading]="isProfilePictureRemoving()" [disabled]="isProfilePictureRemoving()" (clicked)="removeProfilePicture()">
                     <ng-icon name="faSolidTrash" slot="icon"></ng-icon>
                 </app-button>
             }
@@ -52,7 +52,12 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 overflow-y-auto max-h-80">
 
 
-            <div [class]="(!isControlValid('firstName', fullNameForm) || !isControlValid('lastName', fullNameForm))  && isEditing('name') ? 'ring-inset ring-1 ring-red-500' : ''" class="bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-all duration-200">
+            <div [class]="(!isControlValid('firstName', fullNameForm) || !isControlValid('lastName', fullNameForm))  && isEditing('name') ? 'ring-inset ring-1 ring-red-500' : ''" class="relative bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-all duration-200">
+                @if(isFullNameSaving()) {
+                    <div class="absolute inset-0 z-10 flex items-center justify-center bg-white/70 rounded-xl">
+                        <span class="small-spinner"></span>
+                    </div>
+                }
                 <div class="flex justify-between items-center mb-2">
                     <div class="flex items-center gap-2">
                         <ng-icon class="text-emerald-600! text-lg" name="faSolidUser"></ng-icon>
@@ -64,10 +69,10 @@
                         </button>
                     } @else {
                         <div class="flex gap-1">
-                            <button type="button" (click)="onSubmitFullName()" [disabled]="fullNameForm.invalid" class="text-emerald-500 hover:text-emerald-600 p-1 rounded-lg hover:bg-emerald-50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
+                            <button type="button" (click)="onSubmitFullName()" [disabled]="fullNameForm.invalid || isFullNameSaving()" class="text-emerald-500 hover:text-emerald-600 p-1 rounded-lg hover:bg-emerald-50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
                                 <ng-icon name="faSolidCheck"></ng-icon>
                             </button>
-                            <button type="button" (click)="cancelEditing()" class="text-red-500 hover:text-red-600 p-1 rounded-lg hover:bg-red-50 transition-all duration-200">
+                            <button type="button" (click)="cancelEditing()" [disabled]="isFullNameSaving()" class="text-red-500 hover:text-red-600 p-1 rounded-lg hover:bg-red-50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
                                 <ng-icon name="faSolidXmark"></ng-icon>
                             </button>
                         </div>
@@ -94,7 +99,12 @@
             </div>
 
 
-            <div [class]="!isControlValid('userName', usernameForm) && isEditing('username') ? 'ring-inset ring-1 ring-red-500' : ''" class="bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-all duration-200">
+            <div [class]="!isControlValid('userName', usernameForm) && isEditing('username') ? 'ring-inset ring-1 ring-red-500' : ''" class="relative bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-all duration-200">
+                @if(isUsernameSaving()) {
+                    <div class="absolute inset-0 z-10 flex items-center justify-center bg-white/70 rounded-xl">
+                        <span class="small-spinner"></span>
+                    </div>
+                }
                 <div class="flex justify-between items-center mb-2">
                     <div class="flex items-center gap-2">
                         <ng-icon class="text-emerald-600! text-lg" name="faSolidAt"></ng-icon>
@@ -106,10 +116,10 @@
                         </button>
                     } @else {
                         <div class="flex gap-1">
-                            <button type="button" (click)="onSubmitUsername()" [disabled]="usernameForm.invalid" class="text-emerald-500 hover:text-emerald-600 p-1 rounded-lg hover:bg-emerald-50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
+                            <button type="button" (click)="onSubmitUsername()" [disabled]="usernameForm.invalid || isUsernameSaving()" class="text-emerald-500 hover:text-emerald-600 p-1 rounded-lg hover:bg-emerald-50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
                                 <ng-icon name="faSolidCheck"></ng-icon>
                             </button>
-                            <button type="button" (click)="cancelEditing()" class="text-red-500 hover:text-red-600 p-1 rounded-lg hover:bg-red-50 transition-all duration-200">
+                            <button type="button" (click)="cancelEditing()" [disabled]="isUsernameSaving()" class="text-red-500 hover:text-red-600 p-1 rounded-lg hover:bg-red-50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
                                 <ng-icon name="faSolidXmark"></ng-icon>
                             </button>
                         </div>
@@ -131,7 +141,12 @@
             </div>
 
 
-            <div [class]="!isControlValid('email', emailForm) && isEditing('email') ? 'ring-inset ring-1 ring-red-500' : ''" class="bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-all duration-200">
+            <div [class]="!isControlValid('email', emailForm) && isEditing('email') ? 'ring-inset ring-1 ring-red-500' : ''" class="relative bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-all duration-200">
+                @if(isEmailSaving()) {
+                    <div class="absolute inset-0 z-10 flex items-center justify-center bg-white/70 rounded-xl">
+                        <span class="small-spinner"></span>
+                    </div>
+                }
                 <div class="flex justify-between items-center mb-2">
                     <div class="flex items-center gap-2">
                         <ng-icon class="text-emerald-600! text-lg" name="faSolidEnvelope"></ng-icon>
@@ -143,10 +158,10 @@
                         </button>
                     } @else {
                         <div class="flex gap-1">
-                            <button type="button" (click)="onSubmitEmail()" [disabled]="emailForm.invalid" class="text-emerald-500 hover:text-emerald-600 p-1 rounded-lg hover:bg-emerald-50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
+                            <button type="button" (click)="onSubmitEmail()" [disabled]="emailForm.invalid || isEmailSaving()" class="text-emerald-500 hover:text-emerald-600 p-1 rounded-lg hover:bg-emerald-50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
                                 <ng-icon name="faSolidCheck"></ng-icon>
                             </button>
-                            <button type="button" (click)="cancelEditing()" class="text-red-500 hover:text-red-600 p-1 rounded-lg hover:bg-red-50 transition-all duration-200">
+                            <button type="button" (click)="cancelEditing()" [disabled]="isEmailSaving()" class="text-red-500 hover:text-red-600 p-1 rounded-lg hover:bg-red-50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
                                 <ng-icon name="faSolidXmark"></ng-icon>
                             </button>
                         </div>
@@ -168,7 +183,12 @@
             </div>
 
 
-            <div [class]="!isControlValid('dateOfBirth', dateOfBirthForm) && isEditing('dateOfBirth') ? 'ring-inset ring-1 ring-red-500' : ''" class="bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-all duration-200">
+            <div [class]="!isControlValid('dateOfBirth', dateOfBirthForm) && isEditing('dateOfBirth') ? 'ring-inset ring-1 ring-red-500' : ''" class="relative bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-all duration-200">
+                @if(isDateOfBirthSaving()) {
+                    <div class="absolute inset-0 z-10 flex items-center justify-center bg-white/70 rounded-xl">
+                        <span class="small-spinner"></span>
+                    </div>
+                }
                 <div class="flex justify-between items-center mb-2">
                     <div class="flex items-center gap-2">
                         <ng-icon class="text-emerald-600! text-lg" name="faSolidCalendarDay"></ng-icon>
@@ -180,10 +200,10 @@
                         </button>
                     } @else {
                         <div class="flex gap-1">
-                            <button type="button" (click)="onSubmitDateOfBirth()" [disabled]="dateOfBirthForm.invalid" class="text-emerald-500 hover:text-emerald-600 p-1 rounded-lg hover:bg-emerald-50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
+                            <button type="button" (click)="onSubmitDateOfBirth()" [disabled]="dateOfBirthForm.invalid || isDateOfBirthSaving()" class="text-emerald-500 hover:text-emerald-600 p-1 rounded-lg hover:bg-emerald-50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
                                 <ng-icon name="faSolidCheck"></ng-icon>
                             </button>
-                            <button type="button" (click)="cancelEditing()" class="text-red-500 hover:text-red-600 p-1 rounded-lg hover:bg-red-50 transition-all duration-200">
+                            <button type="button" (click)="cancelEditing()" [disabled]="isDateOfBirthSaving()" class="text-red-500 hover:text-red-600 p-1 rounded-lg hover:bg-red-50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
                                 <ng-icon name="faSolidXmark"></ng-icon>
                             </button>
                         </div>
@@ -199,7 +219,12 @@
             </div>
 
 
-            <div [class]="!isControlValid('gender', genderForm) && isEditing('gender') ? 'ring-inset ring-1 ring-red-500' : ''" class="bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-all duration-200">
+            <div [class]="!isControlValid('gender', genderForm) && isEditing('gender') ? 'ring-inset ring-1 ring-red-500' : ''" class="relative bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-all duration-200">
+                @if(isGenderSaving()) {
+                    <div class="absolute inset-0 z-10 flex items-center justify-center bg-white/70 rounded-xl">
+                        <span class="small-spinner"></span>
+                    </div>
+                }
                 <div class="flex justify-between items-center mb-2">
                     <div class="flex items-center gap-2">
                         <ng-icon class="text-emerald-600! text-lg" name="faSolidVenusMars"></ng-icon>
@@ -211,10 +236,10 @@
                         </button>
                     } @else {
                         <div class="flex gap-1">
-                            <button type="button" (click)="onSubmitGender()" [disabled]="genderForm.invalid" class="text-emerald-500 hover:text-emerald-600 p-1 rounded-lg hover:bg-emerald-50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
+                            <button type="button" (click)="onSubmitGender()" [disabled]="genderForm.invalid || isGenderSaving()" class="text-emerald-500 hover:text-emerald-600 p-1 rounded-lg hover:bg-emerald-50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
                                 <ng-icon name="faSolidCheck"></ng-icon>
                             </button>
-                            <button type="button" (click)="cancelEditing()" class="text-red-500 hover:text-red-600 p-1 rounded-lg hover:bg-red-50 transition-all duration-200">
+                            <button type="button" (click)="cancelEditing()" [disabled]="isGenderSaving()" class="text-red-500 hover:text-red-600 p-1 rounded-lg hover:bg-red-50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
                                 <ng-icon name="faSolidXmark"></ng-icon>
                             </button>
                         </div>
@@ -276,7 +301,12 @@
             </div>
 
 
-            <div [class]="!isControlValid('height', heightForm) && isEditing('height') ? 'ring-inset ring-1 ring-red-500' : ''" class="bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-all duration-200">
+            <div [class]="!isControlValid('height', heightForm) && isEditing('height') ? 'ring-inset ring-1 ring-red-500' : ''" class="relative bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-all duration-200">
+                @if(isHeightSaving()) {
+                    <div class="absolute inset-0 z-10 flex items-center justify-center bg-white/70 rounded-xl">
+                        <span class="small-spinner"></span>
+                    </div>
+                }
                 <div class="flex justify-between items-center mb-2">
                     <div class="flex items-center gap-2">
                         <ng-icon class="text-emerald-600! text-lg" name="faSolidRulerVertical"></ng-icon>
@@ -288,10 +318,10 @@
                         </button>
                     } @else {
                         <div class="flex gap-1">
-                            <button type="button" (click)="onSubmitHeight()" [disabled]="heightForm.invalid" class="text-emerald-500 hover:text-emerald-600 p-1 rounded-lg hover:bg-emerald-50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
+                            <button type="button" (click)="onSubmitHeight()" [disabled]="heightForm.invalid || isHeightSaving()" class="text-emerald-500 hover:text-emerald-600 p-1 rounded-lg hover:bg-emerald-50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
                                 <ng-icon name="faSolidCheck"></ng-icon>
                             </button>
-                            <button type="button" (click)="cancelEditing()" class="text-red-500 hover:text-red-600 p-1 rounded-lg hover:bg-red-50 transition-all duration-200">
+                            <button type="button" (click)="cancelEditing()" [disabled]="isHeightSaving()" class="text-red-500 hover:text-red-600 p-1 rounded-lg hover:bg-red-50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
                                 <ng-icon name="faSolidXmark"></ng-icon>
                             </button>
                         </div>
@@ -362,7 +392,7 @@
                         <p class="text-sm text-slate-500">Irreversible account actions</p>
                     </div>
                 </div>
-                <app-button buttonSize="sm" fontSize="sm" label="Delete Account" buttonType="danger" [isFullWidth]="true" (clicked)="openDeleteAccountModal()">
+                <app-button buttonSize="sm" fontSize="sm" label="Delete Account" buttonType="danger" [isFullWidth]="true" [isLoading]="isAccountDeleting()" (clicked)="openDeleteAccountModal()">
                     <ng-icon class="self-center!" name="faSolidTrash" slot="icon"></ng-icon>
                 </app-button>
             </div>

@@ -23,7 +23,6 @@ import {
     faSolidWrench,
     faSolidXmark
 } from "@ng-icons/font-awesome/solid";
-import { take } from 'rxjs';
 import { handleValidationErrors, isControlValid } from '../../../../core/helpers/form-helpers';
 import { AccountStatus } from '../../../../core/models/account-status';
 import { ModalType, Modal, Button } from '@shared';
@@ -88,6 +87,16 @@ export class ProfilePage {
     isModalOpen = signal(false);
     isPasswordFormOpen = signal(false);
 
+    isFullNameSaving = this.profileService.updateFullNameMutation.isPending;
+    isDateOfBirthSaving = this.profileService.updateDateOfBirthMutation.isPending;
+    isUsernameSaving = this.profileService.updateUserNameMutation.isPending;
+    isEmailSaving = this.profileService.updateEmailMutation.isPending;
+    isGenderSaving = this.profileService.updateGenderMutation.isPending;
+    isHeightSaving = this.profileService.updateHeightMutation.isPending;
+    isProfilePictureSaving = this.profileService.updateProfilePictureMutation.isPending;
+    isProfilePictureRemoving = this.profileService.deleteProfilePictureMutation.isPending;
+    isAccountDeleting = this.profileService.deleteAccountMutation.isPending;
+
     constructor() {
         this.layoutState.setTitle("My Profile");
 
@@ -137,14 +146,12 @@ export class ProfilePage {
             if (this.cancelIfUnchangedValue(fullName, this.userData()?.fullName ?? ''))
                 return;
 
-            this.profileService.updateFullName({firstName: firstName, lastName: lastName})
-            .pipe(take(1))
-            .subscribe({
-                next: () => {
+            this.profileService.updateFullNameMutation.mutate({firstName: firstName, lastName: lastName}, {
+                onSuccess: () => {
                     this.editingField = null;
                     this.notificationService.showSuccess("Profile has been updated successfully")
                 },
-                error: (err) => {
+                onError: (err) => {
                     handleValidationErrors(err, form);
                 }
             });
@@ -159,14 +166,12 @@ export class ProfilePage {
             if (this.cancelIfUnchangedValue(dateOfBirth, this.userData()?.dateOfBirth ?? ''))
                 return;
 
-            this.profileService.updateDateOfBirth({dateOfBirth: dateOfBirth})
-            .pipe(take(1))
-            .subscribe({
-                next: () => {
+            this.profileService.updateDateOfBirthMutation.mutate({dateOfBirth: dateOfBirth}, {
+                onSuccess: () => {
                     this.editingField = null;
                     this.notificationService.showSuccess("Date of birth has been updated successfully")
                 },
-                error: (err) => {
+                onError: (err) => {
                     handleValidationErrors(err, form);
                 }
             });
@@ -182,17 +187,15 @@ export class ProfilePage {
 
         if (form.valid) {
 
-            this.profileService.updateUserName({userName: username?.value})
-            .pipe(take(1))
-            .subscribe({
-                next: () => {
+            this.profileService.updateUserNameMutation.mutate({userName: username?.value}, {
+                onSuccess: () => {
                     this.editingField = null;
                     this.notificationService.showSuccess("Username has been updated successfully")
                 },
-                error: (err) => {
+                onError: (err) => {
                     handleValidationErrors(err, form);
-                    if(err.error.status === 409 && err.error.errorCode) {
-                        if(err.error.errorCode === "DuplicateUserName") {
+                    if(err.status === 409 && err.errorCode) {
+                        if(err.errorCode === "DuplicateUserName") {
                             username?.setErrors({duplicateUserName: true})
                             form.updateValueAndValidity();
                         }
@@ -210,17 +213,15 @@ export class ProfilePage {
             if (this.cancelIfUnchangedValue(email?.value, this.userData()?.email))
                 return;
 
-            this.profileService.updateEmail({email: email?.value})
-            .pipe(take(1))
-            .subscribe({
-                next: () => {
+            this.profileService.updateEmailMutation.mutate({email: email?.value}, {
+                onSuccess: () => {
                     this.editingField = null;
                     this.notificationService.showSuccess("Email updated successfully")
                 },
-                error: (err) => {
+                onError: (err) => {
                     handleValidationErrors(err, form);
-                    if(err.error.status === 409 && err.error.errorCode) {
-                        if(err.error.errorCode === "User.EmailAlreadyExists") {
+                    if(err.status === 409 && err.errorCode) {
+                        if(err.errorCode === "User.EmailAlreadyExists") {
                             email?.setErrors({emailTaken: true})
                             form.updateValueAndValidity();
                         }
@@ -237,14 +238,12 @@ export class ProfilePage {
             if (this.cancelIfUnchangedValue(Number(gender), Number(this.userData()?.gender ?? null)))
                 return;
 
-            this.profileService.updateGender({gender: gender})
-            .pipe(take(1))
-            .subscribe({
-                next: () => {
+            this.profileService.updateGenderMutation.mutate({gender: gender}, {
+                onSuccess: () => {
                     this.editingField = null;
                     this.notificationService.showSuccess("Gender updated successfully")
                 },
-                error: (err) => {
+                onError: (err) => {
                     handleValidationErrors(err, form);
                 }
             });
@@ -258,14 +257,12 @@ export class ProfilePage {
             if (this.cancelIfUnchangedValue(Number(height), Number(this.userData()?.height ?? null)))
                 return;
 
-            this.profileService.updateHeight({height: height})
-            .pipe(take(1))
-            .subscribe({
-                next: () => {
+            this.profileService.updateHeightMutation.mutate({height: height}, {
+                onSuccess: () => {
                     this.editingField = null;
                     this.notificationService.showSuccess("Profile updated successfully");
                 },
-                error: (err) => {
+                onError: (err) => {
                     handleValidationErrors(err, form);
                 }
             });
@@ -292,15 +289,13 @@ export class ProfilePage {
 
     saveProfilePicture() {
         if (this.selectedProfileImageFile()) {
-            this.profileService.updateProfilePicture(this.selectedProfileImageFile()!)
-            .pipe(take(1))
-            .subscribe({
-                next: () => {
+            this.profileService.updateProfilePictureMutation.mutate(this.selectedProfileImageFile()!, {
+                onSuccess: () => {
                     this.previewImage.set("");
                     this.selectedProfileImageFile.set(null);
                     this.notificationService.showSuccess("Profile picture has been updated successfully");
                 },
-                error: (err) => {
+                onError: (err) => {
                     console.error('Error uploading profile picture:', err);
                     this.notificationService.showError("Failed to update profile picture");
                 }
@@ -314,13 +309,11 @@ export class ProfilePage {
     }
 
     removeProfilePicture() {
-        this.profileService.deleteProfilePicture()
-        .pipe(take(1))
-        .subscribe({
-            next: () => {
+        this.profileService.deleteProfilePictureMutation.mutate(undefined, {
+            onSuccess: () => {
                 this.notificationService.showSuccess("Profile picture has been removed successfully");
             },
-            error: (err) => {
+            onError: (err) => {
                 console.error('Error uploading profile picture:', err);
                 this.notificationService.showError("Unexpected error happened while trying to delete a profile picture");
             }
@@ -336,10 +329,8 @@ export class ProfilePage {
     }
 
     deleteProfile() {
-        this.profileService.deleteAccount()
-        .pipe(take(1))
-        .subscribe({
-            next: () => {
+        this.profileService.deleteAccountMutation.mutate(undefined, {
+            onSuccess: () => {
                 this.notificationService.showSuccess("Your account has been deleted successfully")
                 this.authService.clearAuthData();
                 this.router.navigate(['/login']);

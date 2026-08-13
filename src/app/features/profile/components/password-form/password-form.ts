@@ -3,7 +3,6 @@ import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NgIcon, provideIcons } from "@ng-icons/core";
 import { faSolidCircleInfo, faSolidKey, faSolidLock, faSolidXmark } from "@ng-icons/font-awesome/solid";
-import { take } from 'rxjs';
 import { createChangePasswordForm } from '../../factories/profile-factories';
 import { handleValidationErrors, isControlValid } from '../../../../core/helpers/form-helpers';
 import { NotificationService } from '../../../../core/services/notification-service';
@@ -30,6 +29,7 @@ export class PasswordForm {
 
     form = createChangePasswordForm(this.fb);
     isControlValid = isControlValid;
+    isSaving = this.profileService.changePasswordMutation.isPending;
 
     onClose() {
         this.close.emit();
@@ -49,30 +49,28 @@ export class PasswordForm {
             return;
         }
 
-        this.profileService.changePassword(this.form.value)
-        .pipe(take(1))
-        .subscribe({
-            next: () => {
+        this.profileService.changePasswordMutation.mutate(this.form.value, {
+            onSuccess: () => {
                 this.notificationService.showSuccess("Password changed successfully")
                 this.authService.clearAuthData();
                 this.router.navigate(['/login']);
             },
-            error: (err) => {
+            onError: (err) => {
                 handleValidationErrors(err, this.form);
 
-                if (err.error?.errorCode === 'User.InvalidPassword' || err.error?.errorCode === 'Auth.InvalidCurrentPassword') {
+                if (err.errorCode === 'User.InvalidPassword' || err.errorCode === 'Auth.InvalidCurrentPassword') {
                     this.form.get('currentPassword')?.setErrors({ invalid: true });
                     this.notificationService.showError('Current password is incorrect');
-                } else if (err.error?.errorCode === 'Auth.PasswordTooShort') {
+                } else if (err.errorCode === 'Auth.PasswordTooShort') {
                     this.form.get('newPassword')?.setErrors({ tooShort: true });
                     this.notificationService.showError('Password is too short');
-                } else if (err.error?.errorCode === 'Auth.PasswordRequiresDigit') {
+                } else if (err.errorCode === 'Auth.PasswordRequiresDigit') {
                     this.form.get('newPassword')?.setErrors({ requiresDigit: true });
                     this.notificationService.showError('Password must contain at least one digit');
-                } else if (err.error?.errorCode === 'Auth.PasswordRequiresUpper') {
+                } else if (err.errorCode === 'Auth.PasswordRequiresUpper') {
                     this.form.get('newPassword')?.setErrors({ requiresUpper: true });
                     this.notificationService.showError('Password must contain at least one uppercase letter');
-                } else if (err.error?.errorCode === 'Auth.PasswordRequiresNonAlphanumeric') {
+                } else if (err.errorCode === 'Auth.PasswordRequiresNonAlphanumeric') {
                     this.form.get('newPassword')?.setErrors({ requiresNonAlphanumeric: true });
                     this.notificationService.showError('Password must contain at least one special character');
                 } else {
