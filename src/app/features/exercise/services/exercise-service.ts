@@ -1,67 +1,73 @@
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable, Signal, signal, WritableSignal } from '@angular/core';
-import { map, Observable, of, tap } from 'rxjs';
+import { computed, inject, Injectable, signal, WritableSignal } from '@angular/core';
+import { lastValueFrom, Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { CreateExerciseDto } from '../models/create-exercise-dto';
-import { ExerciseCategoryDto } from '../models/exercise-category-dto';
 import { ExerciseDto } from '../models/exercise-dto';
 import { ExercisePage } from '../models/exercise-page';
-import { MuscleGroupDto } from '../models/muscle-group-dto';
 import { EditExerciseDto } from '../models/edit-exercise-dto';
+import { injectMutation, injectQuery, QueryClient } from '@tanstack/angular-query-experimental';
+import { ProblemDetails } from '../../../core/models/problem-details';
 
 @Injectable({
     providedIn: 'root',
 })
 export class ExerciseService {
     private apiUrl = environment.apiUrl;
-    private readonly _exercises: WritableSignal<ExerciseDto[] | undefined> = signal(undefined);
-    private readonly _muscleGroups: WritableSignal<MuscleGroupDto[] | undefined> = signal(undefined);
-    private readonly _excerciseCategories: WritableSignal<ExerciseCategoryDto[] | undefined> = signal(undefined);
 
-    public exercises: Signal<ExerciseDto[] | undefined> = this._exercises;
-    public muscleGroups: Signal<MuscleGroupDto[] | undefined> = this._muscleGroups;
-    public exerciseCategories: Signal<ExerciseCategoryDto[] | undefined> = this._excerciseCategories;
+    private http = inject(HttpClient);
+    private queryClient = inject(QueryClient);
 
     public selectedExercises: WritableSignal<Set<number>> = signal(new Set())
 
-    private http = inject(HttpClient);
+    getExercisesQuery = injectQuery<ExercisePage, ProblemDetails>(() => ({
+        queryKey: ['exercises'],
+        queryFn: async () => await lastValueFrom(this.getExercises()),
+        staleTime: Infinity
+    }))
 
-    getExercises(): Observable<ExerciseDto[]> {
-        if(this._exercises()) return of(this._exercises()!)
+    public exercises = computed(() => this.getExercisesQuery.data()?.exercises);
+    public muscleGroups = computed(() => this.getExercisesQuery.data()?.muscleGroups);
+    public exerciseCategories = computed(() => this.getExercisesQuery.data()?.exerciseCategories);
 
+    createExerciseMutation = injectMutation<ExerciseDto, ProblemDetails, CreateExerciseDto>(() => ({
+        mutationFn: async (request: CreateExerciseDto) => await lastValueFrom(this.createExercise(request)),
+        onSuccess: (res) => {
+            this.queryClient.setQueryData<ExercisePage>(['exercises'], prev =>
+                prev ? { ...prev, exercises: [...prev.exercises, res] } : prev);
+        }
+    }));
+
+    updateExerciseMutation = injectMutation<ExerciseDto, ProblemDetails, EditExerciseDto>(() => ({
+        mutationFn: async (request: EditExerciseDto) => await lastValueFrom(this.updateExercise(request)),
+        onSuccess: (res) => {
+            this.queryClient.setQueryData<ExercisePage>(['exercises'], prev =>
+                prev ? { ...prev, exercises: prev.exercises.map(e => e.id === res.id ? res : e) } : prev);
+        }
+    }));
+
+    deleteExerciseMutation = injectMutation<void, ProblemDetails, number>(() => ({
+        mutationFn: async (exerciseId: number) => await lastValueFrom(this.deleteExercise(exerciseId)),
+        onSuccess: (_res, exerciseId) => {
+            this.queryClient.setQueryData<ExercisePage>(['exercises'], prev =>
+                prev ? { ...prev, exercises: prev.exercises.filter(e => e.id !== exerciseId) } : prev);
+        }
+    }));
+
+    private getExercises(): Observable<ExercisePage> {
         return this.http.get<ExercisePage>(`${this.apiUrl}/exercises-page`)
-        .pipe(
-            tap((res) => {
-                this._exercises.set(res.exercises);
-                this._excerciseCategories.set(res.exerciseCategories);
-                this._muscleGroups.set(res.muscleGroups);
-            }),
-            map((res) => res.exercises)
-        )
     }
 
-    updateExercise(request: EditExerciseDto): Observable<ExerciseDto> {
+    private updateExercise(request: EditExerciseDto): Observable<ExerciseDto> {
         return this.http.put<ExerciseDto>(`${this.apiUrl}/exercises`, request)
-        .pipe(
-            tap((updatedExercise) => {
-                this._exercises.update(exercises =>
-                    exercises?.map((e) => e.id === request.id ? updatedExercise : e) ?? [])
-            })
-        )
     }
 
-    deleteExercise(exerciseId: number): Observable<void> {
+    private deleteExercise(exerciseId: number): Observable<void> {
         return this.http.delete<void>(`${this.apiUrl}/exercises/${exerciseId}`)
-        .pipe(
-            tap(() => this._exercises.update(() => this.exercises()?.filter(e => e.id !== exerciseId)))
-        )
     }
 
-    createExercise(request: CreateExerciseDto): Observable<ExerciseDto> {
+    private createExercise(request: CreateExerciseDto): Observable<ExerciseDto> {
         return this.http.post<ExerciseDto>(`${this.apiUrl}/exercises`, request)
-        .pipe(
-            tap((exercise) => this._exercises.update(exercises => [...exercises ?? [], exercise])
-        ));
     }
 
     toggleExercise(id: number) {
