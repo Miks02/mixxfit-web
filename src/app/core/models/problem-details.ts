@@ -3,5 +3,6 @@ export type ProblemDetails = {
     status: number,
     instance: string,
     detail: string,
-    errorCode: string
+    errorCode: string,
+    errors?: { [key: string]: string[] }
 }
