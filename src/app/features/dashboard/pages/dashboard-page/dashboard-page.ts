@@ -64,7 +64,6 @@ export class Dashboard {
         });
         effect(() => {
             const selYear = this.selectedYear();
-            console.log(selYear)
         })
 
         afterNextRender(() => {

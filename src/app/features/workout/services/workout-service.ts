@@ -1,17 +1,15 @@
-import { computed, inject, Injectable, Signal, signal, WritableSignal } from '@angular/core';
-import { lastValueFrom, Observable, tap } from 'rxjs';
-import { CreateWorkoutDto } from '../models/create-workout-dto';
-import { WorkoutDetailsDto } from '../models/workout-details-dto';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { WorkoutListItemDto } from '../models/workout-list-item-dto';
-import { WorkoutPageDto } from '../models/workout-page-dto';
-import { WorkoutSummaryDto } from '../models/workout-summary-dto';
-import { QueryParams } from '../models/query-params';
-import { WorkoutsPerMonthDto } from '../models/workouts-per-month-dto';
-import { environment } from '../../../../environments/environment';
-import { WorkoutListResponseDto } from '../models/workout-list-response-dto';
+import { inject, Injectable, Signal } from '@angular/core';
 import { CreateQueryResult, injectMutation, injectQuery, QueryClient } from '@tanstack/angular-query-experimental';
+import { lastValueFrom, Observable } from 'rxjs';
+import { environment } from '../../../../environments/environment';
 import { ProblemDetails } from '../../../core/models/problem-details';
+import { CreateWorkoutDto } from '../models/create-workout-dto';
+import { QueryParams } from '../models/query-params';
+import { WorkoutDetailsDto } from '../models/workout-details-dto';
+import { WorkoutListResponseDto } from '../models/workout-list-response-dto';
+import { WorkoutPageDto } from '../models/workout-page-dto';
+import { WorkoutsPerMonthDto } from '../models/workouts-per-month-dto';
 
 @Injectable({
     providedIn: 'root',
@@ -83,7 +81,8 @@ export class WorkoutService {
             return res;
         },
         onSuccess: () => {
-           this.queryClient.invalidateQueries({queryKey: ['workouts-summary']})
+            this.queryClient.invalidateQueries({ queryKey: ['workouts-summary'] })
+            this.queryClient.invalidateQueries({queryKey: ['dashboard']})
         },
     }))
 
@@ -94,6 +93,7 @@ export class WorkoutService {
         },
         onSuccess: () => {
            this.queryClient.invalidateQueries({queryKey: ['workouts-summary']})
+           this.queryClient.invalidateQueries({queryKey: ['dashboard']})
         },
     }))
 
