@@ -30,6 +30,7 @@ export class WorkoutService {
                         ['workouts-list', month(), year(), sort(), search()],
                         res,
                     );
+
                     return res;
                 }
             };
@@ -82,7 +83,8 @@ export class WorkoutService {
         },
         onSuccess: () => {
             this.queryClient.invalidateQueries({ queryKey: ['workouts-summary'] })
-            this.queryClient.invalidateQueries({queryKey: ['dashboard']})
+            this.queryClient.invalidateQueries({ queryKey: ['dashboard'] })
+            this.queryClient.invalidateQueries({ queryKey: ['workout-chart'] })
         },
     }))
 
@@ -92,8 +94,9 @@ export class WorkoutService {
             return res;
         },
         onSuccess: () => {
-           this.queryClient.invalidateQueries({queryKey: ['workouts-summary']})
-           this.queryClient.invalidateQueries({queryKey: ['dashboard']})
+           this.queryClient.invalidateQueries({ queryKey: ['workouts-summary'] })
+           this.queryClient.invalidateQueries({ queryKey: ['dashboard'] })
+           this.queryClient.invalidateQueries({ queryKey: ['workout-chart'] })
         },
     }))
 
