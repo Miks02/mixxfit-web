@@ -15,6 +15,7 @@ export const appConfig: ApplicationConfig = {
             defaultOptions: {
                 queries: {
                     staleTime: Infinity,
+                    gcTime: 15 * 60 * 1000,
                     retry: (failureCount, error: any) => {
                         const errorStatus = error.status;
                         if(errorStatus >= 400 && errorStatus < 500)
