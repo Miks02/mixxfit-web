@@ -86,10 +86,10 @@ export class ExerciseSessionService {
                 this.getExerciseDetails(index).push(weightSetFactory(this.fb, setDetails?.weight, setDetails?.reps));
                 return;
             case ExerciseType.Cardio:
-                this.getExerciseDetails(index).push(cardioSetFactory(this.fb));
+                this.getExerciseDetails(index).push(cardioSetFactory(this.fb, setDetails?.durationMinutes, setDetails?.durationSeconds, setDetails?.distance));
                 return;
             case ExerciseType.Stretching:
-                this.getExerciseDetails(index).push(stretchingSetFactory(this.fb));
+                this.getExerciseDetails(index).push(stretchingSetFactory(this.fb, setDetails?.durationMinutes, setDetails?.durationSeconds));
                 return;
         }
     }
