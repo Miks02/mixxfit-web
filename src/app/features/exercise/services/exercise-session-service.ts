@@ -111,7 +111,6 @@ export class ExerciseSessionService {
 
     clearSession() {
         this.getExercises().clear();
-        localStorage.removeItem('exercises');
     }
 
     // This is used only for constructor/effect synchronization. In other words,
