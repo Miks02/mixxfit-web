@@ -1,24 +1,24 @@
 import { DatePipe } from '@angular/common';
-import { Component, computed, DestroyRef, effect, inject, signal, WritableSignal } from '@angular/core';
+import { Component, computed, DestroyRef, inject, signal, WritableSignal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
     faSolidBars,
-    faSolidFilter,
     faSolidChildReaching,
     faSolidDumbbell,
+    faSolidFilter,
     faSolidMagnifyingGlass,
-    faSolidXmark,
-    faSolidPersonRunning
+    faSolidPersonRunning,
+    faSolidXmark
 } from '@ng-icons/font-awesome/solid';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Button } from '@shared';
 import { NgxSkeletonLoaderComponent } from 'ngx-skeleton-loader';
-import { debounceTime, distinctUntilChanged, finalize, Subject, take } from 'rxjs';
+import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
+import { Month } from '../../../../core/models/month';
 import { LayoutState } from '../../../../layout/services/layout-state';
 import { WorkoutService } from '../../services/workout-service';
-import { Button } from '@shared';
-import { Month } from '../../../../core/models/month';
 
 @Component({
     selector: 'app-workout-list',
@@ -46,7 +46,6 @@ export class WorkoutList {
     private destroyRef = inject(DestroyRef);
     private search$ = new Subject<string>();
 
-    isLoaded: WritableSignal<boolean> = signal(false);
     isSearching: WritableSignal<boolean> = signal(false);
     isSearchOpen: WritableSignal<boolean> = signal(false);
     isSortOpen: WritableSignal<boolean> = signal(false);

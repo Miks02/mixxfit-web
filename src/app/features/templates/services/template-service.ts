@@ -1,11 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
+import { injectMutation, injectQuery, QueryClient } from '@tanstack/angular-query-experimental';
 import { lastValueFrom, Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
+import { ProblemDetails } from '../../../core/models/problem-details';
 import { TemplateDto } from '../models/template-dto';
 import { TemplateRequest } from '../models/template-request';
-import { injectMutation, injectQuery, QueryClient } from '@tanstack/angular-query-experimental';
-import { ProblemDetails } from '../../../core/models/problem-details';
 
 @Injectable({
     providedIn: 'root',
@@ -19,14 +19,12 @@ export class TemplateService {
     getTemplatesQuery = injectQuery(() => ({
         queryKey: ['templates'],
         queryFn: async () => await lastValueFrom(this.getTemplates()),
-        staleTime: Infinity,
     }));
 
     getTemplateByIdQuery(id: number) {
         return injectQuery<TemplateDto, ProblemDetails>(() => ({
             queryKey: ['template', id],
             queryFn: async () => await lastValueFrom(this.getTemplateById(id)),
-            staleTime: Infinity,
         }));
     }
 

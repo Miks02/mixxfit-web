@@ -1,13 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { computed, inject, Injectable, signal, WritableSignal } from '@angular/core';
+import { injectMutation, injectQuery, QueryClient } from '@tanstack/angular-query-experimental';
 import { lastValueFrom, Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
+import { ProblemDetails } from '../../../core/models/problem-details';
 import { CreateExerciseDto } from '../models/create-exercise-dto';
+import { EditExerciseDto } from '../models/edit-exercise-dto';
 import { ExerciseDto } from '../models/exercise-dto';
 import { ExercisePage } from '../models/exercise-page';
-import { EditExerciseDto } from '../models/edit-exercise-dto';
-import { injectMutation, injectQuery, QueryClient } from '@tanstack/angular-query-experimental';
-import { ProblemDetails } from '../../../core/models/problem-details';
 
 @Injectable({
     providedIn: 'root',
@@ -23,7 +23,6 @@ export class ExerciseService {
     getExercisesQuery = injectQuery<ExercisePage, ProblemDetails>(() => ({
         queryKey: ['exercises'],
         queryFn: async () => await lastValueFrom(this.getExercises()),
-        staleTime: Infinity
     }))
 
     public exercises = computed(() => this.getExercisesQuery.data()?.exercises);

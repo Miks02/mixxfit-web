@@ -12,14 +12,12 @@ import {
     faSolidPersonWalkingArrowLoopLeft,
     faSolidTag
 } from "@ng-icons/font-awesome/solid";
-import { finalize, take, tap } from 'rxjs';
-import { ModalData, ModalType, Button, Modal } from '@shared';
+import { Button, Modal, ModalData, ModalType } from '@shared';
 import { NotificationService } from '../../../../core/services/notification-service';
 import { LayoutState } from '../../../../layout/services/layout-state';
 import { WorkoutDetailsSkeleton } from '../../components/workout-details-skeleton/workout-details-skeleton';
 import { ExerciseEntry } from '../../models/exercise-entry';
 import { ExerciseType } from '../../models/exercise-type';
-import { WorkoutDetailsDto } from '../../models/workout-details-dto';
 import { WorkoutService } from '../../services/workout-service';
 
 @Component({
