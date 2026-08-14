@@ -1,24 +1,24 @@
 import { DatePipe } from '@angular/common';
-import { Component, computed, DestroyRef, effect, inject, signal, WritableSignal } from '@angular/core';
+import { Component, computed, DestroyRef, inject, signal, WritableSignal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
     faSolidBars,
-    faSolidFilter,
     faSolidChildReaching,
     faSolidDumbbell,
+    faSolidFilter,
     faSolidMagnifyingGlass,
-    faSolidXmark,
-    faSolidPersonRunning
+    faSolidPersonRunning,
+    faSolidXmark
 } from '@ng-icons/font-awesome/solid';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Button } from '@shared';
 import { NgxSkeletonLoaderComponent } from 'ngx-skeleton-loader';
-import { debounceTime, distinctUntilChanged, finalize, Subject, take } from 'rxjs';
+import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
+import { Month } from '../../../../core/models/month';
 import { LayoutState } from '../../../../layout/services/layout-state';
 import { WorkoutService } from '../../services/workout-service';
-import { Button } from '@shared';
-import { Month } from '../../../../core/models/month';
 
 @Component({
     selector: 'app-workout-list',
@@ -46,38 +46,24 @@ export class WorkoutList {
     private destroyRef = inject(DestroyRef);
     private search$ = new Subject<string>();
 
-    isLoaded: WritableSignal<boolean> = signal(false);
     isSearching: WritableSignal<boolean> = signal(false);
     isSearchOpen: WritableSignal<boolean> = signal(false);
     isSortOpen: WritableSignal<boolean> = signal(false);
     isFilterOpen: WritableSignal<boolean> = signal(false);
 
-    workoutSummarySource = this.workoutService.workoutSummary;
-    workoutsSource = this.workoutService.workouts;
-    availableYearsSource = this.workoutService.availableYears;
-    availableMonthsSource = this.workoutService.availableMonths;
-    selectedYearSource = this.workoutService.selectedYear;
-    selectedMonthSource = this.workoutService.selectedMonth;
-
-    search: string | null = null;
-    sort: string = 'newest';
+    search: WritableSignal<string | null> = signal(null);
+    sort: WritableSignal<string> = signal('newest');
     year: WritableSignal<number | null> = signal(null);
     month: WritableSignal<number | null> = signal(null);
 
-    workoutList = computed(() => this.workoutsSource());
-    workoutSummary = computed(() => this.workoutSummarySource());
-    availableYears = computed(() => this.availableYearsSource() ?? []);
-    availableMonths = computed(() => this.availableMonthsSource() ?? []);
+    workoutSummarySource = this.workoutService.workoutsPageQuery(this.month, this.year, this.sort, this.search);
+    workoutsSource = this.workoutService.workoutsByParamsQuery(this.month, this.year, this.sort, this.search, this.workoutSummarySource);
+    workoutSummary = computed(() => this.workoutSummarySource.data()?.workoutSummary);
+    workoutList = computed(() => this.workoutsSource.data()?.workouts);
+    availableYears = computed(() => this.workoutSummarySource.data()?.availableYears ?? []);
+    availableMonths = computed(() => this.workoutsSource.data()?.availableMonths ?? []);
     selectedYearValue = computed(() => this.year() ?? this.availableYears()[0] ?? null);
     selectedMonthValue = computed(() => this.month() ?? this.availableMonths()[0] ?? null);
-
-    constructor() {
-        effect(() => {
-            this.year.set(this.selectedYearSource());
-            this.month.set(this.selectedMonthSource());
-
-        });
-    }
 
     ngOnInit() {
         this.layoutState.setTitle('Workouts');
@@ -92,7 +78,7 @@ export class WorkoutList {
         .subscribe(search => {
             this.updateQueryParams({
                 search,
-                sort: this.sort,
+                sort: this.sort(),
                 year: this.year(),
                 month: this.month()
             });
@@ -103,24 +89,10 @@ export class WorkoutList {
         return this.activatedRoute.queryParams
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe(params => {
-            this.search = params['search'] || null;
-            this.sort = params['sort'] || 'newest';
+            this.search.set(params['search'] || null);
+            this.sort.set(params['sort'] || 'newest');
             this.year.set(this.parseNullableNumber(params['year']));
             this.month.set(this.parseNullableNumber(params['month']));
-
-            this.workoutService.setQueryParams({
-                sort: this.sort,
-                search: this.search,
-                year: this.year(),
-                month: this.month()
-            });
-
-            if (!this.isLoaded()) {
-                this.isLoaded.set(true);
-                this.loadWorkoutOverview();
-                return;
-            }
-            this.loadWorkouts();
         });
     }
 
@@ -130,23 +102,6 @@ export class WorkoutList {
             queryParams: params,
             queryParamsHandling: 'merge'
         });
-    }
-
-    loadWorkoutOverview() {
-        this.workoutService.getUserWorkoutsPage()
-        .pipe(take(1))
-        .subscribe();
-    }
-
-    loadWorkouts() {
-        this.isSearching.set(true);
-        this.workoutService
-        .getUserWorkoutsByQuery()
-        .pipe(
-            take(1),
-            finalize(() => this.isSearching.set(false))
-        )
-        .subscribe();
     }
 
     toWorkoutForm() {
@@ -159,8 +114,8 @@ export class WorkoutList {
 
     onSortChange() {
         this.updateQueryParams({
-            sort: this.sort,
-            search: this.search,
+            sort: this.sort(),
+            search: this.search(),
             year: this.year(),
             month: this.month()
         });
@@ -197,7 +152,7 @@ export class WorkoutList {
 
     closeSearch() {
         this.isSearchOpen.set(false);
-        this.search = null;
+        this.search.set(null);
         this.onSearchChange('');
     }
 
@@ -228,7 +183,6 @@ export class WorkoutList {
     }
 
     getWorkoutCardClass() {
-
         return this.workoutList()!.length < 2
         ? 'w-full'
         : 'w-full md:w-[calc(50%-0.375rem)]';

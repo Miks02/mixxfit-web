@@ -11,8 +11,8 @@ import {
     faSolidTag,
     faSolidTrash,
 } from '@ng-icons/font-awesome/solid';
-import { finalize, take } from 'rxjs';
 import { isControlValid } from '../../../../core/helpers/form-helpers';
+import { NotificationService } from '../../../../core/services/notification-service';
 import { ModalData, ModalType, Button, Modal } from '@shared';
 import { createTemplateRequestFromForm, mapTemplateExercises } from '../../factories/template-factories';
 import { TemplateRequest } from '../../models/template-request';
@@ -31,6 +31,7 @@ export class TemplateForm {
     templateState = inject(TemplateState);
     private templateLayout = inject(TemplateModalLayoutService);
     private templateService = inject(TemplateService);
+    private notificationService = inject(NotificationService);
     private router = inject(Router);
     private activatedRoute = inject(ActivatedRoute);
 
@@ -41,7 +42,8 @@ export class TemplateForm {
     templateName = this.templateState.templateName;
     templateNotes = this.templateState.templateNotes;
     isFormValid = this.templateState.isFormValid;
-    isLoading = signal(false);
+    isSaving = computed(() => this.templateService.createTemplateMutation.isPending() || this.templateService.updateTemplateMutation.isPending());
+    isDeleting = this.templateService.deleteTemplateMutation.isPending;
     isModalOpen = signal(false);
 
     get nameControl(): AbstractControl { return this.currentTemplate.get('name')!; }
@@ -80,8 +82,6 @@ export class TemplateForm {
             return;
         }
 
-        this.isLoading.set(true);
-
         const mappedExercises = mapTemplateExercises(this.templateExercises())
         const request = createTemplateRequestFromForm(this.templateName(), mappedExercises, this.templateNotes(), this.templateState.templateId())
 
@@ -94,33 +94,52 @@ export class TemplateForm {
     }
 
     createTemplate(request: TemplateRequest) {
-
-        this.templateService.addTemplate(request).pipe(
-            take(1),
-            finalize(() => this.isLoading.set(false))
-        )
-        .subscribe({
-            next: () => {
+        this.templateService.createTemplateMutation.mutate(request, {
+            onSuccess: () => {
+                this.notificationService.showSuccess('Template created successfully!');
                 this.templateState.clearForm();
                 this.router.navigate(['workouts/create/templates'])
-
             },
-            error: () => {}
+            onError: (err) => {
+                switch(err.errorCode) {
+                    case "WorkoutTemplate.AlreadyExists":
+                        this.notificationService.showError("Requested tempate was not found")
+                        break;
+                    case "WorkoutTemplate.LimitReached":
+                        this.notificationService.showError("You reached the limit for adding templates")
+                        break;
+                    case "Exercise.NotFound":
+                        this.notificationService.showError("Some of the requested exercises are not found in the system")
+                        break;
+                    default:
+                        this.notificationService.showError("An error occurred while creating a new template. Try again later");
+                }
+            }
         });
     }
 
     updateTemplate(request: TemplateRequest) {
-        this.templateService.updateTemplate(request).pipe(
-            take(1),
-            finalize(() => this.isLoading.set(false))
-        )
-        .subscribe({
-            next: () => {
+        this.templateService.updateTemplateMutation.mutate(request, {
+            onSuccess: () => {
+                this.notificationService.showSuccess('Template updated successfully!');
                 this.templateState.clearForm();
                 this.router.navigate(['workouts/create/templates'])
-
             },
-            error: () => {}
+            onError: (err) => {
+                switch(err.errorCode) {
+                    case "WorkoutTemplate.AlreadyExists":
+                        this.notificationService.showError("Requested tempate was not found")
+                        break;
+                    case "WorkoutTemplate.NotFound":
+                        this.notificationService.showError("Template that you tried to update was not found")
+                        break;
+                    case "Exercise.NotFound":
+                        this.notificationService.showError("Some of the requested exercises are not found in the system")
+                        break;
+                    default:
+                        this.notificationService.showError("An error occurred while trying to update your template. Try again later");
+                }
+            }
         });
     }
 
@@ -148,17 +167,18 @@ export class TemplateForm {
     }
 
       deleteTemplate(id: number) {
-        this.isLoading.set(true);
-        this.templateService.deleteTemplate(id).pipe(
-            take(1),
-            finalize(() => this.isLoading.set(false))
-        )
-        .subscribe({
-            next: () => {
+        this.templateService.deleteTemplateMutation.mutate(id, {
+            onSuccess: () => {
+                this.notificationService.showSuccess('Template deleted successfully!');
                 this.router.navigate(['workouts/create/templates'])
                 this.templateState.clearForm();
             },
-            error: () => {}
-        })
+            onError: (err) => {
+                if(err.errorCode === "WorkoutTemplate.NotFound")
+                    this.notificationService.showError("Template that you tried to update was not found")
+                else
+                    this.notificationService.showError("An error occurred while trying to delete your template. Try again later")
+            }
+        });
     }
 }

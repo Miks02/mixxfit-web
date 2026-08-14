@@ -1,6 +1,5 @@
-import { HttpErrorResponse } from "@angular/common/http";
 import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, ValidatorFn } from "@angular/forms";
-import { ValidationError } from "../models/validation-error";
+import { ProblemDetails } from "../models/problem-details";
 
 export function isControlValid(control: string, form: FormGroup): boolean {
     const ct = form?.get(control);
@@ -51,17 +50,17 @@ export function clearFormInputs(keys: string[], form: FormGroup) {
 
 }
 
-export function handleValidationErrors(err: HttpErrorResponse, form: FormGroup) {
-    if(err.status === 400 && err.error.errors) {
-        const error: ValidationError = err.error;
+export function handleValidationErrors(err: ProblemDetails, form: FormGroup) {
+    if(err.status === 400 && err.errors) {
+        const errors = err.errors;
 
-        Object.keys(error.errors).forEach(prop => {
+        Object.keys(errors).forEach(prop => {
             const firstPropLetter = prop.charAt(0);
 
             const transformedProp: string = prop.replace(firstPropLetter, firstPropLetter.toLowerCase())
             const formControl = form.get(transformedProp);
             if(formControl) {
-                formControl.setErrors({validationError: error.errors[prop][0]})
+                formControl.setErrors({validationError: errors[prop][0]})
                 form.updateValueAndValidity();
             }
         })

@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable, signal, WritableSignal } from '@angular/core';
-import { tap } from 'rxjs';
+import { inject, Injectable } from '@angular/core';
+import { injectQuery, QueryClient } from '@tanstack/angular-query-experimental';
+import { lastValueFrom } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { DashboardDto } from '../models/dasbhoard-dto';
 
@@ -11,7 +12,14 @@ export class DashboardService {
     private api = environment.apiUrl;
     private http = inject(HttpClient);
 
-    getDashboard() {
+    dashboardQuery() {
+        return injectQuery(() => ({
+            queryKey: ['dashboard'],
+            queryFn: () => lastValueFrom(this.getDashboard()),
+        }));
+    }
+
+    private getDashboard() {
         return this.http.get<DashboardDto>(`${this.api}/dashboard`)
     }
 

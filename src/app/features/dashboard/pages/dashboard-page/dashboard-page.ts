@@ -1,23 +1,22 @@
-import { Component, computed, inject, effect, WritableSignal, signal, viewChildren, ElementRef, afterNextRender } from '@angular/core';
+import { DatePipe } from '@angular/common';
+import { afterNextRender, Component, computed, effect, ElementRef, inject, signal, viewChildren, WritableSignal } from '@angular/core';
+import { rxResource } from '@angular/core/rxjs-interop';
+import { FormsModule } from '@angular/forms';
+import { Router, RouterLink } from "@angular/router";
+import { WeightChart, WeightEntryService } from '@features/weight';
+import { WorkoutsChart, WorkoutService } from '@features/workout';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import { faSolidDumbbell, faSolidFireFlameCurved, faSolidGlassWater, faSolidMoon, faSolidScaleUnbalanced, faSolidUtensils, faSolidCalculator, faSolidGhost,  faSolidChartLine, faSolidUser, faSolidBolt } from '@ng-icons/font-awesome/solid';
+import { faSolidBolt, faSolidCalculator, faSolidChartLine, faSolidDumbbell, faSolidFireFlameCurved, faSolidGhost, faSolidGlassWater, faSolidScaleUnbalanced, faSolidUser, faSolidUtensils } from '@ng-icons/font-awesome/solid';
+import { Button } from '@shared';
 import {
     Chart, registerables
 } from 'chart.js';
-import { WorkoutsChart, WorkoutService } from '@features/workout';
-import { LayoutState } from '../../../../layout/services/layout-state';
-import { take } from 'rxjs';
-import { WeightChart, WeightEntryService } from '@features/weight';
-import { Router, RouterLink } from "@angular/router";
-import { DashboardService } from '../../services/dashboard-service';
-import { DatePipe } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 import { NgxSkeletonLoaderModule } from 'ngx-skeleton-loader';
-import { CalorieCalculator } from '../../../nutrition/components/calorie-calculator/calorie-calculator';
 import { UserState } from '../../../../core/states/user-state';
-import { Button } from '@shared';
+import { LayoutState } from '../../../../layout/services/layout-state';
+import { CalorieCalculator } from '../../../nutrition/components/calorie-calculator/calorie-calculator';
 import { DashboardCard } from '../../components/dashboard-card/dashboard-card';
-import { rxResource, toSignal } from '@angular/core/rxjs-interop';
+import { DashboardService } from '../../services/dashboard-service';
 Chart.register(...registerables)
 
 @Component({
@@ -34,31 +33,22 @@ export class Dashboard {
     private workoutService = inject(WorkoutService);
     private weightService = inject(WeightEntryService);
     private router = inject(Router)
+    userDetails = this.userState.userDetails;
     selectedYear: WritableSignal<number> = signal(new Date().getFullYear());
 
-    dashboardResource = rxResource({
-        stream: () => this.dashboardState.getDashboard()
-    })
-    workoutChartResource = rxResource({
-        params: () => ({year: this.selectedYear()}),
-        stream: ({params}) => this.workoutService.getUserWorkoutCountsByMonth(params.year)
-    })
+    workoutChartResource = this.workoutService.getWorkoutChartDataQuery(this.selectedYear);
 
-    weightChartResource = rxResource({
-        stream: () => this.weightService.getMyWeightChart()
-    })
+    weightChartResource = this.weightService.weightChartQuery(signal(this.userDetails()?.targetWeight!));
 
-    dashboard = this.dashboardResource.value;
-    workoutChart = this.workoutChartResource.value;
-    weightChart = this.weightChartResource.value;
+    dashboard = this.dashboardState.dashboardQuery().data;
+    workoutChart = this.workoutChartResource.data;
+    weightChart = this.weightChartResource.data;
 
     isCalorieCalculatorOpen: WritableSignal<boolean> = signal(false);
 
     years = computed(() => this.workoutChart()?.years)
 
     private yearInitialized = false;
-
-    userDetails = this.userState.userDetails;
 
     typewriterElements = viewChildren<ElementRef>('typewriter');
 
@@ -72,6 +62,9 @@ export class Dashboard {
                 this.yearInitialized = true;
             }
         });
+        effect(() => {
+            const selYear = this.selectedYear();
+        })
 
         afterNextRender(() => {
             this.typewriterElements().forEach((el: ElementRef) => {

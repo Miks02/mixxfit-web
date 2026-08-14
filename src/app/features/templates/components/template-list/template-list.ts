@@ -23,11 +23,12 @@ export class TemplateList {
     templateState = inject(TemplateState);
     templateModal = inject(TemplateModalLayoutService);
     router = inject(Router);
+    templateSource = this.templateService.getTemplatesQuery;
 
-    isLoading = signal(true);
+    isLoading = this.templateSource.isLoading;
     skeletonItems = [1, 2, 3, 4, 5];
 
-    templates = this.templateService.templates;
+    templates = this.templateSource.data;
     userTemplates = computed(() => this.templates()?.filter(t => !t.isSystem));
     systemTemplates = computed(() => this.templates()?.filter(t => t.isSystem));
 
@@ -37,15 +38,6 @@ export class TemplateList {
             action: [],
             showBackButton: false
         });
-    }
-
-    ngOnInit() {
-        this.templateService.getTemplates()
-        .pipe(
-            take(1),
-            finalize(() => this.isLoading.set(false))
-        )
-        .subscribe();
     }
 
     transformedName(templateName: string) {

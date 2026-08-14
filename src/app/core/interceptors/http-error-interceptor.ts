@@ -2,6 +2,7 @@ import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
 import { catchError, throwError } from 'rxjs';
 import { NotificationService } from '../services/notification-service';
 import { inject } from '@angular/core';
+import { ProblemDetails } from '../models/problem-details';
 
 export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {
 
@@ -9,14 +10,14 @@ export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {
 
     return next(req).pipe(
         catchError((error: HttpErrorResponse) => {
-            handleErrors(error, notificationService)
-
-            return throwError(() => error)
+            const problemDetails: ProblemDetails = error.error;
+            handleErrors(problemDetails, notificationService)
+            return throwError(() => problemDetails)
         })
     );
 };
 
-function handleErrors(error: HttpErrorResponse, notificationService: NotificationService) {
+function handleErrors(error: ProblemDetails, notificationService: NotificationService) {
     let errorMessage: string = "";
     let notificationDuration: number = 5000;
 
@@ -26,14 +27,15 @@ function handleErrors(error: HttpErrorResponse, notificationService: Notificatio
             break;
         }
         case 401: {
-            let errorCode = error.error.errorCode;
+            let errorCode = error.errorCode;
 
             if(errorCode === "Auth.LoginFailed") {
                 notificationService.showError("Invalid email address or password.");
-                errorMessage = "Invalid email address or password."
                 return;
             }
-            notificationService.showInfo("Your session has expired or is no longer valid. Please sign in again");
+            if (errorCode !== "Auth.ExpiredToken")
+                notificationService.showError("An unexpected error occured during the authentication.")
+
             return;
         }
         case 403: {
@@ -64,15 +66,4 @@ function handleErrors(error: HttpErrorResponse, notificationService: Notificatio
     }
 
     notificationService.showError(errorMessage, notificationDuration)
-}
-
-function getAuthError(errorCode: string): string {
-
-    switch(errorCode) {
-        case "Auth.LoginFailed":
-        return "Invalid email address or password.";
-        default:
-        return "Unexpected error happened during authentication. Try again later.";
-    }
-
 }

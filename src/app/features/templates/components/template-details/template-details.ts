@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal, WritableSignal } from '@angular/core';
+import { Component, computed, effect, inject, signal, WritableSignal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { faSolidChildReaching, faSolidDumbbell, faSolidGear, faSolidPersonRunning, faSolidPersonWalkingArrowLoopLeft } from '@ng-icons/font-awesome/solid';
@@ -6,6 +6,7 @@ import { NgxSkeletonLoaderComponent } from 'ngx-skeleton-loader';
 import { finalize, take, tap } from 'rxjs';
 import { Button } from '@shared';
 import { ExerciseService, ExerciseSessionService } from '@features/exercise'
+import { NotificationService } from '../../../../core/services/notification-service';
 import { TemplateDto } from '../../models/template-dto';
 import { TemplateModalLayoutService } from '../../services/template-modal-layout-service';
 import { TemplateService } from '../../services/template-service';
@@ -25,13 +26,16 @@ export class TemplateDetails {
     private templateState = inject(TemplateState);
     private exerciseService = inject(ExerciseService);
     private exerciseSession = inject(ExerciseSessionService);
+    private notificationService = inject(NotificationService);
     private activatedRoute = inject(ActivatedRoute);
     private router = inject(Router);
 
-    isLoading: WritableSignal<boolean> = signal(true);
-    selectedTemplate: WritableSignal<TemplateDto | undefined> = signal(undefined);
+    templateId: number = Number(this.activatedRoute.snapshot.paramMap.get('id'));
 
-    templateId!: number;
+    templateSource = this.templateService.getTemplateByIdQuery(this.templateId);
+    selectedTemplate = this.templateSource.data;
+
+    isLoading = this.templateSource.isLoading;
 
     exerciseViews = computed<TemplateExerciseView[]>(() => {
         const template = this.selectedTemplate();
@@ -55,21 +59,17 @@ export class TemplateDetails {
     });
 
     constructor() {
-        this.templateId = Number(this.activatedRoute.snapshot.paramMap.get('id'));
         this.templateLayout.setConfig({ title: 'Template Details', showBackButton: true, action: [] });
-    }
 
-    ngOnInit() {
-        this.loadTemplate(this.templateId);
-    }
-
-    loadTemplate(id: number) {
-        this.templateService.getTemplateById(id).pipe(
-            take(1),
-            tap(res => this.selectedTemplate.set(res)),
-            finalize(() => this.isLoading.set(false))
-        ).subscribe({
-            error: () => this.router.navigate(['workouts/create/templates'])
+        effect(() => {
+            const error = this.templateSource.error();
+            if (error) {
+                if (error.errorCode === "WorkoutTemplate.NotFound")
+                    this.notificationService.showError("Requested template has not been found");
+                else
+                    this.notificationService.showError("An error occurred while loading the template. Please try again.");
+                this.router.navigate(['workouts/create/templates']);
+            }
         });
     }
 

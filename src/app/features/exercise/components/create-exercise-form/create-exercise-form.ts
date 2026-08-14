@@ -1,12 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, inject, signal, WritableSignal } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NgIcon, provideIcons } from "@ng-icons/core";
 import { faSolidPersonWalkingArrowLoopLeft } from '@ng-icons/font-awesome/solid';
 import { NgxSkeletonLoaderComponent } from 'ngx-skeleton-loader';
-import { finalize, take } from 'rxjs';
 import { isControlValid } from '../../../../core/helpers/form-helpers';
 import { NotificationService } from '../../../../core/services/notification-service';
 import { Button } from '@shared';
@@ -40,7 +39,7 @@ export class CreateExerciseForm {
     exerciseCategoryId = toSignal(this.form.get("categoryId")?.valueChanges!);
     muscleGroupId = toSignal(this.form.get("muscleGroupId")?.valueChanges!);
 
-    isLoading: WritableSignal<boolean> = signal(false);
+    isLoading = this.exerciseService.createExerciseMutation.isPending;
 
     constructor() {
         this.modalLayout.setConfig({title: "Create Exercise", action: [], showBackButton: true})
@@ -50,37 +49,25 @@ export class CreateExerciseForm {
         if(this.form.invalid)
             return;
 
-        this.isLoading.set(true);
-
-        this.exerciseService.createExercise(this.form.value)
-        .pipe(take(1), finalize(() => this.isLoading.set(false)))
-        .subscribe({
-            next: () => {
+        this.exerciseService.createExerciseMutation.mutate(this.form.value, {
+            onSuccess: () => {
                 this.notification.showSuccess("Exercise created successfully")
                 this.router.navigate(['workout-form/exercises'])
             },
-             error: err => {
-                let errorMessage = "An error occurred while creating the exercise";
-                const errorCode = err.error.errorCode;
-
-                if(errorCode === "Exercise.AlreadyExists") {
-                    errorMessage = "Exercise with the selected name already exists";
-                    this.notification.showError(errorMessage);
-                    return;
+            onError: (err) => {
+                switch(err.errorCode) {
+                    case "Exercise.AlreadyExists":
+                        this.notification.showError("Exercise with the selected name already exists");
+                        break;
+                    case "Exercise.MuscleGroupNotFound":
+                        this.notification.showError("Selected muscle group has not been found");
+                        break;
+                    case "Exercise.ExerciseCategoryNotFound":
+                        this.notification.showError("Selected category has not been found");
+                        break;
+                    default:
+                        this.notification.showError("An error occurred while creating the exercise");
                 }
-
-                if(errorCode === "Exercise.MuscleGroupNotFound") {
-                    errorMessage = "Selected muscle group has not been found";
-                    this.notification.showError(errorMessage);
-                    return;
-                }
-
-                if(errorCode === "Exercise.ExerciseCategoryNotFound") {
-                    errorMessage = "Selected category has not been found";
-                    this.notification.showError(errorMessage);
-                    return;
-                }
-                this.notification.showError(errorMessage);
             },
         })
     }

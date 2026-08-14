@@ -1,3 +1,4 @@
+
 <div (click)="onClose()" class="fixed inset-0 z-150 w-full h-dvh bg-slate-700/40 backdrop-blur-2xl"></div>
 
 <div class="fixed inset-0 z-160 flex items-center justify-center p-0 sm:p-6 lg:p-8 pointer-events-none">
@@ -153,14 +154,14 @@
 </div>
 
 <div class="flex justify-center pt-1">
-    <app-button label="Calculate" buttonType="secondary" [disabled]="form.invalid" (clicked)="calculate()" fontSize="lg">
+    <app-button label="Calculate" fontSize="sm" buttonSize="sm" buttonType="secondary" [disabled]="form.invalid || isCalculating()" [isLoading]="isCalculating()" (clicked)="calculate()">
         <ng-icon name="faSolidCalculator" class="text-xl" slot="icon"></ng-icon>
     </app-button>
 </div>
 
 </form>
 @if(result()) {
-    <app-calories-summary [result]="result()!" (updateDailyCalories)="setDailyCalories($event)" (back)="resetResult()"></app-calories-summary>
+    <app-calories-summary [result]="result()!" [isSaving]="isSettingDailyCalories()" (updateDailyCalories)="setDailyCalories($event)" (back)="resetResult()"></app-calories-summary>
 }
 </div>
 </div>

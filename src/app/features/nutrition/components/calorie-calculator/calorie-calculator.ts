@@ -62,6 +62,9 @@ export class CalorieCalculator {
 
     form: FormGroup = createCalculateCaloriesForm(this.fb);
 
+    isCalculating = this.nutritionService.calculateCaloriesMutation.isPending;
+    isSettingDailyCalories = this.nutritionService.setDailyCaloriesMutation.isPending;
+
     get isMetric(): boolean {
         return this.form.get('unitSystem')?.value === UnitSystem.Metric;
     }
@@ -124,7 +127,9 @@ export class CalorieCalculator {
             activityLevel: this.form.get('activityLevel')?.value
         }
 
-        this.nutritionService.calculateCalories(request).subscribe(res => this.result.set(res));
+        this.nutritionService.calculateCaloriesMutation.mutate(request, {
+            onSuccess: (res) => this.result.set(res)
+        });
     }
 
     setDailyCalories(calories: number | null) {
@@ -133,10 +138,12 @@ export class CalorieCalculator {
             return;
         }
 
-        this.nutritionService.setDailyCalories(calories).subscribe(() => {
-            this.notificationService.showSuccess('Daily calorie goal set successfully');
-            this.onCaloriesUpdated();
-            this.onClose();
+        this.nutritionService.setDailyCaloriesMutation.mutate(calories, {
+            onSuccess: () => {
+                this.notificationService.showSuccess('Daily calorie goal set successfully');
+                this.onCaloriesUpdated();
+                this.onClose();
+            }
         });
     }
 

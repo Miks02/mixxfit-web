@@ -1,28 +1,27 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
-import { inject } from '@angular/core';
-import { RegisterRequest } from '../../features/auth/models/register-request';
-import { AuthResponse } from '../../features/auth/models/auth-response';
-import { Observable, map, tap } from 'rxjs';
-import { LoginRequest } from '../../features/auth/models/login-request';
+import { inject, Injectable, Signal, signal, WritableSignal } from '@angular/core';
+import { lastValueFrom, map, Observable, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
+import { AuthResponse } from '../../features/auth/models/auth-response';
+import { LoginRequest } from '../../features/auth/models/login-request';
+import { RegisterRequest } from '../../features/auth/models/register-request';
 import { UserState } from '../states/user-state';
+import { injectMutation, injectQuery } from '@tanstack/angular-query-experimental';
+import { ProblemDetails } from '../models/problem-details';
 
 @Injectable({
     providedIn: 'root',
 })
 export class AuthService {
     private readonly api: string = environment.apiUrl;
-    private accessTokenSubject = new BehaviorSubject<string | null>(localStorage.getItem('token'));
-    public accessToken$ = this.accessTokenSubject.asObservable();
+    private _accessToken: WritableSignal<string | null> = signal(localStorage.getItem('token'));
+    public accessToken: Signal<string | null> = this._accessToken.asReadonly();
 
     private readonly http = inject(HttpClient)
     private userState = inject(UserState);
 
-    get accessToken(): string | null {return this.accessTokenSubject.value}
-    set accessToken(accessToken: string | null) {
-        this.accessTokenSubject.next(accessToken)
+    setAccessToken(accessToken: string | null) {
+        this._accessToken.set(accessToken);
 
         if(accessToken === null)
             localStorage.removeItem('token')
@@ -30,36 +29,40 @@ export class AuthService {
             localStorage.setItem('token', accessToken as string)
     }
 
-    constructor() {
-        this.accessTokenSubject.next(this.accessToken)
-    }
+    registerMutation = injectMutation<AuthResponse, ProblemDetails, RegisterRequest>(() => ({
+        mutationFn: async (model: RegisterRequest) => await lastValueFrom(this.register(model)),
+        onSuccess: (res) => {
+            this.setAccessToken(res.accessToken);
+            this.userState.setUserDetails(res.user);
+        }
+    }))
 
-    register(model: RegisterRequest): Observable<AuthResponse> {
+    loginMutation = injectMutation<AuthResponse, ProblemDetails, LoginRequest>(() => ({
+        mutationFn: async (model: LoginRequest) => await lastValueFrom(this.login(model)),
+        onSuccess: (res) => {
+            this.setAccessToken(res.accessToken);
+            this.userState.setUserDetails(res.user);
+        }
+    }))
+
+    logoutMutation = injectMutation<void, ProblemDetails, void>(() => ({
+        mutationFn: async () => await lastValueFrom(this.logout()),
+        onMutate: () => {
+            this.clearAuthData()
+            window.location.href = '/';
+        }
+    }))
+
+    private register(model: RegisterRequest): Observable<AuthResponse> {
         return this.http.post<AuthResponse>(`${this.api}/auth/register`, model, {withCredentials: true})
-        .pipe(
-            tap(res => {
-                this.accessToken = res.accessToken;
-                this.userState.setUserDetails(res.user);
-            })
-        )
     }
 
-    login(model: LoginRequest): Observable<AuthResponse> {
+    private login(model: LoginRequest): Observable<AuthResponse> {
         return this.http.post<AuthResponse>(`${this.api}/auth/login`, model , {withCredentials: true})
-        .pipe(
-            tap(res => {
-                this.accessToken = res.accessToken;
-                this.userState.setUserDetails(res.user);
-            })
-        )
     }
 
-    logout(): Observable<void> {
-
+    private logout(): Observable<void> {
         return this.http.post<void>(`${this.api}/auth/logout`,{}, {withCredentials: true})
-        .pipe(
-            tap(() => this.clearAuthData())
-        )
     }
 
     rotateAuthTokens(): Observable<string> {
@@ -70,21 +73,15 @@ export class AuthService {
         )
     }
 
-    test(): Observable<void> {
-        return this.http.get<void>(`${this.api}/auth/test`).pipe(
-            tap(res => console.log(res))
-        );
-    }
-
     isAuthenticated() {
-        if(this.accessToken) return true;
+        if(this.accessToken()) return true;
         return false;
     }
 
     clearAuthData() {
         this.userState.resetCurrentUser();
         localStorage.removeItem('token');
-        this.accessTokenSubject.next(null);
+        this.setAccessToken(null);
     }
 
 }
