@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable, Signal } from '@angular/core';
 import { injectMutation, injectQuery, QueryClient } from '@tanstack/angular-query-experimental';
-import { lastValueFrom, tap } from 'rxjs';
+import { lastValueFrom } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { ProblemDetails } from '../../../core/models/problem-details';
 import { UserState } from '../../../core/states/user-state';
@@ -28,6 +28,8 @@ export class WeightEntryService {
             queryFn: async () => {
                 const res = await lastValueFrom(this.getMyWeightSummary(month(), year(), targetWeight()));
                 this.queryClient.setQueryData(['weight-list-details', month(), year()], res.weightListDetails);
+                this.queryClient.setQueryData(['weight-chart', targetWeight()], res.weightChart)
+                this.userState.updateUserDetails({currentWeight: res.currentWeight.weight})
                 return res;
             },
             enabled: targetWeight() !== undefined
@@ -52,22 +54,23 @@ export class WeightEntryService {
 
     addWeightEntryMutation = injectMutation<WeightEntryDetails, ProblemDetails, CreateWeightRequest>(() => ({
         mutationFn: async (request: CreateWeightRequest) => await lastValueFrom(this.addWeightEntry(request)),
-        onSuccess: () => {
-            this.queryClient.invalidateQueries({queryKey: ['weight-summary']})
+        onSuccess: (res) => {
+            this.queryClient.invalidateQueries({ queryKey: ['weight-summary'] })
         }
     }));
 
     deleteWeightEntryMutation = injectMutation<void, ProblemDetails, number>(() => ({
         mutationFn: async (id: number) => await lastValueFrom(this.deleteWeightEntry(id)),
         onSuccess: () => {
-            this.queryClient.invalidateQueries({queryKey: ['weight-summary']})
+            this.queryClient.invalidateQueries({ queryKey: ['weight-summary'] })
         }
     }));
 
     updateTargetWeightMutation = injectMutation<TargetWeightDto, ProblemDetails, TargetWeightDto>(() => ({
         mutationFn: async (targetWeight: TargetWeightDto) => await lastValueFrom(this.updateTargetWeight(targetWeight)),
-        onSuccess: () => {
+        onSuccess: (res) => {
             this.queryClient.invalidateQueries({ queryKey: ['weight-chart'] })
+            this.userState.updateUserDetails({targetWeight: res.targetWeight})
         }
     }));
 
@@ -118,11 +121,6 @@ export class WeightEntryService {
 
     private updateTargetWeight(targetWeight: TargetWeightDto) {
         return this.http.patch<TargetWeightDto>(`${this.api}/fitness-profile/target-weight`, targetWeight)
-            .pipe(
-                tap((res) => {
-                    this.userState.updateUserDetails({targetWeight: res.targetWeight})
-                })
-            );
     }
 
 }
