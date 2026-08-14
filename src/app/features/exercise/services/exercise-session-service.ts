@@ -1,8 +1,14 @@
-import { inject, Injectable } from '@angular/core';
-import { FormArray, FormBuilder } from '@angular/forms';
+import { inject, Injectable, Signal, signal, WritableSignal } from '@angular/core';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ExerciseType } from '../../workout';
 import { cardioSetFactory, exerciseEntryFormFactory, stretchingSetFactory, weightSetFactory } from '../factories/exercise-factories';
 import { ExerciseEntryItem } from '../models/exercise-entry-item';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { effect } from '@angular/core';
+import { ExerciseEntryFormValue } from '@features/workout/models/exercise-entry-form-value';
+import { minArrayLength } from '../../../core/helpers/form-helpers';
+import { SetEntry } from '@features/workout/models/set-entry';
+import { debounceTime } from 'rxjs';
 
 @Injectable({
     providedIn: 'root',
@@ -13,6 +19,25 @@ export class ExerciseSessionService {
     readonly form = this.fb.group({
         exercises: this.fb.array([])
     })
+
+    private _loadedFormExercises: Signal<ExerciseEntryFormValue[]> = toSignal(
+        this.getExercises()?.valueChanges.pipe(debounceTime(600)),
+        { initialValue: []},
+    );
+
+    constructor() {
+        const parsedExercises = JSON.parse(localStorage.getItem('exercises') ?? '[]') as ExerciseEntryFormValue[];
+        this.addMultipleExercisesFromForm(parsedExercises);
+
+        effect(() => {
+            const exercises = this._loadedFormExercises()
+            if(exercises.length > 0) {
+                localStorage.setItem('exercises', JSON.stringify(exercises))
+                return;
+            }
+            localStorage.removeItem('exercises');
+        })
+    }
 
     getExercises(): FormArray {
         return this.form.get("exercises") as FormArray;
@@ -42,7 +67,6 @@ export class ExerciseSessionService {
         exercises.forEach(e => {
             if(!e.setCount || e.setCount === 0)
                 return;
-
             this.getExercises().push(exerciseEntryFormFactory(this.fb, e))
             for(let i = 0; i < e.setCount; i++) {
                 this.addDetails(e.exerciseType);
@@ -55,11 +79,11 @@ export class ExerciseSessionService {
         this.addDetails(exercise.exerciseType)
     }
 
-    addDetails(type: ExerciseType, index: number | null = null) {
+    addDetails(type: ExerciseType, index: number | null = null, setDetails?: Partial<SetEntry>) {
         switch(type) {
             case ExerciseType.Weights:
             case ExerciseType.Bodyweight:
-                this.getExerciseDetails(index).push(weightSetFactory(this.fb));
+                this.getExerciseDetails(index).push(weightSetFactory(this.fb, setDetails?.weight, setDetails?.reps));
                 return;
             case ExerciseType.Cardio:
                 this.getExerciseDetails(index).push(cardioSetFactory(this.fb));
@@ -87,6 +111,27 @@ export class ExerciseSessionService {
 
     clearSession() {
         this.getExercises().clear();
+        localStorage.removeItem('exercises');
+    }
+
+    // This is used only for constructor/effect synchronization. In other words,
+    // it is called after the effect has run to ensure the form is in sync with the signal.
+    private addMultipleExercisesFromForm(exercises: ExerciseEntryFormValue[]) {
+        const exerciseDetails = exercises.map((e) => e.details);
+        exercises.forEach((e, index) => {
+            const exerciseForm = exerciseEntryFormFactory(this.fb, e);
+            this.getExercises().push(exerciseForm);
+
+            exerciseDetails[index].forEach((d) => {
+                this.addDetails(e.exerciseType, index, {
+                    weight: d.weight,
+                    reps: d.reps,
+                    distance: d.distance,
+                    durationSeconds: d.durationSeconds,
+                    durationMinutes: d.durationMinutes,
+                });
+            });
+        });
     }
 
 }
