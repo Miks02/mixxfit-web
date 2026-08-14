@@ -1,14 +1,12 @@
-import { inject, Injectable, Signal, signal, WritableSignal } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { effect, inject, Injectable, Signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { FormArray, FormBuilder } from '@angular/forms';
+import { ExerciseEntryFormValue } from '@features/workout/models/exercise-entry-form-value';
+import { SetEntry } from '@features/workout/models/set-entry';
+import { debounceTime } from 'rxjs';
 import { ExerciseType } from '../../workout';
 import { cardioSetFactory, exerciseEntryFormFactory, stretchingSetFactory, weightSetFactory } from '../factories/exercise-factories';
 import { ExerciseEntryItem } from '../models/exercise-entry-item';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { effect } from '@angular/core';
-import { ExerciseEntryFormValue } from '@features/workout/models/exercise-entry-form-value';
-import { minArrayLength } from '../../../core/helpers/form-helpers';
-import { SetEntry } from '@features/workout/models/set-entry';
-import { debounceTime } from 'rxjs';
 
 @Injectable({
     providedIn: 'root',
