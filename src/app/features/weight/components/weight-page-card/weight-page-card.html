@@ -1,0 +1,43 @@
+
+
+
+<div class="flex flex-col gap-4 justify-between bg-slate-300 rounded-lg shadow-xl p-4 relative">
+    @if (isLoading()) {
+        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full h-full backdrop-blur-xs flex items-center justify-center rounded-lg">
+            <span class="spinner"></span>
+        </div>
+    }
+    <div class="flex flex-row gap-4">
+        <div class="flex flex-row gap-2 justify-between w-full">
+            <div class="flex flex-row gap-3 items-center">
+                <div
+                    [class]="iconWrapperColor()"
+                    class="p-2 rounded-lg flex items-center">
+                    <ng-icon name="{{ icon() }}" [class]="iconColor()" class="text-2xl md:text-3xl"></ng-icon>
+                </div>
+                <div class="flex flex-col  font-semibold justify-center">
+                    <h2 class="text-lg md:text-xl">{{ title() }}</h2>
+                    <p class="text-xs md:text-sm text-slate-700 text-left">{{ subtitle() }}</p>
+                </div>
+            </div>
+
+            @if (buttonText()) {
+                <app-button
+                    fontSize="xs"
+                    buttonSize="sm"
+                    (clicked)="onClick()"
+                    label="{{ buttonText() }}"></app-button>
+            }
+        </div>
+    </div>
+
+    <div class="flex flex-row justify-between items-center">
+        <p class="text-xl md:text-3xl font-bold text-slate-800">{{ value() }}</p>
+        <p class="text-sm md:text-base text-emerald-600 font-semibold">{{ metadata() }}</p>
+    </div>
+
+    <div class="border-t border-slate-400 flex flex-row justify-between items-center pt-2 font-semibold">
+        <p class="text-sm text-slate-700">{{ bottomContentLeft() }}</p>
+        <p class="text-sm text-slate-800">{{ bottomContentRight() }}</p>
+    </div>
+</div>
