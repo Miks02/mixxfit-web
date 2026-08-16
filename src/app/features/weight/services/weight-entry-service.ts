@@ -11,6 +11,7 @@ import { CreateWeightRequest } from '../models/weight-create-request';
 import { WeightEntryDetails } from '../models/weight-entry-details';
 import { WeightListDetails } from '../models/weight-list-details';
 import { WeightSummary } from '../models/weight-summary';
+import { format } from 'date-fns'
 
 @Injectable({
     providedIn: 'root',
@@ -32,6 +33,13 @@ export class WeightEntryService {
                 this.userState.updateUserDetails({currentWeight: res.currentWeight.weight})
                 return res;
             },
+            select: (data) => ({
+                ...data,
+                currentWeight: {
+                    ...data.currentWeight,
+                    createdAt: format(data.currentWeight.createdAt, 'MMM d, yyyy')
+                }
+            }),
             enabled: targetWeight() !== undefined
         }));
     }
