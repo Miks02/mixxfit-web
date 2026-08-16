@@ -25,10 +25,11 @@ import { LayoutState } from '../../../../layout/services/layout-state';
 import { WeightChart } from "../../components/weight-chart/weight-chart";
 import { createTargetWeightForm, createWeightEntryForm } from "../../factories/weight-form-factories";
 import { WeightEntryService } from '../../services/weight-entry-service';
+import { WeightPageCard } from "@features/weight/components/weight-page-card/weight-page-card";
 
 @Component({
     selector: 'app-weight-page',
-    imports: [WeightChart, NgIcon, ReactiveFormsModule, DatePipe, DecimalPipe, SlicePipe, Modal, FormsModule, NgxSkeletonLoaderComponent, Button],
+    imports: [WeightChart, NgIcon, ReactiveFormsModule, DatePipe, DecimalPipe, SlicePipe, Modal, FormsModule, NgxSkeletonLoaderComponent, Button, WeightPageCard],
     templateUrl: './weight-page.html',
     styleUrl: './weight-page.css',
     providers: [provideIcons({faSolidScaleUnbalanced, faSolidBullseye, faSolidMagnifyingGlassChart, faSolidClock, faSolidWeightScale, faSolidNoteSticky, faSolidGhost, faSolidChevronLeft, faSolidChevronRight, faSolidChartLine})]
@@ -63,9 +64,23 @@ export class WeightPage  {
     weightLogs = computed(() => this.weightListDetails.data()?.weightLogs);
     firstEntry = computed(() => this.weightSummary.data()?.firstEntry);
     currentWeight = computed(() => this.weightSummary.data()?.currentWeight);
-    progress = computed(() => this.weightSummary.data()?.progress);
     weightChart = computed(() => this.weightSummary.data()?.weightChart);
-    typewriterElements = viewChildren<ElementRef>('typewriter');
+    progress = computed(() => {
+        const progress = this.weightSummary.data()?.progress;
+
+        if(this.targetWeight() === undefined || progress === undefined)
+            return 'Set target weight'
+
+        if (progress === 0)
+            return 'Log more entries to see progress'
+
+        if(progress > 0)
+            return `+ ${progress}% kg`;
+        if(progress < 0)
+            return `- ${-progress} kg`;
+        return '0';
+    });
+
 
     constructor() {
         this.layoutState.setTitle("Weight Tracking");
@@ -84,12 +99,6 @@ export class WeightPage  {
             if (selected !== null && years && !years.includes(selected)) {
                 this.selectedYear.set(null);
             }
-        });
-
-        afterNextRender(() => {
-            this.typewriterElements().forEach((el: ElementRef) => {
-                el.nativeElement.style.setProperty('--target-width', el.nativeElement.scrollWidth + 'px');
-            });
         });
     }
 

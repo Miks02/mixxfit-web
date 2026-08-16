@@ -1,9 +1,9 @@
 import { Component, computed, input, output } from '@angular/core';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import { faSolidBullseye, faSolidWeightScale } from '@ng-icons/font-awesome/solid';
+import { faSolidBullseye, faSolidScaleUnbalanced, faSolidWeightScale } from '@ng-icons/font-awesome/solid';
 import { Button } from '@shared';
 
-type IconName = 'faSolidBullseye' | 'faSolidWeightScale';
+type IconName = 'faSolidBullseye' | 'faSolidWeightScale' | 'faSolidScaleUnbalanced';
 type MainColor = "violet" | "red" | "emerald"
 
 @Component({
@@ -12,7 +12,8 @@ type MainColor = "violet" | "red" | "emerald"
     providers: [
         provideIcons({
             faSolidWeightScale,
-            faSolidBullseye
+            faSolidBullseye,
+            faSolidScaleUnbalanced
         }),
     ],
     templateUrl: './weight-page-card.html',
@@ -38,7 +39,7 @@ export class WeightPageCard {
         red: 'bg-red-100',
         emerald: 'bg-emerald-100',
     };
-    
+
     private iconColorMap: Record<MainColor, string> = {
         violet: 'text-violet-700!',
         red: 'text-red-700!',
