@@ -42,7 +42,6 @@ export class WeightEntryService {
                 const currentWeight = res.currentWeight?.weight ?? null;
                 if (currentWeight)
                     this.userState.updateUserDetails({ currentWeight: currentWeight });
-                console.log(res);
                 return res;
             },
             select: (data) => ({
@@ -88,7 +87,7 @@ export class WeightEntryService {
     >(() => ({
         mutationFn: async (request: CreateWeightRequest) =>
             await lastValueFrom(this.addWeightEntry(request)),
-        onSuccess: (res) => {
+        onSuccess: () => {
             this.queryClient.invalidateQueries({ queryKey: ['weight-summary'] });
         },
     }));
