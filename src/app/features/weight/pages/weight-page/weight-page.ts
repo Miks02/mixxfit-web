@@ -11,8 +11,10 @@ import {
     WritableSignal,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { QuickLog } from '@features/weight/components/quick-log/quick-log';
 import { QuickTipsCard } from '@features/weight/components/quick-tips-card/quick-tips-card';
+import { SetTargetModal } from '@features/weight/components/set-target-modal/set-target-modal';
 import { WeightPageCard } from '@features/weight/components/weight-page-card/weight-page-card';
 import { WeightRecord } from '@features/weight/models/weight-record';
 import { NgIcon, provideIcons } from '@ng-icons/core';
@@ -37,12 +39,7 @@ import { NotificationService } from '../../../../core/services/notification-serv
 import { UserState } from '../../../../core/states/user-state';
 import { LayoutState } from '../../../../layout/services/layout-state';
 import { WeightChart } from '../../components/weight-chart/weight-chart';
-import {
-    createTargetWeightForm,
-    createWeightEntryForm,
-} from '../../factories/weight-form-factories';
 import { WeightEntryService } from '../../services/weight-entry-service';
-import { SetTargetModal } from '@features/weight/components/set-target-modal/set-target-modal';
 
 @Component({
     selector: 'app-weight-page',
@@ -59,6 +56,7 @@ import { SetTargetModal } from '@features/weight/components/set-target-modal/set
         WeightPageCard,
         QuickTipsCard,
         SetTargetModal,
+        QuickLog,
     ],
     templateUrl: './weight-page.html',
     styleUrl: './weight-page.css',
@@ -79,7 +77,7 @@ import { SetTargetModal } from '@features/weight/components/set-target-modal/set
 })
 export class WeightPage {
     isControlValid = isControlValid;
-    @ViewChild('quickLog') quickLogRef!: ElementRef;
+    @ViewChild('quickLog', { read: ElementRef }) quickLogRef!: ElementRef;
 
     windowWidth = toSignal(
         fromEvent(window, 'resize').pipe(
@@ -92,15 +90,12 @@ export class WeightPage {
     private layoutState = inject(LayoutState);
     private weightService = inject(WeightEntryService);
     private userState = inject(UserState);
-    private fb = inject(FormBuilder);
     private notificationService = inject(NotificationService);
 
     isModalOpen = signal(false);
     selectedWeightEntry: WritableSignal<WeightRecord | null> = signal(null);
     user = this.userState.userDetails;
 
-    form = createWeightEntryForm(this.fb);
-    targetWeightForm = createTargetWeightForm(this.fb);
     isTargetFormOpen = signal(false);
 
     selectedYear: WritableSignal<number | null> = signal(null);
@@ -188,28 +183,6 @@ export class WeightPage {
         });
     }
 
-    onSubmit() {
-        if (this.form.invalid) return;
-
-        this.weightService.addWeightEntryMutation.mutate(this.form.value, {
-            onSuccess: () => {
-                this.form.reset();
-                const selMonth = this.selectedMonth();
-                const selYear = this.selectedYear();
-
-                if (selMonth === null && selYear === null) {
-                    this.notificationService.showSuccess('Weight entry saved');
-                    return;
-                }
-                this.notificationService.showSuccess('New weight entry saved. Update your filters');
-            },
-            onError: (err) => {
-                if (err.errorCode === 'WeightEntry.LimitReached')
-                    this.notificationService.showInfo('You can only log weight once per day');
-            },
-        });
-    }
-
     loadWeightEntry(id: number) {
         const logs = this.weightLogs();
 
@@ -237,8 +210,8 @@ export class WeightPage {
     getTargetWeightMessage = computed(() => {
         const currentWeight = this.weightSummary.data()?.currentWeight?.weight;
 
-        if(!this.targetWeight() || !currentWeight) return ''
-        
+        if (!this.targetWeight() || !currentWeight) return '';
+
         if (this.targetWeight() === currentWeight) return 'You have reached your goal, well done!';
         return 'Keep going you can do it!';
     });

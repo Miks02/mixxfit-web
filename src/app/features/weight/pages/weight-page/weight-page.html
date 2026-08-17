@@ -1,5 +1,5 @@
 <div #weightPage class="flex flex-col flex-wrap gap-6">
-    <div class="flex gap-6 flex-col md:flex-row">
+    <div class="flex gap-6 flex-wrap">
         <app-weight-page-card
             mainColor="violet"
             title="Current weight"
@@ -13,7 +13,7 @@
             buttonText="Quick log"
             [hasButton]="showQuickLog()"
             (clicked)="onQuickLog()"
-            class="grow"
+            class="flex-2"
         ></app-weight-page-card>
         <app-weight-page-card
             mainColor="emerald"
@@ -28,9 +28,9 @@
             (clicked)="onSetTarget()"
             buttonText="Set target"
             icon="faSolidBullseye"
-            class="grow"
+            class="flex-2"
         ></app-weight-page-card>
-        <app-quick-tips-card></app-quick-tips-card>
+        <app-quick-tips-card class="flex-1"></app-quick-tips-card>
     </div>
 
     <div class="flex gap-6 flex-wrap justify-center max-h-100">
@@ -170,99 +170,7 @@
             </div>
         </div>
 
-        <div
-            #quickLog
-            class="bg-slate-200 rounded-lg md:rounded-2xl shadow-xl transition-shadow duration-200 hover:shadow-2xl grow"
-        >
-            <div
-                class="flex justify-between rounded-t-lg md:rounded-t-2xl md:bg-linear-to-br from-violet-500 to-violet-400 w-full px-4 py-2"
-            >
-                <h1 class="font-bold text-xl text-slate-800 md:text-slate-200">Quick log</h1>
-            </div>
-
-            <div class="p-2 sm:p-4">
-                <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-3 sm:space-y-4">
-                    <label class="flex flex-col gap-2">
-                        <span class="text-sm font-medium text-slate-700">Weight (kg)</span>
-                        <div
-                            [class.border-red-500]="!isControlValid('weight', form)"
-                            [class.border-transparent]="isControlValid('weight', form)"
-                            class="flex items-center gap-2 sm:gap-4 shadow-md bg-linear-to-br from-white to-slate-50 rounded-lg px-3 py-3 sm:px-4 sm:py-4 transition duration-200 border border-transparent focus-within:outline outline-amber-400"
-                        >
-                            <div class="flex justify-center">
-                                <ng-icon
-                                    name="faSolidWeightScale"
-                                    class="text-amber-600/80! text-xl"
-                                ></ng-icon>
-                            </div>
-                            <input
-                                formControlName="weight"
-                                type="number"
-                                step="0.1"
-                                name="weight"
-                                class="flex-1 bg-transparent outline-none text-base sm:text-lg min-w-0"
-                                placeholder="Current weight"
-                            />
-                        </div>
-                    </label>
-
-                    <label class="flex flex-col gap-2">
-                        <span class="text-sm font-medium text-slate-700">Time</span>
-                        <div
-                            [class.border-red-500]="!isControlValid('time', form)"
-                            [class.border-transparent]="isControlValid('time', form)"
-                            class="flex items-center gap-2 sm:gap-4 shadow-md bg-linear-to-br from-white to-slate-50 rounded-lg px-3 py-3 sm:px-4 sm:py-4 transition-colors border duration-200 focus-within:outline outline-amber-400"
-                        >
-                            <div class="flex justify-center">
-                                <ng-icon
-                                    name="faSolidClock"
-                                    class="text-amber-600/80! text-xl"
-                                ></ng-icon>
-                            </div>
-                            <input
-                                formControlName="time"
-                                type="time"
-                                name="time"
-                                class="flex-1 bg-transparent outline-none text-base sm:text-lg min-w-0"
-                            />
-                        </div>
-                    </label>
-
-                    <label class="flex flex-col gap-2">
-                        <span class="text-sm font-medium text-slate-700">Notes</span>
-                        <div
-                            [class.border-red-500]="!isControlValid('notes', form)"
-                            [class.border-transparent]="isControlValid('notes', form)"
-                            class="flex items-start gap-2 sm:gap-4 shadow-md bg-linear-to-br from-white to-slate-50 rounded-lg px-3 py-3 sm:px-4 sm:py-4 transition-colors duration-200 border focus-within:outline outline-amber-400"
-                        >
-                            <div class="flex justify-center mt-1">
-                                <ng-icon
-                                    name="faSolidNoteSticky"
-                                    class="text-amber-600/80! text-xl"
-                                ></ng-icon>
-                            </div>
-                            <textarea
-                                formControlName="notes"
-                                name="notes"
-                                rows="1"
-                                class="flex-1 bg-transparent outline-none resize-none text-base sm:text-lg min-w-0"
-                                placeholder="Optional notes (e.g. after workout, fasting)"
-                            ></textarea>
-                        </div>
-                    </label>
-
-                    <div class="flex justify-center pt-2">
-                        <app-button
-                            buttonSize="sm"
-                            htmlType="submit"
-                            label="Save Entry"
-                            buttonType="primary"
-                            [disabled]="form.invalid"
-                        ></app-button>
-                    </div>
-                </form>
-            </div>
-        </div>
+        <app-quick-log #quickLog class="grow md:grow-0"></app-quick-log>
     </div>
 </div>
 
