@@ -30,7 +30,9 @@ export class WeightEntryService {
                 const res = await lastValueFrom(this.getMyWeightSummary(month(), year(), targetWeight()));
                 this.queryClient.setQueryData(['weight-list-details', month(), year()], res.weightListDetails);
                 this.queryClient.setQueryData(['weight-chart', targetWeight()], res.weightChart)
-                this.userState.updateUserDetails({currentWeight: res.currentWeight.weight})
+                const currentWeight = res.currentWeight?.weight ?? null;
+                if(currentWeight)
+                    this.userState.updateUserDetails({currentWeight: currentWeight})
                 return res;
             },
             select: (data) => ({
@@ -38,6 +40,10 @@ export class WeightEntryService {
                 currentWeight: {
                     ...data.currentWeight,
                     createdAt: format(data.currentWeight.createdAt, 'MMM d, yyyy')
+                },
+                weightDelta: {
+                    ...data.weightDelta,
+                    createdAt: format(data.weightDelta.createdAt, "MMM d, yyyy")
                 }
             }),
             enabled: targetWeight() !== undefined
