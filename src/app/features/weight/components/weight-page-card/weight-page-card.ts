@@ -31,6 +31,7 @@ export class WeightPageCard {
     buttonText = input<string>();
     mainColor = input.required<MainColor>();
     clicked = output<void>();
+    hasButton = input<boolean>(false);
 
     onClick = () => this.clicked.emit();
 
@@ -48,5 +49,4 @@ export class WeightPageCard {
 
     iconWrapperColor = computed(() => this.iconWrapperColorMap[this.mainColor()]);
     iconColor = computed(() => this.iconColorMap[this.mainColor()]);
-
 }
