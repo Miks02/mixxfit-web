@@ -7,15 +7,15 @@ export type UserDetailsDto = {
     email: string,
     imagePath: string | null,
 
-    gender?: Gender,
-    currentWeight?: number,
-    targetWeight?: number,
-    height?: number,
-    dailyCalorieGoal?: number,
+    gender: Gender | null,
+    currentWeight: number | null,
+    targetWeight: number | null,
+    height: number | null,
+    dailyCalorieGoal: number | null,
 
     accountStatus: AccountStatus,
-    dateOfBirth?: string,
-    age?: number,
+    dateOfBirth: string | null,
+    age: number | null,
 
     registeredAt: string
 }
