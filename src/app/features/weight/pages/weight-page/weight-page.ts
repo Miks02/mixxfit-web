@@ -1,8 +1,21 @@
-import { DatePipe, DecimalPipe, SlicePipe } from "@angular/common";
-import { afterNextRender, Component, computed, effect, ElementRef, inject, Signal, signal, viewChildren, WritableSignal } from '@angular/core';
+import { DatePipe, SlicePipe } from '@angular/common';
+import {
+    Component,
+    computed,
+    effect,
+    ElementRef,
+    inject,
+    Signal,
+    signal,
+    ViewChild,
+    WritableSignal,
+} from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { WeightRecord } from "@features/weight/models/weight-record";
-import { NgIcon, provideIcons } from "@ng-icons/core";
+import { QuickTipsCard } from '@features/weight/components/quick-tips-card/quick-tips-card';
+import { WeightPageCard } from '@features/weight/components/weight-page-card/weight-page-card';
+import { WeightRecord } from '@features/weight/models/weight-record';
+import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
     faSolidBullseye,
     faSolidChartLine,
@@ -13,29 +26,66 @@ import {
     faSolidMagnifyingGlassChart,
     faSolidNoteSticky,
     faSolidScaleUnbalanced,
-    faSolidWeightScale
-} from "@ng-icons/font-awesome/solid";
+    faSolidWeightScale,
+} from '@ng-icons/font-awesome/solid';
 import { Button, Modal, ModalData, ModalType } from '@shared';
 import { NgxSkeletonLoaderComponent } from 'ngx-skeleton-loader';
+import { fromEvent, map, startWith } from 'rxjs';
 import { isControlValid } from '../../../../core/helpers/form-helpers';
 import { formatDate } from '../../../../core/helpers/utility';
 import { NotificationService } from '../../../../core/services/notification-service';
 import { UserState } from '../../../../core/states/user-state';
 import { LayoutState } from '../../../../layout/services/layout-state';
-import { WeightChart } from "../../components/weight-chart/weight-chart";
-import { createTargetWeightForm, createWeightEntryForm } from "../../factories/weight-form-factories";
+import { WeightChart } from '../../components/weight-chart/weight-chart';
+import {
+    createTargetWeightForm,
+    createWeightEntryForm,
+} from '../../factories/weight-form-factories';
 import { WeightEntryService } from '../../services/weight-entry-service';
-import { WeightPageCard } from "@features/weight/components/weight-page-card/weight-page-card";
 
 @Component({
     selector: 'app-weight-page',
-    imports: [WeightChart, NgIcon, ReactiveFormsModule, DatePipe, DecimalPipe, SlicePipe, Modal, FormsModule, NgxSkeletonLoaderComponent, Button, WeightPageCard],
+    imports: [
+        WeightChart,
+        NgIcon,
+        ReactiveFormsModule,
+        DatePipe,
+        SlicePipe,
+        Modal,
+        FormsModule,
+        NgxSkeletonLoaderComponent,
+        Button,
+        WeightPageCard,
+        QuickTipsCard,
+    ],
     templateUrl: './weight-page.html',
     styleUrl: './weight-page.css',
-    providers: [provideIcons({faSolidScaleUnbalanced, faSolidBullseye, faSolidMagnifyingGlassChart, faSolidClock, faSolidWeightScale, faSolidNoteSticky, faSolidGhost, faSolidChevronLeft, faSolidChevronRight, faSolidChartLine})]
+    providers: [
+        provideIcons({
+            faSolidScaleUnbalanced,
+            faSolidBullseye,
+            faSolidMagnifyingGlassChart,
+            faSolidClock,
+            faSolidWeightScale,
+            faSolidNoteSticky,
+            faSolidGhost,
+            faSolidChevronLeft,
+            faSolidChevronRight,
+            faSolidChartLine,
+        }),
+    ],
 })
-export class WeightPage  {
-    isControlValid = isControlValid
+export class WeightPage {
+    isControlValid = isControlValid;
+    @ViewChild('quickLog') quickLogRef!: ElementRef;
+
+    windowWidth = toSignal(
+        fromEvent(window, 'resize').pipe(
+            map(() => window.innerWidth),
+            startWith(window.innerWidth),
+        ),
+        { initialValue: window.innerWidth },
+    );
 
     private layoutState = inject(LayoutState);
     private weightService = inject(WeightEntryService);
@@ -57,38 +107,72 @@ export class WeightPage  {
     months = computed(() => this.weightListDetails.data()?.months);
     years = computed(() => this.weightSummary.data()?.years);
     targetWeight = computed(() => this.user()?.targetWeight);
+    targetWeightDescription = computed(() => {
+        const targetWeight = this.targetWeight();
 
-    weightSummary = this.weightService.weightSummaryQuery(this.selectedMonth, this.selectedYear, this.targetWeight as Signal<number | null>);
-    weightListDetails = this.weightService.weightListDetailsQuery(this.selectedMonth, this.selectedYear);
+        if (!targetWeight) return 'Not set';
 
-    weightLogs = computed(() => this.weightListDetails.data()?.weightLogs);
-    firstEntry = computed(() => this.weightSummary.data()?.firstEntry);
-    currentWeight = computed(() => this.weightSummary.data()?.currentWeight);
-    weightChart = computed(() => this.weightSummary.data()?.weightChart);
-    progress = computed(() => {
-        const progress = this.weightSummary.data()?.progress;
-
-        if(this.targetWeight() === undefined || progress === undefined)
-            return 'Set target weight'
-
-        if (progress === 0)
-            return 'Log more entries to see progress'
-
-        if(progress > 0)
-            return `+ ${progress}% kg`;
-        if(progress < 0)
-            return `- ${-progress} kg`;
-        return '0';
+        return `${targetWeight} kg`;
     });
 
+    weightSummary = this.weightService.weightSummaryQuery(
+        this.selectedMonth,
+        this.selectedYear,
+        this.targetWeight as Signal<number | null>,
+    );
+    weightListDetails = this.weightService.weightListDetailsQuery(
+        this.selectedMonth,
+        this.selectedYear,
+    );
+
+    weightLogs = computed(() => this.weightListDetails.data()?.weightLogs);
+
+    currentWeight = computed(() => {
+        const currentWeight = this.weightSummary.data()?.currentWeight;
+        if (!currentWeight) return 'Not set';
+
+        return currentWeight?.weight.toString() + ' kg';
+    });
+
+    currentWeightCreatedAt = computed(() => {
+        const currentWeight = this.weightSummary.data()?.currentWeight;
+        if (!currentWeight) return 'Not available';
+
+        return currentWeight.createdAt;
+    });
+
+    weightDelta = computed(() => {
+        const weightDelta = this.weightSummary.data()?.weightDelta;
+
+        if (!weightDelta) return '';
+
+        if (weightDelta.delta < 0)
+            return `- ${-weightDelta.delta} kg since ` + weightDelta?.createdAt;
+
+        return `+ ${weightDelta.delta} kg since ` + weightDelta?.createdAt;
+    });
+    weightChart = computed(() => {
+        console.log(this.weightSummary.data()?.weightChart);
+        return this.weightSummary.data()?.weightChart;
+    });
+    progress = computed(() => {
+        const targetWeight = this.targetWeight();
+        const currentWeight = this.weightSummary.data()?.currentWeight;
+
+        if (!targetWeight) return 'Set your target';
+
+        if (!currentWeight) return '';
+
+        return (currentWeight.weight - targetWeight).toString() + ' kg to reach target';
+    });
 
     constructor() {
-        this.layoutState.setTitle("Weight Tracking");
+        this.layoutState.setTitle('Weight Tracking');
 
         effect(() => {
             const months = this.convertedMonths();
             const selected = this.selectedMonth();
-            if (selected !== null && months && !months.some(m => m.value === selected)) {
+            if (selected !== null && months && !months.some((m) => m.value === selected)) {
                 this.selectedMonth.set(null);
             }
         });
@@ -103,8 +187,7 @@ export class WeightPage  {
     }
 
     onSubmit() {
-        if(this.form.invalid)
-            return;
+        if (this.form.invalid) return;
 
         this.weightService.addWeightEntryMutation.mutate(this.form.value, {
             onSuccess: () => {
@@ -113,46 +196,16 @@ export class WeightPage  {
                 const selYear = this.selectedYear();
 
                 if (selMonth === null && selYear === null) {
-                    this.notificationService.showSuccess("Weight entry saved");
+                    this.notificationService.showSuccess('Weight entry saved');
                     return;
                 }
-                this.notificationService.showSuccess("New weight entry saved. Update your filters");
+                this.notificationService.showSuccess('New weight entry saved. Update your filters');
             },
             onError: (err) => {
-                if(err.errorCode === "WeightEntry.LimitReached")
-                    this.notificationService.showInfo("You can only log weight once per day")
-            }
+                if (err.errorCode === 'WeightEntry.LimitReached')
+                    this.notificationService.showInfo('You can only log weight once per day');
+            },
         });
-
-    }
-
-    enableTargetWeightEdit() {
-        if(this.isTargetFormOpen()) {
-            this.isTargetFormOpen.set(false);
-            return;
-        }
-
-        this.isTargetFormOpen.set(true);
-        const current = this.targetWeight();
-        if(current) {
-            this.targetWeightForm.patchValue({targetWeight: current});
-        }
-    }
-
-    saveTargetWeight() {
-        if(this.targetWeightForm.invalid)
-            return;
-        this.weightService.updateTargetWeightMutation.mutate(this.targetWeightForm.value, {
-            onSuccess: () => {
-                this.notificationService.showSuccess("Target weight updated successfully");
-                this.isTargetFormOpen.set(false);
-            }
-        });
-    }
-
-    cancelTargetWeightEdit() {
-        this.isTargetFormOpen.set(false);
-        this.targetWeightForm.reset();
     }
 
     loadWeightEntry(id: number) {
@@ -160,7 +213,7 @@ export class WeightPage  {
 
         const selectedLog = logs?.find((l) => l.id == id);
         if (!selectedLog) {
-            this.notificationService.showError("Requested weight log not found. Please try again");
+            this.notificationService.showError('Requested weight log not found. Please try again');
             return;
         }
         this.selectedWeightEntry.set(selectedLog);
@@ -169,26 +222,26 @@ export class WeightPage  {
 
     deleteWeightEntry() {
         let selected = this.selectedWeightEntry();
-        if(!selected)
-            return;
+        if (!selected) return;
 
         this.weightService.deleteWeightEntryMutation.mutate(selected.id, {
             onSuccess: () => {
                 this.isModalOpen.set(false);
-                this.notificationService.showSuccess("Weight log has been deleted successfully")
-            }
+                this.notificationService.showSuccess('Weight log has been deleted successfully');
+            },
         });
     }
 
     getTargetWeightMessage = computed(() => {
-        if(this.targetWeight() === this.currentWeight()?.weight)
-            return "You have reached your goal, well done!";
-        return "Keep going you can do it!";
-    })
+        const currentWeight = this.weightSummary.data()?.currentWeight?.weight;
+
+        if (this.targetWeight() === currentWeight) return 'You have reached your goal, well done!';
+        return 'Keep going you can do it!';
+    });
 
     buildModal = computed((): ModalData => {
         const entry = this.selectedWeightEntry();
-        const entryDate = formatDate(entry?.createdAt!)
+        const entryDate = formatDate(entry?.createdAt!);
 
         return {
             title: `${entry?.weight} KG | ${entry?.timeLogged.substring(0, 5)} | ${entryDate}`,
@@ -197,16 +250,23 @@ export class WeightPage  {
             primaryActionLabel: 'Confirm',
             secondaryActionLabel: 'Close',
             primaryAction: () => this.deleteWeightEntry(),
-            secondaryAction: () => this.isModalOpen.set(false)
+            secondaryAction: () => this.isModalOpen.set(false),
         };
-    })
+    });
 
     convertedMonths = computed(() => {
         const months = this.months();
-        return months?.map(m => ({
+        return months?.map((m) => ({
             value: m,
-            label:  new Intl.DateTimeFormat('en-US', { month: 'long' }).format(new Date(2000, m - 1))
-        }))
-    })
+            label: new Intl.DateTimeFormat('en-US', { month: 'long' }).format(
+                new Date(2000, m - 1),
+            ),
+        }));
+    });
 
+    showQuickLog = computed(() => this.windowWidth() < 768);
+
+    onQuickLog() {
+        this.quickLogRef.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
 }

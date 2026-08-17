@@ -1,16 +1,18 @@
-<div class="flex flex-col flex-wrap gap-6">
+<div #weightPage class="flex flex-col flex-wrap gap-6">
     <div class="flex gap-6 flex-col md:flex-row">
         <app-weight-page-card
             mainColor="violet"
             title="Current weight"
             subtitle="Latest body check"
             bottomContentLeft="Last measured at"
-            [value]="currentWeight()?.weight! + ' kg'"
-            metadata="-4kg since last month"
-            [bottomContentRight]="weightSummary.data()?.currentWeight?.createdAt!"
+            [value]="currentWeight()"
+            [metadata]="weightDelta()!"
+            [bottomContentRight]="currentWeightCreatedAt()"
             [isLoading]="weightSummary.isLoading()"
             icon="faSolidScaleUnbalanced"
             buttonText="Quick log"
+            [hasButton]="showQuickLog()"
+            (clicked)="onQuickLog()"
             class="grow"
         ></app-weight-page-card>
         <app-weight-page-card
@@ -18,15 +20,16 @@
             title="Target weight"
             subtitle="Track your progress"
             bottomContentLeft="Progress"
-            [value]="targetWeight() + ' kg'"
-            [metadata]="progress()"
+            [value]="targetWeightDescription()"
+            [metadata]="progress()!"
             [bottomContentRight]="getTargetWeightMessage()"
             [isLoading]="weightSummary.isLoading()"
+            [hasButton]="true"
             buttonText="Set target"
             icon="faSolidBullseye"
             class="grow"
         ></app-weight-page-card>
-
+        <app-quick-tips-card></app-quick-tips-card>
     </div>
 
     <div class="flex gap-6 flex-wrap justify-center max-h-100">
@@ -167,6 +170,7 @@
         </div>
 
         <div
+            #quickLog
             class="bg-slate-200 rounded-lg md:rounded-2xl shadow-xl transition-shadow duration-200 hover:shadow-2xl grow"
         >
             <div
