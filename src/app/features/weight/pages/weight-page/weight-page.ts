@@ -42,6 +42,7 @@ import {
     createWeightEntryForm,
 } from '../../factories/weight-form-factories';
 import { WeightEntryService } from '../../services/weight-entry-service';
+import { SetTargetModal } from '@features/weight/components/set-target-modal/set-target-modal';
 
 @Component({
     selector: 'app-weight-page',
@@ -57,6 +58,7 @@ import { WeightEntryService } from '../../services/weight-entry-service';
         Button,
         WeightPageCard,
         QuickTipsCard,
+        SetTargetModal,
     ],
     templateUrl: './weight-page.html',
     styleUrl: './weight-page.css',
@@ -163,7 +165,7 @@ export class WeightPage {
 
         if (!currentWeight) return '';
 
-        return (currentWeight.weight - targetWeight).toString() + ' kg to reach target';
+        return (targetWeight - currentWeight.weight).toString() + ' kg left to reach target';
     });
 
     constructor() {
@@ -235,6 +237,8 @@ export class WeightPage {
     getTargetWeightMessage = computed(() => {
         const currentWeight = this.weightSummary.data()?.currentWeight?.weight;
 
+        if(!this.targetWeight() || !currentWeight) return ''
+        
         if (this.targetWeight() === currentWeight) return 'You have reached your goal, well done!';
         return 'Keep going you can do it!';
     });
@@ -268,5 +272,9 @@ export class WeightPage {
 
     onQuickLog() {
         this.quickLogRef.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    onSetTarget() {
+        this.isTargetFormOpen.set(true);
     }
 }

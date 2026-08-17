@@ -21,10 +21,11 @@
             subtitle="Track your progress"
             bottomContentLeft="Progress"
             [value]="targetWeightDescription()"
-            [metadata]="progress()!"
-            [bottomContentRight]="getTargetWeightMessage()"
+            [metadata]="getTargetWeightMessage()"
+            [bottomContentRight]="progress()"
             [isLoading]="weightSummary.isLoading()"
             [hasButton]="true"
+            (clicked)="onSetTarget()"
             buttonText="Set target"
             icon="faSolidBullseye"
             class="grow"
@@ -268,3 +269,8 @@
 @if(isModalOpen()) {
 <app-modal (close)="isModalOpen.set(false)" [data]="buildModal()"></app-modal>
 }
+<app-set-target-modal
+    [isOpen]="isTargetFormOpen()"
+    (close)="isTargetFormOpen.set(false)"
+    [targetWeight]="targetWeight()"
+></app-set-target-modal>
