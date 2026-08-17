@@ -11,7 +11,7 @@ import { CreateWeightRequest } from '../models/weight-create-request';
 import { WeightEntryDetails } from '../models/weight-entry-details';
 import { WeightListDetails } from '../models/weight-list-details';
 import { WeightSummary } from '../models/weight-summary';
-import { format } from 'date-fns'
+import { format } from 'date-fns';
 
 @Injectable({
     providedIn: 'root',
@@ -23,30 +23,46 @@ export class WeightEntryService {
     private http = inject(HttpClient);
     private userState = inject(UserState);
 
-    weightSummaryQuery(month: Signal<number | null>, year: Signal<number | null>, targetWeight: Signal<number | null>) {
+    weightSummaryQuery(
+        month: Signal<number | null>,
+        year: Signal<number | null>,
+        targetWeight: Signal<number | null>,
+    ) {
         return injectQuery<WeightSummary, ProblemDetails>(() => ({
             queryKey: ['weight-summary', targetWeight()],
             queryFn: async () => {
-                const res = await lastValueFrom(this.getMyWeightSummary(month(), year(), targetWeight()));
-                this.queryClient.setQueryData(['weight-list-details', month(), year()], res.weightListDetails);
-                this.queryClient.setQueryData(['weight-chart', targetWeight()], res.weightChart)
+                const res = await lastValueFrom(
+                    this.getMyWeightSummary(month(), year(), targetWeight()),
+                );
+                this.queryClient.setQueryData(
+                    ['weight-list-details', month(), year()],
+                    res.weightListDetails,
+                );
+                this.queryClient.setQueryData(['weight-chart', targetWeight()], res.weightChart);
                 const currentWeight = res.currentWeight?.weight ?? null;
-                if(currentWeight)
-                    this.userState.updateUserDetails({currentWeight: currentWeight})
+                if (currentWeight)
+                    this.userState.updateUserDetails({ currentWeight: currentWeight });
+                console.log(res);
                 return res;
             },
             select: (data) => ({
                 ...data,
-                currentWeight: {
-                    ...data.currentWeight,
-                    createdAt: format(data.currentWeight.createdAt, 'MMM d, yyyy')
-                },
-                weightDelta: {
-                    ...data.weightDelta,
-                    createdAt: format(data.weightDelta.createdAt, "MMM d, yyyy")
-                }
+                currentWeight:
+                    data.currentWeight !== null
+                        ? {
+                              ...data.currentWeight,
+                              createdAt: format(data.currentWeight.createdAt, 'MMM d, yyyy'),
+                          }
+                        : null,
+                weightDelta:
+                    data.weightDelta != null
+                        ? {
+                              ...data.weightDelta,
+                              createdAt: format(data.weightDelta.createdAt, 'MMM d, yyyy'),
+                          }
+                        : null,
             }),
-            enabled: targetWeight() !== undefined
+            enabled: targetWeight() !== undefined,
         }));
     }
 
@@ -54,9 +70,8 @@ export class WeightEntryService {
         return injectQuery<WeightListDetails, ProblemDetails>(() => ({
             queryKey: ['weight-list-details', month(), year()],
             queryFn: async () => await lastValueFrom(this.getMyWeightLogs(month(), year())),
-            enabled: month() !== null || year() !== null
+            enabled: month() !== null || year() !== null,
         }));
-
     }
 
     weightChartQuery(targetWeight: Signal<number | null>) {
@@ -66,63 +81,70 @@ export class WeightEntryService {
         }));
     }
 
-    addWeightEntryMutation = injectMutation<WeightEntryDetails, ProblemDetails, CreateWeightRequest>(() => ({
-        mutationFn: async (request: CreateWeightRequest) => await lastValueFrom(this.addWeightEntry(request)),
+    addWeightEntryMutation = injectMutation<
+        WeightEntryDetails,
+        ProblemDetails,
+        CreateWeightRequest
+    >(() => ({
+        mutationFn: async (request: CreateWeightRequest) =>
+            await lastValueFrom(this.addWeightEntry(request)),
         onSuccess: (res) => {
-            this.queryClient.invalidateQueries({ queryKey: ['weight-summary'] })
-        }
+            this.queryClient.invalidateQueries({ queryKey: ['weight-summary'] });
+        },
     }));
 
     deleteWeightEntryMutation = injectMutation<void, ProblemDetails, number>(() => ({
         mutationFn: async (id: number) => await lastValueFrom(this.deleteWeightEntry(id)),
         onSuccess: () => {
-            this.queryClient.invalidateQueries({ queryKey: ['weight-summary'] })
-        }
+            this.queryClient.invalidateQueries({ queryKey: ['weight-summary'] });
+        },
     }));
 
-    updateTargetWeightMutation = injectMutation<TargetWeightDto, ProblemDetails, TargetWeightDto>(() => ({
-        mutationFn: async (targetWeight: TargetWeightDto) => await lastValueFrom(this.updateTargetWeight(targetWeight)),
-        onSuccess: (res) => {
-            this.queryClient.invalidateQueries({ queryKey: ['weight-chart'] })
-            this.userState.updateUserDetails({targetWeight: res.targetWeight})
-        }
-    }));
+    updateTargetWeightMutation = injectMutation<TargetWeightDto, ProblemDetails, TargetWeightDto>(
+        () => ({
+            mutationFn: async (targetWeight: TargetWeightDto) =>
+                await lastValueFrom(this.updateTargetWeight(targetWeight)),
+            onSuccess: (res) => {
+                this.queryClient.invalidateQueries({ queryKey: ['weight-chart'] });
+                this.userState.updateUserDetails({ targetWeight: res.targetWeight });
+            },
+        }),
+    );
 
-    private getMyWeightSummary(month: number | null = null, year: number | null = null, targetWeight: number | null = null) {
-        let params = new HttpParams()
+    private getMyWeightSummary(
+        month: number | null = null,
+        year: number | null = null,
+        targetWeight: number | null = null,
+    ) {
+        let params = new HttpParams();
 
-        if(month !== null)
-            params = params.set('month', month as number)
+        if (month !== null) params = params.set('month', month as number);
 
-        if(year !== null)
-            params = params.set('year', year as number)
+        if (year !== null) params = params.set('year', year as number);
 
-        if(targetWeight !== null)
-            params = params.set('targetWeight', targetWeight as number)
+        if (targetWeight !== null) params = params.set('targetWeight', targetWeight as number);
 
-        return this.http.get<WeightSummary>(`${this.api}/weight-entries`, {params})
+        return this.http.get<WeightSummary>(`${this.api}/weight-entries`, { params });
     }
 
     private getMyWeightLogs(month: number | null = null, year: number | null = null) {
         let params = new HttpParams();
 
-        if(month !== null)
-            params = params.set('month', month as number)
+        if (month !== null) params = params.set('month', month as number);
 
-        if(year !== null)
-            params = params.set('year', year as number)
+        if (year !== null) params = params.set('year', year as number);
 
-        return this.http.get<WeightListDetails>(`${this.api}/weight-entries/logs`, {params})
+        return this.http.get<WeightListDetails>(`${this.api}/weight-entries/logs`, { params });
     }
 
     private getMyWeightChart(targetWeight: number | null = null) {
         let params = new HttpParams();
 
-        if(targetWeight != null) {
-            params = params.set('targetWeight', targetWeight as number)
+        if (targetWeight != null) {
+            params = params.set('targetWeight', targetWeight as number);
         }
 
-        return this.http.get<WeightChart>(`${this.api}/weight-entries/weight-chart`, {params})
+        return this.http.get<WeightChart>(`${this.api}/weight-entries/weight-chart`, { params });
     }
 
     private addWeightEntry(request: CreateWeightRequest) {
@@ -134,7 +156,9 @@ export class WeightEntryService {
     }
 
     private updateTargetWeight(targetWeight: TargetWeightDto) {
-        return this.http.patch<TargetWeightDto>(`${this.api}/fitness-profile/target-weight`, targetWeight)
+        return this.http.patch<TargetWeightDto>(
+            `${this.api}/fitness-profile/target-weight`,
+            targetWeight,
+        );
     }
-
 }
