@@ -93,7 +93,6 @@ export class WeightEntryService {
         mutationFn: async (request: CreateWeightRequest) =>
             await lastValueFrom(this.addWeightEntry(request)),
         onSuccess: () => {
-            console.log('Servis prvo');
             this.queryClient.invalidateQueries({ queryKey: ['weight-summary'] });
         },
     }));
