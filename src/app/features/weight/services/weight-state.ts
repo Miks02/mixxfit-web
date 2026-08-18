@@ -69,7 +69,7 @@ export class WeightState {
         const currentWeight = this.weightSummary()?.currentWeight;
         if (!targetWeight) return 'Set your target';
         if (!currentWeight) return '';
-        return `${targetWeight - currentWeight.weight} kg left to reach target`;
+        return `${(targetWeight - currentWeight.weight).toFixed(0)} kg left to reach target`;
     });
 
     targetWeightMessage = computed(() => {
