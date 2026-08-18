@@ -1,4 +1,3 @@
-import { DatePipe, SlicePipe } from '@angular/common';
 import {
     Component,
     computed,
@@ -12,7 +11,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { QuickLog } from '@features/weight/components/quick-log/quick-log';
 import { QuickTipsCard } from '@features/weight/components/quick-tips-card/quick-tips-card';
-import { SetTargetModal } from '@features/weight/components/set-target-modal/set-target-modal';
+import { SetTargetForm } from '@features/weight/components/set-target-form/set-target-form';
 import { WeightChart } from '@features/weight/components/weight-chart/weight-chart';
 import { WeightEntries } from '@features/weight/components/weight-entries/weight-entries';
 import { WeightPageCard } from '@features/weight/components/weight-page-card/weight-page-card';
@@ -31,7 +30,6 @@ import {
     faSolidScaleUnbalanced,
     faSolidWeightScale,
 } from '@ng-icons/font-awesome/solid';
-import { Button, Modal } from '@shared';
 import { NgxSkeletonLoaderComponent } from 'ngx-skeleton-loader';
 import { fromEvent, map, startWith } from 'rxjs';
 import { isControlValid } from '../../../../core/helpers/form-helpers';
@@ -47,9 +45,9 @@ import { LayoutState } from '../../../../layout/services/layout-state';
         NgxSkeletonLoaderComponent,
         WeightPageCard,
         QuickTipsCard,
-        SetTargetModal,
         QuickLog,
         WeightEntries,
+        SetTargetForm,
     ],
     templateUrl: './weight-page.html',
     styleUrl: './weight-page.css',
@@ -65,7 +63,8 @@ import { LayoutState } from '../../../../layout/services/layout-state';
             faSolidChevronLeft,
             faSolidChevronRight,
             faSolidChartLine,
-        }), WeightState
+        }),
+        WeightState,
     ],
 })
 export class WeightPage {

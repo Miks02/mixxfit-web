@@ -15,6 +15,7 @@
             (clicked)="onQuickLog()"
             class="flex-2"
         ></app-weight-page-card>
+        @if(!isTargetFormOpen()) {
         <app-weight-page-card
             mainColor="emerald"
             title="Target weight"
@@ -30,6 +31,14 @@
             icon="faSolidBullseye"
             class="flex-2"
         ></app-weight-page-card>
+        } @else {
+        <app-set-target-form
+            class="flex-2"
+            [isOpen]="isTargetFormOpen()"
+            [targetWeight]="targetWeight()"
+            (closed)="isTargetFormOpen.set(false)"
+        ></app-set-target-form>
+        }
         <app-quick-tips-card class="flex-1"></app-quick-tips-card>
     </div>
 
@@ -88,17 +97,8 @@
             </div>
         </div>
 
-        <app-weight-entries
-            class="flex-2"
-        ></app-weight-entries>
+        <app-weight-entries class="flex-2"></app-weight-entries>
 
         <app-quick-log #quickLog class="grow md:grow-0"></app-quick-log>
     </div>
 </div>
-
-
-<app-set-target-modal
-    [isOpen]="isTargetFormOpen()"
-    (close)="isTargetFormOpen.set(false)"
-    [targetWeight]="targetWeight()"
-></app-set-target-modal>
