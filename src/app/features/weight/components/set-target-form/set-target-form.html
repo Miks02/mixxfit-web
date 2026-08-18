@@ -1,0 +1,111 @@
+<div
+    class="flex flex-col gap-4 justify-between bg-slate-300 rounded-lg md:rounded-2xl shadow-xl p-4 h-full grow relative md:min-w-100 flex-1"
+>
+    @if (isPending()) {
+    <div
+        class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full h-full backdrop-blur-xs flex items-center justify-center rounded-lg"
+    >
+        <span class="spinner"></span>
+    </div>
+    }
+    <div class="flex flex-row gap-4">
+        <div class="flex flex-row gap-2 justify-between w-full">
+            <div class="flex flex-row gap-3 items-center">
+                <div class="p-2 rounded-lg flex items-center bg-emerald-100">
+                    <ng-icon
+                        name="faSolidBullseye"
+                        class="text-2xl md:text-3xl text-emerald-700!"
+                    ></ng-icon>
+                </div>
+                <div class="flex flex-col font-semibold justify-center">
+                    <h2 class="text-lg md:text-xl">Set target</h2>
+                    <p class="text-xs md:text-sm text-slate-700 text-left">
+                        Enter your target weight
+                    </p>
+                </div>
+            </div>
+
+            <app-button
+                buttonType="default"
+                fontSize="xs"
+                buttonSize="sm"
+                (clicked)="onClose()"
+                label="Close"
+            ></app-button>
+        </div>
+    </div>
+
+    <form
+        [formGroup]="targetForm"
+        (ngSubmit)="onSet()"
+        class="flex flex-col gap-2 flex-1 justify-between"
+    >
+        <div class="flex flex-row justify-between items-center gap-3 flex-wrap sm:flex-nowrap">
+            <p
+                class="text-xl md:text-3xl font-bold text-slate-800 shrink-0 flex gap-2 items-center"
+            >
+                {{ targetWeight() != null ? targetWeight() + ' kg' : 'Not set' }} @if
+                (targetWeight()) {
+                <button
+                    type="button"
+                    (click)="onClear()"
+                    title="Clear"
+                    class="flex cursor-pointer items-center justify-center rounded-full bg-white text-red-600 border border-red-200 shadow-sm size-8 transition-all duration-200 hover:opacity-75 hover:shadow-md active:scale-95"
+                >
+                    <ng-icon name="faSolidTrash" class="text-lg shrink-0"></ng-icon>
+                </button>
+                }
+            </p>
+
+            <div class="flex gap-2 items-center flex-1 sm:flex-none justify-end min-w-0">
+                <div class="hidden sm:flex justify-center gap-3 items-center">
+                    <button
+                        type="submit"
+                        [disabled]="!targetForm.valid"
+                        title="Save"
+                        class="flex cursor-pointer items-center justify-center rounded-full bg-linear-to-br from-amber-500 to-amber-400 text-white shadow-md size-8 transition-all duration-200 hover:shadow-lg hover:opacity-70 active:scale-95 disabled:opacity-40 disabled:pointer-events-none disabled:grayscale"
+                    >
+                        <ng-icon name="faSolidCheck" class="text-lg shrink-0"></ng-icon>
+                    </button>
+                </div>
+
+                <div
+                    [class.border-red-500]="!isControlValid('targetWeight', targetForm)"
+                    [class.border-transparent]="isControlValid('targetWeight', targetForm)"
+                    class="flex flex-1 sm:flex-none w-10 sm:w-40 items-center gap-2 p-1 shadow-md bg-linear-to-br from-white to-slate-50 rounded-lg transition duration-200 border border-transparent focus-within:outline outline-amber-400 shrink-0 min-w-0"
+                >
+                    <div class="flex justify-center">
+                        <ng-icon
+                            name="faSolidBullseye"
+                            class="text-amber-600/80! text-xl"
+                        ></ng-icon>
+                    </div>
+                    <input
+                        formControlName="targetWeight"
+                        type="number"
+                        step="0.1"
+                        name="targetWeight"
+                        class="bg-transparent outline-none text-base min-w-0 w-full"
+                        placeholder="Target weight"
+                    />
+                </div>
+
+                <button
+                    type="submit"
+                    [disabled]="!targetForm.valid"
+                    title="Save"
+                    class="flex sm:hidden cursor-pointer items-center justify-center rounded-full bg-linear-to-br from-amber-500 to-amber-400 text-white shadow-md size-8 shrink-0 transition-all duration-200 hover:shadow-lg hover:opacity-70 active:scale-95 disabled:opacity-40 disabled:pointer-events-none disabled:grayscale"
+                >
+                    <ng-icon name="faSolidCheck" class="text-lg shrink-0"></ng-icon>
+                </button>
+            </div>
+        </div>
+
+        <div
+            class="border-t border-slate-400 flex flex-row justify-between items-center pt-2 font-semibold gap-2"
+        >
+            <p class="text-sm text-slate-700">Aim for a realistic goal</p>
+            <p class="text-sm text-slate-800">Save or clear anytime</p>
+        </div>
+    </form>
+</div>
