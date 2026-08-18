@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
-import { WeightState } from '@features/weight';
+import { WeightState } from '@features/weight/services/weight-state';
 import { createWeightEntryForm } from '@features/weight/factories/weight-form-factories';
 import { NotificationService } from '../../../../core/services/notification-service';
 import { isControlValid } from '../../../../core/helpers/form-helpers';
