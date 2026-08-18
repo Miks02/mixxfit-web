@@ -7,12 +7,14 @@ import { debounceTime } from 'rxjs';
 import { ExerciseType } from '../../workout';
 import { cardioSetFactory, exerciseEntryFormFactory, stretchingSetFactory, weightSetFactory } from '../factories/exercise-factories';
 import { ExerciseEntryItem } from '../models/exercise-entry-item';
+import { UserState } from '../../../core/states/user-state';
 
 @Injectable({
     providedIn: 'root',
 })
 export class ExerciseSessionService {
     fb = inject(FormBuilder)
+    userState = inject(UserState);
 
     readonly form = this.fb.group({
         exercises: this.fb.array([])
@@ -80,8 +82,10 @@ export class ExerciseSessionService {
     addDetails(type: ExerciseType, index: number | null = null, setDetails?: Partial<SetEntry>) {
         switch(type) {
             case ExerciseType.Weights:
-            case ExerciseType.Bodyweight:
                 this.getExerciseDetails(index).push(weightSetFactory(this.fb, setDetails?.weight, setDetails?.reps));
+                return;
+            case ExerciseType.Bodyweight:
+                this.getExerciseDetails(index).push(weightSetFactory(this.fb, this.userState.userDetails()?.currentWeight, setDetails?.reps));
                 return;
             case ExerciseType.Cardio:
                 this.getExerciseDetails(index).push(cardioSetFactory(this.fb, setDetails?.durationMinutes, setDetails?.durationSeconds, setDetails?.distance));
