@@ -7,12 +7,14 @@
         <div class="flex flex-col gap-1 items-center">
             <h1 class="font-bold text-xl text-slate-800">Weight Logs</h1>
         </div>
+        @if(areFiltersAvailable()) {
         <button
             (click)="openFilterModal()"
             class="flex p-2 bg-violet-200 rounded-lg hover:opacity-70 active:opacity-50 cursor-pointer transition duration-200"
         >
             <ng-icon name="faSolidFilter" class="text-lg text-violet-700!"></ng-icon>
         </button>
+        }
     </div>
 
     <div class="px-4 flex flex-col flex-1 grow">
@@ -41,7 +43,7 @@
                     No weight logs found
                 </h1>
                 <p class="md:text-lg sm:text-xl font-semibold text-center text-slate-600">
-                    Log your first weight entry for the current month or update your filters
+                    {{noWeightLogsMessage()}}
                 </p>
             </div>
             } @for(log of weightLogs(); track log.id) {
@@ -68,6 +70,7 @@
             </div>
             }
         </div>
+        @if(weightLogs()?.length! > 0) {
         <div class="bg-slate-300/60 rounded-xl shadow-md mx-4 my-3 px-2 md:px-6 py-3">
             <div class="flex flex-col sm:flex-row gap-4 justify-between items-center w-full">
                 <div
@@ -80,6 +83,7 @@
                 </div>
             </div>
         </div>
+        }
     </div>
 </div>
 @if(isModalOpen()) {

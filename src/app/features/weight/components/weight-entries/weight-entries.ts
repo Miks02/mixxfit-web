@@ -9,6 +9,7 @@ import { Modal, ModalData, ModalType } from '@shared';
 import { NgxSkeletonLoaderComponent } from 'ngx-skeleton-loader';
 import { NotificationService } from '../../../../core/services/notification-service';
 import { WeightEntriesFilterModal } from '../weight-entries-filter-modal/weight-entries-filter-modal';
+import { MONTHS } from '../../../../core/models/month';
 
 @Component({
     selector: 'app-weight-entries',
@@ -26,6 +27,7 @@ import { WeightEntriesFilterModal } from '../weight-entries-filter-modal/weight-
     styleUrl: './weight-entries.css',
 })
 export class WeightEntries {
+    months = MONTHS;
     private weightState = inject(WeightState);
     private notificationService = inject(NotificationService);
 
@@ -40,6 +42,26 @@ export class WeightEntries {
     selectedWeightEntry: WritableSignal<WeightRecord | null> = signal(null);
 
     appliedFilters = output<{ year: number | null; month: number | null }>();
+
+    noWeightLogsMessage = computed(() => {
+        const logs = this.weightLogs();
+        const selectedYear = this.weightState.filterParams().year;
+        const selectedMonth = this.weightState.filterParams().month;
+
+        if (!logs) return null;
+
+        if (logs.length > 0) return null;
+
+        if (!selectedYear && !selectedMonth) return 'No weight logs found. Add your first log.';
+
+        return `No weight logs found for ${this.months[selectedMonth!]} ${selectedYear}. Update your filters or add a new log.`;
+    });
+
+    areFiltersAvailable = computed(() => {
+        const selectedYear = this.selectedYearLabel();
+        const selectedMonth = this.selectedMonthLabel();
+        return selectedYear && selectedMonth;
+    });
 
     loadWeightEntry(id: number) {
         const logs = this.weightLogs();
@@ -97,5 +119,4 @@ export class WeightEntries {
         this.selectedYearLabel.set(labels.year);
         this.selectedMonthLabel.set(labels.month);
     };
-
 }
