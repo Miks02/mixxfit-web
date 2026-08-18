@@ -93,8 +93,6 @@ export class WeightPage {
 
     isTargetFormOpen = signal(false);
 
-    months = this.weightState.months;
-    years = this.weightState.years;
     targetWeight = this.weightState.targetWeight;
     targetWeightDescription = this.weightState.targetWeightDescription;
 

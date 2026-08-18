@@ -5,7 +5,6 @@ import { WeightRecord } from "./weight-record"
 
 export type WeightSummary = {
     currentWeight: WeightRecord | null,
-    years: number[],
     weightListDetails: WeightListDetails,
     weightChart: WeightChart,
     weightDelta: WeightDelta | null,

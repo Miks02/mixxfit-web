@@ -33,8 +33,6 @@ export class WeightState {
     error = this.weightSummaryQuery.error;
 
     weightLogs = computed(() => this.weightLogsQuery.data()?.weightLogs);
-    months = computed(() => this.weightSummary()?.weightListDetails?.months);
-    years = computed(() => this.weightSummary()?.years);
     yearsAndMonthsGroup = computed(() => this.weightSummary()?.yearsAndMonthsGroup);
 
     currentWeight = computed(() => {
