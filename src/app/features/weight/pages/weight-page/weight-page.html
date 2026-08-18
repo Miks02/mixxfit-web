@@ -88,95 +88,15 @@
             </div>
         </div>
 
-        <div
-            class="bg-slate-200 rounded-lg md:rounded-2xl shadow-xl transition-shadow duration-200 hover:shadow-2xl grow flex flex-col"
-        >
-            <div
-                class="flex justify-between items-center rounded-t-lg md:rounded-t-2xl md:bg-linear-to-br from-violet-500 to-violet-400 w-full px-4 py-2 flex-wrap gap-2"
-            >
-                <h1 class="font-bold text-xl text-slate-800 md:text-slate-200">Weight Logs</h1>
-                @if(years()?.length! > 0) {
-                <div class="flex gap-2 flex-wrap items-center">
-                    <select
-                        [(ngModel)]="selectedMonth"
-                        class="px-2 py-1 bg-slate-100 rounded-md shadow-md text-slate-800 font-semibold text-sm max-w-25 text-center"
-                    >
-                        <option [ngValue]="null" selected disabled hidden>
-                            {{convertedMonths()?.at(0)?.label}}
-                        </option>
-                        @for(month of convertedMonths(); track month) {
-                        <option [ngValue]="month.value">{{month.label}}</option>
-                        }
-                    </select>
-                    <select
-                        [(ngModel)]="selectedYear"
-                        class="px-2 py-1 bg-slate-100 rounded-md shadow-md text-slate-800 font-semibold text-sm text-center"
-                    >
-                        <option [ngValue]="null" selected disabled hidden>
-                            {{years()?.at(0)}}
-                        </option>
-                        @for(year of years(); track year) {
-                        <option [ngValue]="year">{{year}}</option>
-                        }
-                    </select>
-                </div>
-                }
-            </div>
-
-            <div class="p-4 flex flex-col flex-1 grow">
-                <div class="flex flex-col gap-2 flex-1 w-full sm:min-w-80 overflow-y-auto max-h-90">
-                    @if(weightLogs() === undefined) {
-                    <ngx-skeleton-loader
-                        count="5"
-                        [theme]="{
-                'height': '55px',
-                'border-radius': '8px',
-                'background': '#cbd5e199'
-            }"
-                        class="mt-5 w-[95%] mx-auto"
-                        appearance="line"
-                        class="w-full"
-                    >
-                    </ngx-skeleton-loader>
-
-                    } @else if(weightLogs()?.length! === 0) {
-                    <div class="flex flex-col gap-2 grow justify-center items-center h-full py-20">
-                        <ng-icon
-                            name="faSolidScaleUnbalanced"
-                            class="text-4xl sm:text-6xl opacity-50 text-slate-600!"
-                        ></ng-icon>
-                        <h1 class="text-xl sm:text-2xl font-semibold text-center text-slate-600">
-                            No weight logs found
-                        </h1>
-                        <p class="text-lg sm:text-xl font-semibold text-center text-slate-600">
-                            Log your first weight entry to show data
-                        </p>
-                    </div>
-                    } @for(log of weightLogs(); track log.id) {
-                    <div
-                        (click)="loadWeightEntry(log.id)"
-                        class="flex items-center justify-between w-full md:min-w-67 bg-slate-300 rounded-xl px-4 py-3 hover:bg-violet-300 transition cursor-pointer shadow-md font-semibold active:opacity-70"
-                    >
-                        <div class="flex flex-col">
-                            <p class="text-amber-700">{{log.weight}} KG</p>
-                            <p class="text-sm text-emerald-700">{{log.createdAt | date}}</p>
-                        </div>
-                        <div class="flex flex-col items-end">
-                            <p class="text-sm text-cyan-700">{{log.timeLogged | slice:0:5}}</p>
-                        </div>
-                    </div>
-                    }
-                </div>
-            </div>
-        </div>
+        <app-weight-entries
+            class="flex-2"
+        ></app-weight-entries>
 
         <app-quick-log #quickLog class="grow md:grow-0"></app-quick-log>
     </div>
 </div>
 
-@if(isModalOpen()) {
-<app-modal (close)="isModalOpen.set(false)" [data]="buildModal()"></app-modal>
-}
+
 <app-set-target-modal
     [isOpen]="isTargetFormOpen()"
     (close)="isTargetFormOpen.set(false)"
