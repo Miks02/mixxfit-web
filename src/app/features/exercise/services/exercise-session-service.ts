@@ -38,7 +38,6 @@ export class ExerciseSessionService {
 
         effect(() => {
             const exercises = this._loadedFormExercises();
-            console.log(exercises);
             if (exercises.length > 0) {
                 localStorage.setItem('exercises', JSON.stringify(exercises));
                 return;
