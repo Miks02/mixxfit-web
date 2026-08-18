@@ -51,9 +51,9 @@ export class WeightState {
         const weightDelta = this.weightSummary()?.weightDelta;
         if (!weightDelta) return '';
         if (weightDelta.delta < 0) {
-            return `- ${-weightDelta.delta} kg since ` + weightDelta.createdAt;
+            return `${-weightDelta.delta} kg lost since ` + weightDelta.createdAt;
         }
-        return `+ ${weightDelta.delta} kg since ` + weightDelta.createdAt;
+        return `${weightDelta.delta} kg gained since ` + weightDelta.createdAt;
     });
 
     weightChart = computed(() => this.weightSummary()?.weightChart);
