@@ -2,6 +2,7 @@ import { Component, computed, effect, input, output, signal, WritableSignal } fr
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { faSolidXmark } from '@ng-icons/font-awesome/solid';
 import { Button } from '@shared';
+import { MONTHS } from '../../../../core/models/month';
 
 @Component({
     selector: 'app-weight-entries-filter-modal',
@@ -93,18 +94,5 @@ export class WeightEntriesFilterModal {
         return availMonths.length > 0 ? Number(availMonths[0]) : null;
     });
 
-    months: Record<number, string> = {
-        1: 'January',
-        2: 'February',
-        3: 'March',
-        4: 'April',
-        5: 'May',
-        6: 'June',
-        7: 'July',
-        8: 'August',
-        9: 'September',
-        10: 'October',
-        11: 'November',
-        12: 'December',
-    };
+    months = MONTHS
 }

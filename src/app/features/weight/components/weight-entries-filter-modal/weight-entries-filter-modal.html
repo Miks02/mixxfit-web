@@ -40,7 +40,7 @@
             </div>
         </div>
 
-        <div class="pt-4">
+        <div class="">
             <span class="block text-xs font-semibold uppercase tracking-wide text-slate-500 mb-2">
                 Months
             </span>
@@ -53,7 +53,7 @@
                     [class.shadow-sm]="selectedMonthParam() === availableMonth"
                     [class.bg-violet-100]="selectedMonthParam() !== availableMonth"
                     [class.text-slate-600]="selectedMonthParam() !== availableMonth"
-                    class="cursor-pointer px-2 py-1.5 rounded-lg text-sm font-medium text-center transition-colors hover:bg-emerald-200 active:scale-95 shadow-all"
+                    class="cursor-pointer px-2 py-1.5 rounded-lg text-sm font-medium text-center transition-colors hover:bg-emerald-200 hover:text-slate-700 active:scale-95 shadow-all"
                 >
                     {{ months[availableMonth] }}
                 </button>
