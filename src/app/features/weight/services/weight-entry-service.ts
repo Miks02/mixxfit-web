@@ -1,6 +1,11 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable, Signal } from '@angular/core';
-import { injectMutation, injectQuery, QueryClient } from '@tanstack/angular-query-experimental';
+import {
+    CreateQueryResult,
+    injectMutation,
+    injectQuery,
+    QueryClient,
+} from '@tanstack/angular-query-experimental';
 import { lastValueFrom } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { ProblemDetails } from '../../../core/models/problem-details';
@@ -24,18 +29,21 @@ export class WeightEntryService {
     private userState = inject(UserState);
 
     weightSummaryQuery(
-        month: Signal<number | null>,
-        year: Signal<number | null>,
+        filterParams: Signal<{ year: number | null; month: number | null }>,
         targetWeight: Signal<number | null>,
     ) {
         return injectQuery<WeightSummary, ProblemDetails>(() => ({
             queryKey: ['weight-summary', targetWeight()],
             queryFn: async () => {
                 const res = await lastValueFrom(
-                    this.getMyWeightSummary(month(), year(), targetWeight()),
+                    this.getMyWeightSummary(
+                        filterParams().month,
+                        filterParams().year,
+                        targetWeight(),
+                    ),
                 );
                 this.queryClient.setQueryData(
-                    ['weight-list-details', month(), year()],
+                    ['weight-list-details', filterParams().month, filterParams().year],
                     res.weightListDetails,
                 );
                 this.queryClient.setQueryData(['weight-chart', targetWeight()], res.weightChart);
@@ -44,32 +52,29 @@ export class WeightEntryService {
                     this.userState.updateUserDetails({ currentWeight: currentWeight });
                 return res;
             },
-            select: (data) => ({
-                ...data,
-                currentWeight:
-                    data.currentWeight !== null
-                        ? {
-                              ...data.currentWeight,
-                              createdAt: format(data.currentWeight.createdAt, 'MMM d, yyyy'),
-                          }
-                        : null,
-                weightDelta:
-                    data.weightDelta != null
-                        ? {
-                              ...data.weightDelta,
-                              createdAt: format(data.weightDelta.createdAt, 'MMM d, yyyy'),
-                          }
-                        : null,
-            }),
+            select: (data) => this.projectWeightSummary(data),
             enabled: targetWeight() !== undefined,
         }));
     }
 
-    weightListDetailsQuery(month: Signal<number | null>, year: Signal<number | null>) {
+    weightListDetailsQuery(
+        filterParams: Signal<{ year: number | null; month: number | null }>,
+        summaryQueryResult: CreateQueryResult<WeightSummary, ProblemDetails>,
+    ) {
         return injectQuery<WeightListDetails, ProblemDetails>(() => ({
-            queryKey: ['weight-list-details', month(), year()],
-            queryFn: async () => await lastValueFrom(this.getMyWeightLogs(month(), year())),
-            enabled: month() !== null || year() !== null,
+            queryKey: ['weight-list-details', filterParams().month, filterParams().year],
+            queryFn: async () =>
+                await lastValueFrom(
+                    this.getMyWeightLogs(filterParams().month, filterParams().year),
+                ),
+            select: (data) => ({
+                ...data,
+                weightLogs: data.weightLogs.map((log) => ({
+                    ...log,
+                    createdAt: format(log.createdAt, 'MMM d, yyyy'),
+                })),
+            }),
+            enabled: summaryQueryResult.isSuccess(),
         }));
     }
 
@@ -88,6 +93,7 @@ export class WeightEntryService {
         mutationFn: async (request: CreateWeightRequest) =>
             await lastValueFrom(this.addWeightEntry(request)),
         onSuccess: () => {
+            console.log('Servis prvo');
             this.queryClient.invalidateQueries({ queryKey: ['weight-summary'] });
         },
     }));
@@ -159,5 +165,35 @@ export class WeightEntryService {
             `${this.api}/fitness-profile/target-weight`,
             targetWeight,
         );
+    }
+
+    private projectWeightSummary(summary: WeightSummary) {
+        return {
+            ...summary,
+            currentWeight:
+                summary.currentWeight !== null
+                    ? {
+                          ...summary.currentWeight,
+                          createdAt: format(summary.currentWeight.createdAt, 'MMM d, yyyy'),
+                      }
+                    : null,
+            weightDelta:
+                summary.weightDelta != null
+                    ? {
+                          ...summary.weightDelta,
+                          createdAt: format(summary.weightDelta.createdAt, 'MMM d, yyyy'),
+                      }
+                    : null,
+            weightListDetails: summary.weightListDetails
+                ? {
+                      ...summary.weightListDetails,
+                      weightLogs:
+                          summary.weightListDetails.weightLogs?.map((log) => ({
+                              ...log,
+                              createdAt: format(log.createdAt, 'MMM d, yyyy'),
+                          })) ?? [],
+                  }
+                : { weightLogs: [], months: [] },
+        }
     }
 }

@@ -9,4 +9,5 @@ export type WeightSummary = {
     weightListDetails: WeightListDetails,
     weightChart: WeightChart,
     weightDelta: WeightDelta | null,
+    yearsAndMonthsGroup: Record<number, number[]>
 }
