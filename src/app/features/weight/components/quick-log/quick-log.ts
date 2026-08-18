@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
-import { WeightEntryService } from '@features/weight';
+import { WeightState } from '@features/weight';
 import { createWeightEntryForm } from '@features/weight/factories/weight-form-factories';
 import { NotificationService } from '../../../../core/services/notification-service';
 import { isControlValid } from '../../../../core/helpers/form-helpers';
@@ -17,7 +17,7 @@ export class QuickLog {
     isControlValid = isControlValid;
 
     fb = inject(FormBuilder);
-    weightService = inject(WeightEntryService);
+    weightState = inject(WeightState);
     notificationService = inject(NotificationService);
 
     form = createWeightEntryForm(this.fb);
@@ -25,11 +25,10 @@ export class QuickLog {
     onSubmit() {
         if (this.form.invalid) return;
 
-        this.weightService.addWeightEntryMutation.mutate(this.form.value, {
+        this.weightState.addWeightEntry(this.form.value, {
             onSuccess: () => {
                 this.form.reset();
                 this.notificationService.showSuccess('Weight entry saved');
-                return;
             },
             onError: (err) => {
                 if (err.errorCode === 'WeightEntry.LimitReached')
