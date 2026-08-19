@@ -17,10 +17,6 @@ export class UserState {
     this._userDetails.update((current) => ({...current,...userDetails} as UserDetailsDto));
   }
 
-  resetCurrentUser() {
-    this._userDetails.set(null);
-  }
-
   isUserLoaded() {
     return this._userDetails() !== null;
   }
