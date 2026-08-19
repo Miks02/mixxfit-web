@@ -76,16 +76,22 @@ export class WeightState {
 
         if (!targetWeight) return 'Set your target';
         if (!currentWeight) return '';
-        if (currentWeight.weight === targetWeight) return 'Target reached!';
 
-        return `${(targetWeight - currentWeight.weight).toFixed(0)} kg left to reach target`;
+        const weightLeft =
+            targetWeight > currentWeight?.weight
+                ? targetWeight - currentWeight.weight
+                : currentWeight?.weight - targetWeight;
+
+        if (weightLeft === 0) return 'Congratulations!';
+
+        return `${+weightLeft.toPrecision(1)} kg left to reach target`;
     });
 
     targetWeightMessage = computed(() => {
         const currentWeight = this.weightSummary()?.currentWeight?.weight;
         if (!this.targetWeight() || !currentWeight) return '';
         if (this.targetWeight() === currentWeight) {
-            return 'You have reached your goal, well done!';
+            return 'Target reached, well done!';
         }
         return 'Keep going you can do it!';
     });
