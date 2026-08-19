@@ -4,9 +4,11 @@ import { UserState } from '../../../core/states/user-state';
 import { CreateWeightRequest } from '../models/weight-create-request';
 import { WeightEntryDetails } from '../models/weight-entry-details';
 import { WeightEntryService } from './weight-entry-service';
+import { MONTHS } from '../../../core/models/month';
 
 @Injectable()
 export class WeightState {
+    months = MONTHS;
     private weightService = inject(WeightEntryService);
     private userState = inject(UserState);
 
@@ -49,11 +51,11 @@ export class WeightState {
 
     weightDelta = computed(() => {
         const weightDelta = this.weightSummary()?.weightDelta;
-        
+
         if (!weightDelta) return '';
-        let weightLabel = 'kg'
-        if(weightDelta?.delta > 1 || weightDelta?.delta < -1) weightLabel = "kg's"
-        
+        let weightLabel = 'kg';
+        if (weightDelta?.delta > 1 || weightDelta?.delta < -1) weightLabel = "kg's";
+
         if (weightDelta.delta < 0) {
             return `${-weightDelta.delta} ${weightLabel} lost since ` + weightDelta.createdAt;
         }
@@ -71,8 +73,11 @@ export class WeightState {
     progress = computed(() => {
         const targetWeight = this.targetWeight();
         const currentWeight = this.weightSummary()?.currentWeight;
+
         if (!targetWeight) return 'Set your target';
         if (!currentWeight) return '';
+        if (currentWeight.weight === targetWeight) return 'Target reached!';
+
         return `${(targetWeight - currentWeight.weight).toFixed(0)} kg left to reach target`;
     });
 
@@ -83,6 +88,21 @@ export class WeightState {
             return 'You have reached your goal, well done!';
         }
         return 'Keep going you can do it!';
+    });
+
+    noWeightLogsMessage = computed(() => {
+        const logs = this.weightLogs();
+        const selectedYear = this.filterParams().year;
+        const selectedMonth = this.filterParams().month;
+
+        if (!logs) return null;
+
+        if (logs.length > 0) return null;
+
+        if (!selectedYear && !selectedMonth)
+            return 'Add your first weight log and start tracking your journey.';
+
+        return `No logs found for ${this.months[selectedMonth!]} ${selectedYear}. Update your filters or add a new log.`;
     });
 
     setFilters(filters: { year: number | null; month: number | null }) {
