@@ -76,6 +76,7 @@
 
             <div class="flex justify-center pt-2">
                 <app-button
+                    [isLoading]="isPending()"
                     buttonSize="sm"
                     htmlType="submit"
                     label="Save Entry"

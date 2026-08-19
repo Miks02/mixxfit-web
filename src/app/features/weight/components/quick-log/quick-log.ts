@@ -20,6 +20,8 @@ export class QuickLog {
     weightState = inject(WeightState);
     notificationService = inject(NotificationService);
 
+    isPending = this.weightState.isAddWeightEntryPending;
+
     form = createWeightEntryForm(this.fb);
 
     onSubmit() {

@@ -115,6 +115,9 @@ export class WeightState {
         this.filterParams.set(filters);
     }
 
+    isAddWeightEntryPending = this.weightService.addWeightEntryMutation.isPending;
+    isDeleteWeightEntryPending = this.weightService.deleteWeightEntryMutation.isPending;
+
     addWeightEntry(
         request: CreateWeightRequest,
         options?: {

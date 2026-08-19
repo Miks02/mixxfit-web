@@ -34,6 +34,7 @@ export class WeightEntries {
     weightLogs = this.weightState.weightLogs;
     yearsAndMonthsGroup = this.weightState.yearsAndMonthsGroup;
     noWeightLogsMessage = this.weightState.noWeightLogsMessage;
+    isLoading = this.weightState.isLoading;
 
     selectedYearLabel: WritableSignal<number | null> = signal(null);
     selectedMonthLabel: WritableSignal<string | null> = signal(null);
