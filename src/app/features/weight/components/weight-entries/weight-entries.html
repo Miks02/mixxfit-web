@@ -7,7 +7,7 @@
         <div class="flex flex-col gap-1 items-center">
             <h1 class="font-bold text-xl text-slate-800">Weight Logs</h1>
         </div>
-        @if(areFiltersAvailable()) {
+        @if(selectedMonthLabel() && selectedYearLabel()) {
         <button
             (click)="openFilterModal()"
             class="flex p-2 bg-violet-200 rounded-lg hover:opacity-70 active:opacity-50 cursor-pointer transition duration-200"
@@ -34,7 +34,7 @@
             </ngx-skeleton-loader>
 
             } @else if(weightLogs()?.length! === 0) {
-            <div class="flex flex-col gap-2 grow justify-center items-center h-full">
+            <div class="flex flex-col gap-2 py-4 md:py-0 grow justify-center items-center h-full">
                 <ng-icon
                     name="faSolidScaleUnbalanced"
                     class="text-4xl sm:text-6xl opacity-50 text-slate-600!"

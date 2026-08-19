@@ -33,6 +33,7 @@ export class WeightEntries {
 
     weightLogs = this.weightState.weightLogs;
     yearsAndMonthsGroup = this.weightState.yearsAndMonthsGroup;
+    noWeightLogsMessage = this.weightState.noWeightLogsMessage;
 
     selectedYearLabel: WritableSignal<number | null> = signal(null);
     selectedMonthLabel: WritableSignal<string | null> = signal(null);
@@ -42,26 +43,6 @@ export class WeightEntries {
     selectedWeightEntry: WritableSignal<WeightRecord | null> = signal(null);
 
     appliedFilters = output<{ year: number | null; month: number | null }>();
-
-    noWeightLogsMessage = computed(() => {
-        const logs = this.weightLogs();
-        const selectedYear = this.weightState.filterParams().year;
-        const selectedMonth = this.weightState.filterParams().month;
-
-        if (!logs) return null;
-
-        if (logs.length > 0) return null;
-
-        if (!selectedYear && !selectedMonth) return 'No weight logs found. Add your first log.';
-
-        return `No weight logs found for ${this.months[selectedMonth!]} ${selectedYear}. Update your filters or add a new log.`;
-    });
-
-    areFiltersAvailable = computed(() => {
-        const selectedYear = this.selectedYearLabel();
-        const selectedMonth = this.selectedMonthLabel();
-        return selectedYear && selectedMonth;
-    });
 
     loadWeightEntry(id: number) {
         const logs = this.weightLogs();
@@ -91,7 +72,7 @@ export class WeightEntries {
         const entry = this.selectedWeightEntry();
 
         return {
-            title: `${entry?.weight} KG | ${entry?.timeLogged.substring(0, 5)} | ${entry?.createdAt}`,
+            title: `${entry?.weight} KG | ${entry?.timeLogged.substring(0, 5)} | ${entry?.createdAt} | ${entry?.notes ?? ''}`,
             subtitle: `You are about to delete this weight entry. This action cannot be undone.`,
             type: ModalType.Warning,
             primaryActionLabel: 'Confirm',
