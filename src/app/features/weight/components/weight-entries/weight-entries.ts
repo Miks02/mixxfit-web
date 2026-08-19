@@ -36,7 +36,8 @@ export class WeightEntries {
     weightLogs = this.weightState.weightLogs;
     yearsAndMonthsGroup = this.weightState.yearsAndMonthsGroup;
     noWeightLogsMessage = this.weightState.noWeightLogsMessage;
-    isLoading = this.weightState.isLoading || this.weightState.isWeightListFetching;
+    isSummaryLoading = this.weightState.isFetching;
+    isWeightListFetching = this.weightState.isWeightListFetching;
     isDeleting = this.weightService.deleteWeightEntryMutation.isPending;
 
     selectedYearLabel: WritableSignal<number | null> = signal(null);

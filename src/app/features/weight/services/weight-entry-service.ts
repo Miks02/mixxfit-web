@@ -4,6 +4,7 @@ import {
     CreateQueryResult,
     injectMutation,
     injectQuery,
+    keepPreviousData,
     QueryClient,
 } from '@tanstack/angular-query-experimental';
 import { lastValueFrom } from 'rxjs';
@@ -75,6 +76,7 @@ export class WeightEntryService {
                 })),
             }),
             enabled: summaryQueryResult.isSuccess(),
+            placeholderData: keepPreviousData,
         }));
     }
 
@@ -193,6 +195,6 @@ export class WeightEntryService {
                           })) ?? [],
                   }
                 : { weightLogs: [], months: [] },
-        }
+        };
     }
 }

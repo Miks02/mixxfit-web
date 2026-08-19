@@ -30,12 +30,12 @@ export class WeightState {
     );
 
     weightSummary = this.weightSummaryQuery.data;
-    isLoading = this.weightSummaryQuery.isLoading;
+    isFetching = this.weightSummaryQuery.isFetching;
     isError = this.weightSummaryQuery.isError;
     error = this.weightSummaryQuery.error;
 
-    isPending = this.weightSummaryQuery.isFetching;
-    isWeightListFetching = this.weightLogsQuery.isFetching
+    isPending = this.weightSummaryQuery.isPending;
+    isWeightListFetching = this.weightLogsQuery.isFetching;
 
     weightLogs = computed(() => this.weightLogsQuery.data()?.weightLogs);
     yearsAndMonthsGroup = computed(() => this.weightSummary()?.yearsAndMonthsGroup);
