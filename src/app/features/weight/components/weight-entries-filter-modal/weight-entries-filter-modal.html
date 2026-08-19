@@ -1,0 +1,76 @@
+@if(isOpen()) {
+<div
+    class="fixed top-0 left-0 w-screen h-screen z-500 backdrop-blur-sm bg-slate-500/50"
+    (click)="onClose()"
+></div>
+<div
+    class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-slate-200 min-h-50 max-h-[85vh] flex flex-col z-1000 rounded-lg md:rounded-2xl min-w-75 md:min-w-100 overflow-hidden"
+>
+    <div
+        class="flex justify-between items-center px-4 py-2 bg-linear-to-br from-yellow-500 to-yellow-400 rounded-t-lg md:rounded-t-2xl leading-none sticky top-0 z-10"
+    >
+        <h1 class="text-lg font-bold text-slate-800">Filters</h1>
+        <button
+            (click)="onClose()"
+            class="cursor-pointer hover:text-red-600 active:opacity-70 active:text-red-600 text-red-800"
+        >
+            <ng-icon name="faSolidXmark" class="text-2xl"></ng-icon>
+        </button>
+    </div>
+
+    <div class="p-4 flex-1 overflow-y-auto space-y-5">
+        <div>
+            <span class="block text-xs font-semibold uppercase tracking-wide text-slate-500 mb-2">
+                Years
+            </span>
+            <div class="flex flex-wrap gap-2">
+                @for(availableYear of availableYears(); track availableYear) {
+                <button
+                    (click)="selectedYear.set(availableYear)"
+                    [class.bg-violet-500]="selectedYearParam() === availableYear"
+                    [class.text-slate-100]="selectedYearParam() === availableYear"
+                    [class.shadow-sm]="selectedYearParam() === availableYear"
+                    [class.bg-violet-100]="selectedYearParam() !== availableYear"
+                    [class.text-slate-600]="selectedYearParam() !== availableYear"
+                    class="cursor-pointer px-3 py-1.5 rounded-lg text-sm font-medium transition-colors hover:bg-emerald-200 hover:text-slate-700 active:scale-95 shadow-all"
+                >
+                    {{ availableYear }}
+                </button>
+                }
+            </div>
+        </div>
+
+        <div class="">
+            <span class="block text-xs font-semibold uppercase tracking-wide text-slate-500 mb-2">
+                Months
+            </span>
+            <div class="grid grid-cols-3 gap-2">
+                @for(availableMonth of availableMonths(); track availableMonth) {
+                <button
+                    (click)="selectedMonth.set(availableMonth)"
+                    [class.bg-violet-500]="selectedMonthParam() === availableMonth"
+                    [class.text-slate-100]="selectedMonthParam() === availableMonth"
+                    [class.shadow-sm]="selectedMonthParam() === availableMonth"
+                    [class.bg-violet-100]="selectedMonthParam() !== availableMonth"
+                    [class.text-slate-600]="selectedMonthParam() !== availableMonth"
+                    class="cursor-pointer px-2 py-1.5 rounded-lg text-sm font-medium text-center transition-colors hover:bg-emerald-200 hover:text-slate-700 active:scale-95 shadow-all"
+                >
+                    {{ months[availableMonth] }}
+                </button>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="p-4 sticky bottom-0 bg-slate-200">
+        <app-button
+            (click)="onApply()"
+            buttonType="primary"
+            [isFullWidth]="true"
+            buttonSize="sm"
+            fontSize="sm"
+            label="Apply Filters"
+        />
+    </div>
+</div>
+}

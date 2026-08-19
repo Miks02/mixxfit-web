@@ -1,297 +1,104 @@
-<div class="flex flex-col flex-wrap gap-6">
-
-    <div class="flex gap-6 flex-col md:flex-row">
-        <div class="flex flex-col pl-5 justify-between bg-linear-to-br from-violet-500/90 to-violet-600 shadow-xl rounded-2xl w-full h-45 px-2 py-4 font-semibold hover:shadow-white/50 transition-all duration-200 text-gray-100">
-            <div class="flex items-center gap-5">
-                <ng-icon name="faSolidScaleUnbalanced" class="text-3xl sm:text-5xl"></ng-icon>
-                <h5 class="text-2xl sm:text-3xl text-violet-100/90">Current Weight</h5>
-
-            </div>
-            <div class="flex gap-4 items-center opacity-95">
-                <div class="flex flex-col gap-2">
-                    @if(currentWeight()?.weight === null) {
-                        <div class="flex gap-4">
-                            <ng-icon name="faSolidGhost" class="self-center text-2xl sm:text-3xl"></ng-icon>
-                            <p
-                            #typewriter
-                            class="text-2xl sm:text-3xl  whitespace-nowrap typewriter items-center">No data yet</p>
-                        </div>
-
-                        <p class="italic text-lg text-violet-100/80 typewriter">Add your first weight log</p>
-                    } @else {
-                        <p
-                        class="text-2xl sm:text-3xl overflow-hidden whitespace-nowrap border-r-2 border-transparent ">{{currentWeight()?.weight}} KG</p>
-                        <p class="italic text-lg text-violet-100/80">Last measured at {{currentWeight()?.createdAt | date}}</p>
-                    }
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <div class="flex flex-col pl-5 justify-between bg-linear-to-br from-emerald-500/90 to-emerald-600 shadow-xl rounded-2xl w-full h-45 px-2 py-4 text-gray-100 font-semibold hover:shadow-white/50 transition-all duration-200">
-            <div class="flex items-center gap-5">
-                <ng-icon name="faSolidMagnifyingGlassChart" class="text-3xl sm:text-5xl"></ng-icon>
-                <h5 class="text-2xl sm:text-3xl text-emerald-100/90">Total Progress</h5>
-
-            </div>
-            <div class="flex gap-4 items-center opacity-95">
-                <div class="flex flex-col gap-2">
-                    @if(!progress()) {
-                        <div class="flex gap-4">
-                            <ng-icon name="faSolidGhost" class="self-center text-2xl sm:text-3xl"></ng-icon>
-                            <p
-                            #typewriter
-                            class="text-2xl sm:text-3xl  whitespace-nowrap typewriter items-center">No data yet</p>
-                        </div>
-
-                        <p #typewriter class="italic text-lg text-emerald-100/80 typewriter">Add more records to show progress</p>
-                    } @else {
-                        <p
-                        class="text-2xl sm:text-3xl overflow-hidden whitespace-nowrap border-r-2 border-transparent w-[12ch]">{{progress() | number:'1.0-2'}} KG</p>
-                        <p class="italic text-lg text-emerald-100/80">Since {{firstEntry()?.createdAt | date}}</p>
-                    }
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <button
-        [disabled]="isTargetFormOpen()"
-        (click)="enableTargetWeightEdit()"
-        class="flex flex-col pl-5 justify-between bg-linear-to-br from-rose-500/90 to-rose-600 shadow-xl rounded-2xl w-full h-45 px-2 py-4 text-gray-100 font-semibold hover:shadow-white/50 transition-all duration-200 cursor-pointer">
-        <div class="flex items-center gap-5">
-            <ng-icon name="faSolidBullseye" class="text-3xl sm:text-5xl"></ng-icon>
-            <h5 class="text-2xl sm:text-3xl text-rose-100/90">Target Weight</h5>
-
-        </div>
-        <div class="flex gap-4 items-center opacity-95" [class.hidden]="isTargetFormOpen()">
-            <div class="flex flex-col gap-2">
-                @if(!targetWeight()) {
-                    <div class="flex gap-4">
-                        <ng-icon name="faSolidGhost" class="self-center text-2xl sm:text-3xl"></ng-icon>
-                        <p
-                        #typewriter
-                        class="text-2xl sm:text-3xl  whitespace-nowrap typewriter items-center">No data yet</p>
-                    </div>
-
-                    <p
-                    class="italic text-lg text-rose-100/80 typewriter">Click to set your target weight</p>
-                } @else {
-                    <p
-                    class="text-2xl sm:text-3xl overflow-hidden text-left">{{targetWeight()}} KG</p>
-                    <p class="italic text-lg text-rose-100/80">{{getTargetWeightMessage()}}</p>
-                }
-
-            </div>
-
-        </div>
-        @if(isTargetFormOpen()) {
-            <form [formGroup]="targetWeightForm" (ngSubmit)="saveTargetWeight()" class="flex flex-col gap-3">
-                <div
-                [class.border-red-500]="!isControlValid('targetWeight', targetWeightForm)"
-                [class.border-transparent]="isControlValid('targetWeight', targetWeightForm)"
-                class="flex items-center gap-3 bg-white/20 rounded-lg px-3 py-2 border transition duration-200 focus-within:outline outline-rose-300">
-                <ng-icon name="faSolidWeightScale" class="text-rose-100 text-xl"></ng-icon>
-                <input
-                formControlName="targetWeight"
-                type="number"
-                step="0.1"
-                class="flex-1 bg-transparent outline-none text-lg placeholder-rose-200/60 text-white"
-                placeholder="Enter target weight (kg)" />
-            </div>
-            <div class="flex gap-2 justify-end relative">
-                <button
-                type="button"
-                (click)="cancelTargetWeightEdit()"
-                class="bg-white/20 text-white px-4 py-1.5 rounded-lg font-semibold text-sm transition-all duration-200 hover:bg-white/30 cursor-pointer active:opacity-70 shadow-all">
-                Cancel
-            </button>
-            <button
-            [disabled]="targetWeightForm.invalid"
-            type="submit"
-            class="bg-emerald-300/90 shadow-all text-rose-600 px-4 py-1.5 rounded-lg font-semibold text-sm transition-all duration-200 disabled:opacity-50 hover:bg-rose-50 disabled:pointer-events-none active:opacity-70 cursor-pointer">
-            Save
-        </button>
+<div #weightPage class="flex flex-col flex-wrap gap-6">
+    <div class="flex gap-6 flex-wrap">
+        <app-weight-page-card
+            mainColor="violet"
+            title="Current weight"
+            subtitle="Latest body check"
+            bottomContentLeft="Last measured at"
+            [value]="currentWeight()"
+            [metadata]="weightDelta()!"
+            [bottomContentRight]="currentWeightCreatedAt()"
+            [isLoading]="weightSummary.isFetching()"
+            icon="faSolidScaleUnbalanced"
+            buttonText="Quick log"
+            [hasButton]="showQuickLog()"
+            (clicked)="onQuickLog()"
+            class="flex-2"
+        ></app-weight-page-card>
+        @if(!isTargetFormOpen()) {
+        <app-weight-page-card
+            mainColor="emerald"
+            title="Target weight"
+            subtitle="Track your progress"
+            bottomContentLeft="Progress"
+            [value]="targetWeightDescription()"
+            [metadata]="getTargetWeightMessage()"
+            [bottomContentRight]="progress()"
+            [isLoading]="weightSummary.isFetching()"
+            [hasButton]="true"
+            (clicked)="onSetTarget()"
+            buttonText="Set target"
+            icon="faSolidBullseye"
+            class="flex-2"
+        ></app-weight-page-card>
+        } @else {
+        <app-set-target-form
+            class="flex-2"
+            [isOpen]="isTargetFormOpen()"
+            [targetWeight]="targetWeight()"
+            (closed)="isTargetFormOpen.set(false)"
+        ></app-set-target-form>
+        }
+        <app-quick-tips-card class="flex-1"></app-quick-tips-card>
     </div>
-</form>
-}
 
-</button>
+    <div class="flex gap-6 flex-wrap justify-center max-h-100">
+        <div
+            class="bg-slate-200 rounded-lg md:rounded-2xl shadow-xl transition-shadow duration-200 hover:shadow-2xl w-full grow md:w-[35%]"
+        >
+            <div
+                class="flex justify-between rounded-t-lg md:rounded-t-2xl md:bg-linear-to-br from-violet-500 to-violet-400 w-full px-4 py-2"
+            >
+                <h1 class="font-bold text-xl text-slate-800 md:text-slate-200">
+                    Weight progress chart
+                </h1>
+            </div>
 
-</div>
-
-<div class="flex gap-6 flex-wrap justify-center max-h-100">
-    <div class="bg-slate-200 rounded-lg md:rounded-2xl shadow-xl transition-shadow duration-200 hover:shadow-2xl w-full grow md:w-[35%]">
-
-        <div class="flex justify-between rounded-t-lg md:rounded-t-2xl md:bg-linear-to-br from-violet-500 to-violet-400 w-full px-4 py-2">
-            <h1 class="font-bold text-xl text-slate-800 md:text-slate-200">Weight progress chart</h1>
-        </div>
-
-        <div class="flex flex-col gap-4">
-            @if(!weightChart()) {
+            <div class="flex flex-col gap-4">
+                @if(!weightChart()) {
                 <div class="flex items-center justify-center flex-col min-h-100 grow gap-4 p-4">
                     <ngx-skeleton-loader
-                    count="8"
-                    [theme]="{
+                        count="8"
+                        [theme]="{
                         'height': '30px',
                         'border-radius': '8px',
                         'background': '#D8B8E3',
                     }"
-                    class="flex-1 mt-auto min-w-auto sm:min-w-85 max-w-[99%] grow w-full mx-auto"
-                    appearance="line">
-                </ngx-skeleton-loader>
+                        class="flex-1 mt-auto min-w-auto sm:min-w-85 max-w-[99%] grow w-full mx-auto"
+                        appearance="line"
+                    >
+                    </ngx-skeleton-loader>
                 </div>
 
-        } @else if(weightChart()!.entries.length < 2) {
-            <div class="flex items-center justify-center flex-col min-h-100 grow gap-3 p-4">
-                <div class="flex flex-col items-center gap-4 text-slate-600">
-                    <ng-icon name="faSolidChartLine" class="text-4xl sm:text-6xl opacity-50"></ng-icon>
-                    <p class="text-xl sm:text-2xl font-semibold text-center">Weight progress chart is not available</p>
-                    <p class="text-lg sm:text-xl font-semibold text-center">Log at least 2 weight entries to show the progress chart</p>
+                } @else if(weightChart()!.entries.length < 2) {
+                <div class="flex items-center justify-center flex-col min-h-100 grow gap-3 p-4">
+                    <div class="flex flex-col items-center gap-4 text-slate-600">
+                        <ng-icon
+                            name="faSolidChartLine"
+                            class="text-4xl sm:text-6xl opacity-50"
+                        ></ng-icon>
+                        <p class="text-xl sm:text-2xl font-semibold text-center">
+                            Weight progress chart is not available
+                        </p>
+                        <p class="text-lg sm:text-xl font-semibold text-center">
+                            Log at least 2 weight entries to show the progress chart
+                        </p>
+                    </div>
                 </div>
-            </div>
 
-        } @else {
-            <div class="flex items-center justify-center flex-col grow gap-4 min-h-100 p-4">
-                <app-weight-chart [weightDataSource]="weightChart" class="flex-1 min-w-auto sm:min-w-85 max-w-[99%] grow w-full mx-auto"></app-weight-chart>
-            </div>
-        }
-
-    </div>
-</div>
-
-<div class="bg-slate-200 rounded-lg md:rounded-2xl shadow-xl transition-shadow duration-200 hover:shadow-2xl grow flex flex-col ">
-    <div class="flex justify-between items-center rounded-t-lg md:rounded-t-2xl md:bg-linear-to-br from-violet-500 to-violet-400 w-full px-4 py-2 flex-wrap gap-2">
-        <h1 class="font-bold text-xl text-slate-800 md:text-slate-200">Weight Logs</h1>
-        @if(years()?.length! > 0) {
-            <div class="flex gap-2 flex-wrap items-center">
-                <select
-                [(ngModel)]="selectedMonth"
-                class="px-2 py-1 bg-slate-100 rounded-md shadow-md text-slate-800 font-semibold text-sm max-w-25 text-center">
-                <option [ngValue]="null" selected disabled hidden>{{convertedMonths()?.at(0)?.label}}</option>
-                @for(month of convertedMonths(); track month) {
-                    <option [ngValue]="month.value">{{month.label}}</option>
+                } @else {
+                <div class="flex items-center justify-center flex-col grow gap-4 min-h-100 p-4">
+                    <app-weight-chart
+                        [weightDataSource]="weightChart"
+                        class="flex-1 min-w-auto sm:min-w-85 max-w-[99%] grow w-full mx-auto"
+                    ></app-weight-chart>
+                </div>
                 }
-            </select>
-            <select
-            [(ngModel)]="selectedYear"
-            class="px-2 py-1 bg-slate-100 rounded-md shadow-md text-slate-800 font-semibold text-sm text-center">
-            <option [ngValue]="null" selected disabled hidden>{{years()?.at(0)}}</option>
-            @for(year of years(); track year) {
-                <option [ngValue]="year">{{year}}</option>
-            }
-        </select>
-    </div>
-}
-
-</div>
-
-<div class="p-4 flex flex-col flex-1 grow">
-    <div class="flex flex-col gap-2 flex-1 w-full sm:min-w-80 overflow-y-auto max-h-90">
-        @if(weightLogs() === undefined) {
-            <ngx-skeleton-loader
-            count="5"
-            [theme]="{
-                'height': '55px',
-                'border-radius': '8px',
-                'background': '#cbd5e199'
-            }"
-            class="mt-5 w-[95%] mx-auto"
-            appearance="line"
-            class="w-full"
-            >
-        </ngx-skeleton-loader>
-
-    }
-    @else if(weightLogs()?.length! === 0) {
-        <div class="flex flex-col gap-2 grow  justify-center items-center h-full py-20">
-            <ng-icon name="faSolidScaleUnbalanced" class="text-4xl sm:text-6xl opacity-50 text-slate-600!"></ng-icon>
-            <h1 class="text-xl sm:text-2xl font-semibold text-center text-slate-600">No weight logs found</h1>
-            <p class="text-lg sm:text-xl font-semibold text-center text-slate-600">Log your first weight entry to show data</p>
-        </div>
-    }
-    @for(log of weightLogs(); track log.id) {
-        <div
-        (click)="loadWeightEntry(log.id)"
-        class="flex items-center justify-between w-full md:min-w-67 bg-slate-300 rounded-xl px-4 py-3 hover:bg-violet-300 transition cursor-pointer shadow-md font-semibold active:opacity-70">
-        <div class="flex flex-col">
-            <p class="text-amber-700">{{log.weight}} KG</p>
-            <p class="text-sm text-emerald-700">{{log.createdAt | date}}</p>
-        </div>
-        <div class="flex flex-col items-end">
-            <p class="text-sm text-cyan-700">{{log.timeLogged | slice:0:5}}</p>
-        </div>
-    </div>
-}
-</div>
-
-
-</div>
-</div>
-
-<div class="bg-slate-200 rounded-lg md:rounded-2xl shadow-xl transition-shadow duration-200 hover:shadow-2xl grow">
-    <div class="flex justify-between rounded-t-lg md:rounded-t-2xl md:bg-linear-to-br from-violet-500 to-violet-400 w-full px-4 py-2">
-        <h1 class="font-bold text-xl text-slate-800 md:text-slate-200">Quick log</h1>
-
-    </div>
-
-    <div class="p-2 sm:p-4">
-        <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-3 sm:space-y-4">
-
-            <label class="flex flex-col gap-2 ">
-                <span class="text-sm font-medium text-slate-700">Weight (kg)</span>
-                <div
-                [class.border-red-500]="!isControlValid('weight', form)"
-                [class.border-transparent]="isControlValid('weight', form)"
-                class="flex items-center gap-2 sm:gap-4 shadow-md bg-linear-to-br from-white to-slate-50 rounded-lg px-3 py-3 sm:px-4 sm:py-4 transition duration-200 border border-transparent focus-within:outline outline-amber-400">
-                <div class="flex justify-center">
-                    <ng-icon name="faSolidWeightScale" class="text-amber-600/80! text-xl"></ng-icon>
-                </div>
-                <input formControlName="weight" type="number" step="0.1" name="weight" class="flex-1 bg-transparent outline-none text-base sm:text-lg min-w-0" placeholder="Current weight" />
             </div>
-        </label>
-
-        <label class="flex flex-col gap-2">
-            <span class="text-sm font-medium text-slate-700">Time</span>
-            <div
-            [class.border-red-500]="!isControlValid('time', form)"
-            [class.border-transparent]="isControlValid('time', form)"
-            class="flex items-center gap-2 sm:gap-4 shadow-md bg-linear-to-br from-white to-slate-50 rounded-lg px-3 py-3 sm:px-4 sm:py-4 transition-colors border duration-200 focus-within:outline outline-amber-400">
-            <div class="flex justify-center">
-                <ng-icon name="faSolidClock" class="text-amber-600/80! text-xl"></ng-icon>
-            </div>
-            <input formControlName="time" type="time" name="time" class="flex-1 bg-transparent outline-none text-base sm:text-lg min-w-0" />
         </div>
-    </label>
 
-    <label class="flex flex-col gap-2">
-        <span class="text-sm font-medium text-slate-700">Notes</span>
-        <div
-        [class.border-red-500]="!isControlValid('notes', form)"
-        [class.border-transparent]="isControlValid('notes', form)"
-        class="flex items-start gap-2 sm:gap-4 shadow-md bg-linear-to-br from-white to-slate-50 rounded-lg px-3 py-3 sm:px-4 sm:py-4 transition-colors duration-200 border focus-within:outline outline-amber-400">
-        <div class="flex justify-center mt-1">
-            <ng-icon name="faSolidNoteSticky" class="text-amber-600/80! text-xl"></ng-icon>
-        </div>
-        <textarea formControlName="notes" name="notes" rows="1" class="flex-1 bg-transparent outline-none resize-none text-base sm:text-lg min-w-0" placeholder="Optional notes (e.g. after workout, fasting)"></textarea>
+        <app-weight-entries class="flex-2"></app-weight-entries>
+
+        <app-quick-log #quickLog class="grow md:grow-0"></app-quick-log>
     </div>
-</label>
-
-<div class="flex justify-center pt-2">
-    <app-button buttonSize="sm" htmlType="submit" label="Save Entry" buttonType="primary" [disabled]="form.invalid"></app-button>
 </div>
-</form>
-</div>
-
-</div>
-</div>
-
-</div>
-
-@if(isModalOpen()) {
-    <app-modal (close)="isModalOpen.set(false)" [data]="buildModal()"></app-modal>
-}

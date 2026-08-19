@@ -1,20 +1,38 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, input, Input, Output } from '@angular/core';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import { faSolidCheck, faSolidCircleCheck, faSolidCircleExclamation, faSolidCircleInfo, faSolidCircleQuestion, faSolidTriangleExclamation, faSolidXmark } from '@ng-icons/font-awesome/solid';
+import {
+    faSolidCheck,
+    faSolidCircleCheck,
+    faSolidCircleExclamation,
+    faSolidCircleInfo,
+    faSolidCircleQuestion,
+    faSolidTriangleExclamation,
+    faSolidXmark,
+} from '@ng-icons/font-awesome/solid';
 import { Button } from '../button/button';
 import { ModalData } from '../models/modal-data';
 import { ModalType } from '../models/modal-type';
 
 @Component({
-  selector: 'app-modal',
-  imports: [NgIcon, Button],
-  templateUrl: './modal.html',
-  styleUrl: './modal.css',
-  providers: [provideIcons({faSolidXmark, faSolidCircleQuestion, faSolidCircleExclamation, faSolidCircleCheck, faSolidCircleInfo, faSolidTriangleExclamation})]
+    selector: 'app-modal',
+    imports: [NgIcon, Button],
+    templateUrl: './modal.html',
+    styleUrl: './modal.css',
+    providers: [
+        provideIcons({
+            faSolidXmark,
+            faSolidCircleQuestion,
+            faSolidCircleExclamation,
+            faSolidCircleCheck,
+            faSolidCircleInfo,
+            faSolidTriangleExclamation,
+        }),
+    ],
 })
 export class Modal {
     @Input()
-    data: ModalData | null = null
+    data: ModalData | null = null;
+    isLoading = input<boolean>(false);
 
     @Output()
     primaryAction = new EventEmitter<void>();
@@ -40,5 +58,4 @@ export class Modal {
     onClose() {
         this.close.emit();
     }
-
 }
