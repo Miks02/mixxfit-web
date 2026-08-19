@@ -87,7 +87,11 @@
     </div>
 </div>
 @if(isModalOpen()) {
-<app-modal (close)="isModalOpen.set(false)" [data]="buildModal()"></app-modal>
+<app-modal
+    (close)="isModalOpen.set(false)"
+    [data]="buildModal()"
+    [isLoading]="isDeleting()"
+></app-modal>
 }
 
 <app-weight-entries-filter-modal

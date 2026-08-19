@@ -34,6 +34,9 @@ export class WeightState {
     isError = this.weightSummaryQuery.isError;
     error = this.weightSummaryQuery.error;
 
+    isPending = this.weightSummaryQuery.isFetching;
+    isWeightListFetching = this.weightLogsQuery.isFetching
+
     weightLogs = computed(() => this.weightLogsQuery.data()?.weightLogs);
     yearsAndMonthsGroup = computed(() => this.weightSummary()?.yearsAndMonthsGroup);
 
@@ -113,38 +116,5 @@ export class WeightState {
 
     setFilters(filters: { year: number | null; month: number | null }) {
         this.filterParams.set(filters);
-    }
-
-    isAddWeightEntryPending = this.weightService.addWeightEntryMutation.isPending;
-    isDeleteWeightEntryPending = this.weightService.deleteWeightEntryMutation.isPending;
-
-    addWeightEntry(
-        request: CreateWeightRequest,
-        options?: {
-            onSuccess?: (data: WeightEntryDetails) => void;
-            onError?: (err: ProblemDetails) => void;
-        },
-    ) {
-        this.weightService.addWeightEntryMutation.mutate(request, {
-            onSuccess: (data) => {
-                options?.onSuccess?.(data);
-            },
-            onError: options?.onError,
-        });
-    }
-
-    deleteWeightEntry(
-        id: number,
-        options?: {
-            onSuccess?: () => void;
-            onError?: (err: ProblemDetails) => void;
-        },
-    ) {
-        this.weightService.deleteWeightEntryMutation.mutate(id, {
-            onSuccess: () => {
-                options?.onSuccess?.();
-            },
-            onError: options?.onError,
-        });
     }
 }

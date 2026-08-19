@@ -10,6 +10,7 @@ import { NgxSkeletonLoaderComponent } from 'ngx-skeleton-loader';
 import { NotificationService } from '../../../../core/services/notification-service';
 import { WeightEntriesFilterModal } from '../weight-entries-filter-modal/weight-entries-filter-modal';
 import { MONTHS } from '../../../../core/models/month';
+import { WeightEntryService } from '@features/weight/services/weight-entry-service';
 
 @Component({
     selector: 'app-weight-entries',
@@ -29,12 +30,14 @@ import { MONTHS } from '../../../../core/models/month';
 export class WeightEntries {
     months = MONTHS;
     private weightState = inject(WeightState);
+    private weightService = inject(WeightEntryService);
     private notificationService = inject(NotificationService);
 
     weightLogs = this.weightState.weightLogs;
     yearsAndMonthsGroup = this.weightState.yearsAndMonthsGroup;
     noWeightLogsMessage = this.weightState.noWeightLogsMessage;
-    isLoading = this.weightState.isLoading;
+    isLoading = this.weightState.isLoading || this.weightState.isWeightListFetching;
+    isDeleting = this.weightService.deleteWeightEntryMutation.isPending;
 
     selectedYearLabel: WritableSignal<number | null> = signal(null);
     selectedMonthLabel: WritableSignal<string | null> = signal(null);
@@ -61,7 +64,7 @@ export class WeightEntries {
         const selected = this.selectedWeightEntry();
         if (!selected) return;
 
-        this.weightState.deleteWeightEntry(selected.id, {
+        this.weightService.deleteWeightEntryMutation.mutate(selected.id, {
             onSuccess: () => {
                 this.isModalOpen.set(false);
                 this.notificationService.showSuccess('Weight log has been deleted successfully');

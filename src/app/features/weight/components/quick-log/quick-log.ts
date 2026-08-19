@@ -6,6 +6,7 @@ import { NotificationService } from '../../../../core/services/notification-serv
 import { isControlValid } from '../../../../core/helpers/form-helpers';
 import { NgIcon } from '@ng-icons/core';
 import { Button } from '@shared';
+import { WeightEntryService } from '@features/weight/services/weight-entry-service';
 
 @Component({
     selector: 'app-quick-log',
@@ -17,17 +18,17 @@ export class QuickLog {
     isControlValid = isControlValid;
 
     fb = inject(FormBuilder);
-    weightState = inject(WeightState);
+    weightService = inject(WeightEntryService)
     notificationService = inject(NotificationService);
 
-    isPending = this.weightState.isAddWeightEntryPending;
+    isPending = this.weightService.addWeightEntryMutation.isPending;
 
     form = createWeightEntryForm(this.fb);
 
     onSubmit() {
         if (this.form.invalid) return;
 
-        this.weightState.addWeightEntry(this.form.value, {
+        this.weightService.addWeightEntryMutation.mutate(this.form.value, {
             onSuccess: () => {
                 this.form.reset();
                 this.notificationService.showSuccess('Weight entry saved');
