@@ -8,6 +8,21 @@ import { NgIcon } from '@ng-icons/core';
 import { Button } from '@shared';
 import { WeightEntryService } from '@features/weight/services/weight-entry-service';
 
+export const SUCCESS_MESSAGES = [
+    'Weight logged! Consistency is what brings results.',
+    'Weight logged successfully! Keep up the good work.',
+    'Great job tracking your progress today!',
+    'Log saved! Every entry gets you closer to your goal.',
+    'Weight updated. Keep showing up for yourself!',
+    'Consistency is key! Weight successfully updated.',
+];
+
+export const TARGET_REACHED_MESSAGES = [
+    'Well done! You\'ve reached your target weight!',
+    'Target weight reached! Outstanding achievement!',
+    "Goal unlocked! You've officially hit your target weight!",
+];
+
 @Component({
     selector: 'app-quick-log',
     imports: [ReactiveFormsModule, NgIcon, Button],
@@ -18,7 +33,8 @@ export class QuickLog {
     isControlValid = isControlValid;
 
     fb = inject(FormBuilder);
-    weightService = inject(WeightEntryService)
+    weightService = inject(WeightEntryService);
+    weightState = inject(WeightState);
     notificationService = inject(NotificationService);
 
     isPending = this.weightService.addWeightEntryMutation.isPending;
@@ -29,14 +45,23 @@ export class QuickLog {
         if (this.form.invalid) return;
 
         this.weightService.addWeightEntryMutation.mutate(this.form.value, {
-            onSuccess: () => {
+            onSuccess: (res) => {
                 this.form.reset();
-                this.notificationService.showSuccess('Weight entry saved');
+                const targetWeight = this.weightState.targetWeight();
+                const currentWeight = res.weight;
+                this.notificationService.showSuccess(this.getWeightEntrySavedMessage(targetWeight, currentWeight));
             },
             onError: (err) => {
                 if (err.errorCode === 'WeightEntry.LimitReached')
                     this.notificationService.showInfo('You can only log weight once per day');
             },
         });
+    }
+
+    private getWeightEntrySavedMessage(targetWeight: number | null, currentWeight: number): string {
+        if (targetWeight === null || targetWeight !== currentWeight)
+            return SUCCESS_MESSAGES[Math.floor(Math.random() * SUCCESS_MESSAGES.length)];
+        
+        return TARGET_REACHED_MESSAGES[Math.floor(Math.random() * TARGET_REACHED_MESSAGES.length)];
     }
 }
