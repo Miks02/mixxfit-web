@@ -8,7 +8,7 @@ import { NgIcon } from '@ng-icons/core';
 import { Button } from '@shared';
 import { WeightEntryService } from '@features/weight/services/weight-entry-service';
 
-export const SUCCESS_MESSAGES = [
+const SUCCESS_MESSAGES = [
     'Weight logged! Consistency is what brings results.',
     'Weight logged successfully! Keep up the good work.',
     'Great job tracking your progress today!',
@@ -17,7 +17,7 @@ export const SUCCESS_MESSAGES = [
     'Consistency is key! Weight successfully updated.',
 ];
 
-export const TARGET_REACHED_MESSAGES = [
+const TARGET_REACHED_MESSAGES = [
     'Well done! You\'ve reached your target weight!',
     'Target weight reached! Outstanding achievement!',
     "Goal unlocked! You've officially hit your target weight!",
