@@ -9,8 +9,8 @@
 </app-calorie-calculator>
 }
 
-<div class="flex w-full flex-col lg:flex-row justify-between flex-wrap gap-6">
-    <div class="flex flex-col-reverse lg:flex-col gap-4 md:gap-6 mx-auto">
+<div class="flex w-full flex-col lg:flex-row justify-between flex-wrap gap-6 flex-1">
+    <div class="flex flex-col-reverse flex-5 lg:flex-col gap-4 md:gap-6 mx-auto">
         <div class="flex justify-start grow gap-4 md:gap-4 flex-wrap">
             <app-dashboard-card
                 title="Daily calories"
@@ -50,108 +50,15 @@
         </div>
 
         <div class="flex gap-4 flex-wrap">
-            <div
-                class="bg-slate-200 rounded-lg md:rounded-2xl shadow-xl transition-shadow duration-200 hover:shadow-2xl grow"
-            >
-                <div
-                    class="flex justify-between bg-amber-400 md:bg-linear-to-br from-yellow-500 to-yellow-400 w-full rounded-t-lg md:rounded-t-2xl px-4 py-2 text-slate-800"
-                >
-                    <h1 class="font-bold text-xl">Workout chart</h1>
-                    @if(years()?.length! > 0) {
-                    <select
-                        [(ngModel)]="selectedYear"
-                        class="px-2 py-1 bg-slate-100 rounded-md shadow-md text-slate-800 font-semibold"
-                    >
-                        @for(year of years(); track $index) {
-                        <option [ngValue]="year">{{year}}</option>
-                        }
-                    </select>
-                    }
-                </div>
-
-                <div class="flex flex-col min-h-70 gap-4">
-                    <div class="flex items-center justify-center flex-col grow gap-4 p-4">
-                        @if(years()?.length === 0) {
-                        <div
-                            class="flex flex-col gap-3 justify-center items-center py-8 flex-1 w-full min-w-full sm:min-w-85 max-w-[99%] mx-auto"
-                        >
-                            <ng-icon
-                                name="faSolidChartLine"
-                                class="text-3xl sm:text-4xl opacity-50"
-                            ></ng-icon>
-                            <p class="text-xl sm:text-2xl text-slate-600 font-semibold text-center">
-                                Workout chart is not available
-                            </p>
-                            <p class="text-lg sm:text-xl text-slate-600 font-semibold text-center">
-                                Start tracking your workouts to unlock the workout chart
-                            </p>
-                        </div>
-                        } @else if(years()?.length! > 0) {
-                        <app-workouts-chart
-                            [workoutCountsSource]="workoutChart"
-                            class="flex-1 min-w-full sm:min-w-85 max-w-[99%] grow w-[26vw] mx-auto"
-                        ></app-workouts-chart>
-                        } @else {
-                        <ngx-skeleton-loader
-                            count="7"
-                            [theme]="{
-                    'border-radius': '8px',
-                    'background': '#fed7aa'
-                }"
-                            class="flex-1 min-w-full mt-auto sm:min-w-85 mx-auto w-[26vw]"
-                        >
-                        </ngx-skeleton-loader>
-
-                        }
-                    </div>
-                </div>
-            </div>
-            <div
-                class="bg-slate-200 rounded-lg md:rounded-2xl shadow-xl transition-shadow duration-200 hover:shadow-2xl grow"
-            >
-                <div
-                    class="flex justify-between bg-violet-500 md:bg-linear-to-br from-violet-500 to-violet-400 w-full rounded-t-lg md:rounded-t-2xl px-4 py-2"
-                >
-                    <h1 class="font-bold text-xl text-slate-200">Weight progress chart</h1>
-                </div>
-
-                <div class="flex flex-col gap-4 min-h-70">
-                    <div class="flex items-center justify-center flex-col grow gap-4 p-4">
-                        @if(weightChart() === undefined) {
-                        <ngx-skeleton-loader
-                            count="7"
-                            [theme]="{
-                    'border-radius': '8px',
-                    'background': '#D8B8E3',
-                }"
-                            class="flex-1 min-w-full mt-auto sm:min-w-85 mx-auto w-[26vw]"
-                            appearance="line"
-                        >
-                        </ngx-skeleton-loader>
-                        } @else if(weightChart()?.entries?.length! < 2) {
-                        <div
-                            class="flex flex-col gap-3 justify-center items-center py-8 flex-1 min-w-full sm:min-w-85 max-w-[99%] mx-auto w-[26vw]"
-                        >
-                            <ng-icon
-                                name="faSolidChartLine"
-                                class="text-3xl sm:text-4xl opacity-50"
-                            ></ng-icon>
-                            <p class="text-xl sm:text-2xl text-slate-600 font-semibold text-center">
-                                Weight progress chart is not available
-                            </p>
-                            <p class="text-lg sm:text-xl text-slate-600 font-semibold text-center">
-                                Log at least 2 weight entries to show progress chart
-                            </p>
-                        </div>
-                        } @else if(weightChart()?.entries!.length > 1) {
-                        <app-weight-chart
-                            [weightDataSource]="weightChart"
-                            class="flex-1 min-w-full sm:min-w-85 max-w-[99%] grow w-[26vw] mx-auto"
-                        ></app-weight-chart>
-                        } @else { }
-                    </div>
-                </div>
-            </div>
+            <app-workouts-chart
+                [workoutCountsSource]="workoutChart()"
+                [availableYears]="years()"
+                class="flex-1 w-full grow"
+            ></app-workouts-chart>
+            <app-weight-chart
+                [weightDataSource]="weightChart"
+                class="flex-1 w-full grow"
+            ></app-weight-chart>
         </div>
         <div
             class="bg-slate-200 rounded-t-lg md:rounded-2xl shadow-xl transition-all duration-200 hover:shadow-2xl grow flex flex-col"
@@ -234,7 +141,7 @@
         </div>
     </div>
 
-    <div class="flex flex-col gap-5 justify-between grow">
+    <div class="flex flex-col gap-5 justify-between flex-2">
         <div class="flex flex-col w-full gap-4">
             <div
                 class="bg-slate-200 rounded-lg md:rounded-2xl shadow-lg p-8 flex flex-col w-full grow items-center text-center hover:shadow-xl transition-all duration-200"

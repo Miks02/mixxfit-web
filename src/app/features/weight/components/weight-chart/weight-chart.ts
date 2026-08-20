@@ -79,7 +79,7 @@ export class WeightChart {
             chart: {
                 type: 'line',
                 height: '100%',
-                toolbar: { show: true },
+                toolbar: { show: false },
                 zoom: { enabled: false },
             },
             responsive: [
@@ -93,7 +93,7 @@ export class WeightChart {
             ],
             colors: ['#8B5CF6', '#22C55E'],
             stroke: {
-                curve: 'straight',
+                curve: 'smooth',
                 width: [3, 3],
                 dashArray: [0, 2],
             },
@@ -107,7 +107,7 @@ export class WeightChart {
                 },
             },
             markers: {
-                size: [3, 0],
+                size: [4, 0],
                 hover: { size: 5 },
             },
             dataLabels: { enabled: false },
