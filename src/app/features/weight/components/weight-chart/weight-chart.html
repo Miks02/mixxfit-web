@@ -1,18 +1,59 @@
-@if (chartOptions().series?.length) {
-<apx-chart
-    [series]="chartOptions().series!"
-    [chart]="chartOptions().chart!"
-    [xaxis]="chartOptions().xaxis!"
-    [yaxis]="chartOptions().yaxis!"
-    [stroke]="chartOptions().stroke!"
-    [fill]="chartOptions().fill!"
-    [colors]="chartOptions().colors!"
-    [markers]="chartOptions().markers!"
-    [dataLabels]="chartOptions().dataLabels!"
-    [legend]="chartOptions().legend!"
-    [tooltip]="chartOptions().tooltip!"
-    [grid]="chartOptions().grid!"
-></apx-chart>
-} @else {
-<p>Nema podataka za prikaz.</p>
-}
+<div
+    class="bg-slate-200 rounded-lg md:rounded-2xl shadow-xl transition-shadow duration-200 hover:shadow-2xl w-full grow flex flex-col min-w-75 h-full"
+>
+    <div
+        class="flex justify-between rounded-t-lg md:rounded-t-2xl md:bg-linear-to-br from-violet-500 to-violet-400 w-full px-4 py-2 shrink-0"
+    >
+        <h1 class="font-bold text-xl text-slate-800 md:text-slate-200">Weight progress chart</h1>
+    </div>
+    <div class="flex flex-col gap-4 flex-1 min-h-0">
+        @if(!weightDataSource()) {
+        <div
+            class="flex items-center justify-center flex-col flex-1 min-h-72 sm:min-h-80 md:min-h-100 gap-4 p-4"
+        >
+            <ngx-skeleton-loader
+                count="8"
+                [theme]="{
+                'height': '30px',
+                'border-radius': '8px',
+                'background': '#D8B8E3',
+            }"
+                class="flex-1 mt-auto min-w-auto sm:min-w-85 max-w-[99%] grow w-full mx-auto"
+                appearance="line"
+            >
+            </ngx-skeleton-loader>
+        </div>
+        } @else if(weightDataSource()!.entries.length < 2) {
+        <div
+            class="flex items-center justify-center flex-col flex-1 min-h-72 sm:min-h-80 md:min-h-100 gap-3 p-4"
+        >
+            <div class="flex flex-col items-center gap-4 text-slate-600">
+                <ng-icon name="faSolidChartLine" class="text-4xl sm:text-6xl opacity-50"></ng-icon>
+                <p class="text-xl sm:text-2xl font-semibold text-center">
+                    Weight progress chart is not available
+                </p>
+                <p class="text-lg sm:text-xl font-semibold text-center">
+                    Log at least 2 weight entries to show the progress chart
+                </p>
+            </div>
+        </div>
+        } @else {
+        <apx-chart
+            class="w-full h-full grow"
+            [series]="chartOptions().series!"
+            [chart]="chartOptions().chart!"
+            [xaxis]="chartOptions().xaxis!"
+            [yaxis]="chartOptions().yaxis!"
+            [stroke]="chartOptions().stroke!"
+            [fill]="chartOptions().fill!"
+            [colors]="chartOptions().colors!"
+            [markers]="chartOptions().markers!"
+            [dataLabels]="chartOptions().dataLabels!"
+            [legend]="chartOptions().legend!"
+            [tooltip]="chartOptions().tooltip!"
+            [grid]="chartOptions().grid!"
+            [responsive]="chartOptions().responsive!"
+        ></apx-chart>
+        }
+    </div>
+</div>

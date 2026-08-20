@@ -12,8 +12,11 @@ import {
     ApexTooltip,
     ApexMarkers,
     ApexGrid,
+    ApexResponsive,
 } from 'ng-apexcharts';
 import { WeightChart as WeightChartModel } from '../../models/weight-chart';
+import { NgxSkeletonLoaderComponent } from 'ngx-skeleton-loader';
+import { NgIcon } from '@ng-icons/core';
 
 export type WeightChartOptions = Partial<{
     series: ApexAxisChartSeries;
@@ -28,12 +31,13 @@ export type WeightChartOptions = Partial<{
     markers: ApexMarkers;
     grid: ApexGrid;
     colors: string[];
+    responsive: ApexResponsive[];
 }>;
 
 @Component({
     selector: 'app-weight-chart',
     standalone: true,
-    imports: [NgApexchartsModule],
+    imports: [NgApexchartsModule, NgxSkeletonLoaderComponent, NgIcon],
     templateUrl: './weight-chart.html',
     styleUrl: './weight-chart.css',
 })
@@ -74,18 +78,27 @@ export class WeightChart {
             ],
             chart: {
                 type: 'line',
-                height: 350,
+                height: '100%',
                 toolbar: { show: true },
-                zoom: { enabled: true },
+                zoom: { enabled: false },
             },
+            responsive: [
+                {
+                    breakpoint: 600,
+                    options: {
+                        chart: { height: 250 },
+                        legend: { position: 'bottom' },
+                    },
+                },
+            ],
             colors: ['#8B5CF6', '#22C55E'],
             stroke: {
                 curve: 'straight',
-                width: [3, 5],
-                dashArray: [0, 3], 
+                width: [3, 3],
+                dashArray: [0, 2],
             },
             fill: {
-                type: ['gradient', 'solid'], 
+                type: ['gradient', 'solid'],
                 gradient: {
                     shadeIntensity: 0,
                     opacityFrom: 0.35,
@@ -94,14 +107,14 @@ export class WeightChart {
                 },
             },
             markers: {
-                size: [3, 0], 
+                size: [3, 0],
                 hover: { size: 5 },
             },
             dataLabels: { enabled: false },
             legend: { show: true, position: 'bottom' },
             tooltip: { shared: true, intersect: false },
             grid: {
-                xaxis: { lines: { show: false } }, 
+                xaxis: { lines: { show: false } },
             },
             xaxis: {
                 categories: labels,
