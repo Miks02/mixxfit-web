@@ -1,6 +1,18 @@
-<canvas
-baseChart
-[type]="chartType"
-[data]="chartData()"
-[options]="chartOptions()">
-</canvas>
+@if (chartOptions().series?.length) {
+<apx-chart
+    [series]="chartOptions().series!"
+    [chart]="chartOptions().chart!"
+    [xaxis]="chartOptions().xaxis!"
+    [yaxis]="chartOptions().yaxis!"
+    [stroke]="chartOptions().stroke!"
+    [fill]="chartOptions().fill!"
+    [colors]="chartOptions().colors!"
+    [markers]="chartOptions().markers!"
+    [dataLabels]="chartOptions().dataLabels!"
+    [legend]="chartOptions().legend!"
+    [tooltip]="chartOptions().tooltip!"
+    [grid]="chartOptions().grid!"
+></apx-chart>
+} @else {
+<p>Nema podataka za prikaz.</p>
+}
