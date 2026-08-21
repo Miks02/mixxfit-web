@@ -1,4 +1,4 @@
-import { Component, computed, Input, signal, Signal } from '@angular/core';
+import { Component, computed, input, Input, signal, Signal } from '@angular/core';
 import { NgIcon } from '@ng-icons/core';
 import { ApexOptions } from 'apexcharts';
 import {
@@ -15,8 +15,9 @@ import { WeightChart as WeightChartModel } from '../../models/weight-chart';
     styleUrl: './weight-chart.css',
 })
 export class WeightChart {
-    @Input()
-    weightDataSource: Signal<WeightChartModel | undefined> = signal(undefined);
+
+    weightDataSource = input.required<WeightChartModel | undefined>();
+    skeletonLineCount = input<number>(7);
 
     public chartOptions = computed<ApexOptions>(() => {
         const data = this.weightDataSource();

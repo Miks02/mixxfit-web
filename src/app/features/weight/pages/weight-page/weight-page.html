@@ -45,7 +45,8 @@
     <div class="flex gap-6 flex-wrap flex-1 justify-center max-h-100">
         <app-weight-chart
             class="grow md:flex-4"
-            [weightDataSource]="weightChart"
+            [skeletonLineCount]="10"
+            [weightDataSource]="weightChart()"
         ></app-weight-chart>
         <app-weight-entries class="flex-2"></app-weight-entries>
 

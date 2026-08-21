@@ -7,7 +7,7 @@
     (close)="isCalorieCalculatorOpen.set(false)"
 >
 </app-calorie-calculator>
-}
+}      
 
 <div class="flex w-full flex-col lg:flex-row justify-between flex-wrap gap-6 flex-1">
     <div class="flex flex-col-reverse flex-5 lg:flex-col gap-4 md:gap-6 mx-auto">
@@ -57,7 +57,7 @@
                 class="flex-1 w-full grow"
             ></app-workouts-chart>
             <app-weight-chart
-                [weightDataSource]="weightChart"
+                [weightDataSource]="weightChart()"
                 class="flex-1 w-full grow"
             ></app-weight-chart>
         </div>

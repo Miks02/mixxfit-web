@@ -10,7 +10,7 @@ export class WeightState {
     private userState = inject(UserState);
 
     user = this.userState.userDetails;
-    targetWeight = computed(() => this.user()?.targetWeight ?? null);
+    targetWeight = computed(() => this.user()?.targetWeight!);
 
     filterParams: WritableSignal<{ year: number | null; month: number | null }> = signal({
         year: null,
