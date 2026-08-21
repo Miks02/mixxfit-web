@@ -1,57 +1,14 @@
-import { Component, computed, input, Input, NgModule, signal, Signal } from '@angular/core';
-import { BaseChartDirective } from 'ng2-charts';
-import { WorkoutsPerMonthDto } from '../../models/workouts-per-month-dto';
-import {
-    ChartComponent,
-    ApexAxisChartSeries,
-    ApexNonAxisChartSeries,
-    ApexChart,
-    ApexXAxis,
-    ApexYAxis,
-    ApexTitleSubtitle,
-    ApexDataLabels,
-    ApexStroke,
-    ApexFill,
-    ApexLegend,
-    ApexTooltip,
-    ApexMarkers,
-    ApexPlotOptions,
-    ApexResponsive,
-    ApexGrid,
-    ApexAnnotations,
-    ApexStates,
-    ApexTheme,
-    NgApexchartsModule,
-} from 'ng-apexcharts';
+import { Component, computed, input, output, signal, WritableSignal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { NgIcon } from '@ng-icons/core';
+import { ApexOptions } from 'apexcharts';
+import { NgApexchartsModule } from 'ng-apexcharts';
 import { NgxSkeletonLoaderComponent } from 'ngx-skeleton-loader';
-
-export type ChartOptions = {
-    series?: ApexAxisChartSeries | ApexNonAxisChartSeries;
-    chart?: ApexChart;
-    xaxis?: ApexXAxis;
-    yaxis?: ApexYAxis | ApexYAxis[];
-    title?: ApexTitleSubtitle;
-    subtitle?: ApexTitleSubtitle;
-    dataLabels?: ApexDataLabels;
-    stroke?: ApexStroke;
-    fill?: ApexFill;
-    legend?: ApexLegend;
-    tooltip?: ApexTooltip;
-    markers?: ApexMarkers;
-    plotOptions?: ApexPlotOptions;
-    responsive?: ApexResponsive[];
-    grid?: ApexGrid;
-    annotations?: ApexAnnotations;
-    states?: ApexStates;
-    theme?: ApexTheme;
-    colors?: string[];
-    labels?: any;
-};
+import { WorkoutsPerMonthDto } from '../../models/workouts-per-month-dto';
 
 @Component({
     selector: 'app-workouts-chart',
-    imports: [BaseChartDirective, NgApexchartsModule, NgIcon, NgxSkeletonLoaderComponent],
+    imports: [NgApexchartsModule, NgIcon, NgxSkeletonLoaderComponent, FormsModule],
     templateUrl: './workouts-chart.html',
     styleUrl: './workouts-chart.css',
     host: {
@@ -61,8 +18,16 @@ export type ChartOptions = {
 export class WorkoutsChart {
     workoutCountsSource = input.required<WorkoutsPerMonthDto | undefined>();
     availableYears = input.required<number[] | undefined>();
+    yearParam = output<number>();
+    selectedYear: WritableSignal<number | null> = signal(null);
 
-    chartOptions = computed<Partial<ChartOptions>>(() => {
+    onYearChange(event: Event) {
+        const target = event.target as HTMLSelectElement;
+        this.selectedYear.set(Number(target.value));
+        this.yearParam.emit(Number(target.value));
+    }
+
+    chartOptions = computed<ApexOptions>(() => {
         const data = this.workoutCountsSource();
         return {
             series: [
@@ -87,7 +52,6 @@ export class WorkoutsChart {
             chart: {
                 type: 'bar',
                 height: 250,
-
                 toolbar: {
                     show: false,
                 },
@@ -126,9 +90,12 @@ export class WorkoutsChart {
                     },
                 },
             },
+            yaxis: {
+                floating: false,
+            },
             fill: {
                 opacity: 1,
-                colors: ['orange'],
+                colors: ['#eab308'],
             },
             responsive: [
                 {
