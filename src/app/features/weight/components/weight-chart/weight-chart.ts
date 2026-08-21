@@ -1,9 +1,7 @@
 import { Component, computed, input, Input, signal, Signal } from '@angular/core';
 import { NgIcon } from '@ng-icons/core';
 import { ApexOptions } from 'apexcharts';
-import {
-    NgApexchartsModule
-} from 'ng-apexcharts';
+import { NgApexchartsModule } from 'ng-apexcharts';
 import { NgxSkeletonLoaderComponent } from 'ngx-skeleton-loader';
 import { WeightChart as WeightChartModel } from '../../models/weight-chart';
 
@@ -15,7 +13,6 @@ import { WeightChart as WeightChartModel } from '../../models/weight-chart';
     styleUrl: './weight-chart.css',
 })
 export class WeightChart {
-
     weightDataSource = input.required<WeightChartModel | undefined>();
     skeletonLineCount = input<number>(7);
 
@@ -94,6 +91,11 @@ export class WeightChart {
                 categories: labels,
                 axisBorder: { show: false },
                 axisTicks: { show: false },
+            },
+            yaxis: {
+                labels: {
+                    formatter: (val: number) => `${val}`,
+                },
             },
         };
     });
