@@ -17,7 +17,7 @@ import { WeightEntries } from '@features/weight/components/weight-entries/weight
 import { WeightPageCard } from '@features/weight/components/weight-page-card/weight-page-card';
 import { WeightRecord } from '@features/weight/models/weight-record';
 import { WeightState } from '@features/weight/services/weight-state';
-import { NgIcon, provideIcons } from '@ng-icons/core';
+import { provideIcons } from '@ng-icons/core';
 import {
     faSolidBullseye,
     faSolidChartLine,
@@ -30,7 +30,6 @@ import {
     faSolidScaleUnbalanced,
     faSolidWeightScale,
 } from '@ng-icons/font-awesome/solid';
-import { NgxSkeletonLoaderComponent } from 'ngx-skeleton-loader';
 import { fromEvent, map, startWith } from 'rxjs';
 import { isControlValid } from '../../../../core/helpers/form-helpers';
 import { LayoutState } from '../../../../layout/services/layout-state';
@@ -39,10 +38,8 @@ import { LayoutState } from '../../../../layout/services/layout-state';
     selector: 'app-weight-page',
     imports: [
         WeightChart,
-        NgIcon,
         ReactiveFormsModule,
         FormsModule,
-        NgxSkeletonLoaderComponent,
         WeightPageCard,
         QuickTipsCard,
         QuickLog,

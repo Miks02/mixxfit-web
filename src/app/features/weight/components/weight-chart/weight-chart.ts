@@ -1,108 +1,102 @@
-import { Component, computed, Input, signal, Signal } from '@angular/core';
-import { BaseChartDirective } from 'ng2-charts';
-import {
-    ChartConfiguration,
-    ChartOptions,
-    Chart, registerables
-} from 'chart.js';
+import { Component, computed, input, Input, signal, Signal } from '@angular/core';
+import { NgIcon } from '@ng-icons/core';
+import { ApexOptions } from 'apexcharts';
+import { NgApexchartsModule } from 'ng-apexcharts';
+import { NgxSkeletonLoaderComponent } from 'ngx-skeleton-loader';
 import { WeightChart as WeightChartModel } from '../../models/weight-chart';
-
-Chart.register(...registerables);
 
 @Component({
     selector: 'app-weight-chart',
-    imports: [BaseChartDirective],
+    standalone: true,
+    imports: [NgApexchartsModule, NgxSkeletonLoaderComponent, NgIcon],
     templateUrl: './weight-chart.html',
     styleUrl: './weight-chart.css',
 })
 export class WeightChart {
-    public chartType: 'line' = 'line';
+    weightDataSource = input.required<WeightChartModel | undefined>();
+    skeletonLineCount = input<number>(7);
 
-    @Input()
-    weightDataSource: Signal<WeightChartModel | undefined> = signal(undefined);
-
-    public chartData = computed<ChartConfiguration<'line'>['data']>(() => {
+    public chartOptions = computed<ApexOptions>(() => {
         const data = this.weightDataSource();
 
         if (!data || !data.entries || data.entries.length === 0) {
             return {
-                labels: [],
-                datasets: []
+                series: [],
+                chart: { type: 'line', height: 350 },
+                xaxis: { categories: [] },
             };
         }
 
         const sortedEntries = [...data.entries].sort(
-            (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+            (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
         );
 
-        const labels = sortedEntries.map(entry => {
-            const date = new Date(entry.createdAt);
-            return date.toLocaleDateString();
-        });
-
-        const weights = sortedEntries.map(entry => entry.weight);
-
-        const datasets: ChartConfiguration<'line'>['data']['datasets'] = [
-            {
-                label: 'Weight (kg)',
-                data: weights,
-                borderColor: 'rgba(139, 92, 246, 1)',
-                backgroundColor: 'rgba(139, 92, 246, 0.2)',
-                fill: true,
-                tension: 0.35,
-                pointRadius: 3,
-                pointHoverRadius: 5
-            }
-        ];
-
-        datasets.push({
-            label: 'Target Weight (kg)',
-            data: Array(weights.length).fill(data.targetWeight),
-            borderColor: 'rgba(34, 197, 94, 1)',
-            backgroundColor: 'transparent',
-            borderDash: [5, 5],
-            fill: false,
-            tension: 0,
-            pointRadius: 0,
-            pointHoverRadius: 0
-        });
-
+        const labels = sortedEntries.map((entry) => new Date(entry.createdAt).toLocaleDateString());
+        const weights = sortedEntries.map((entry) => entry.weight);
 
         return {
-            labels,
-            datasets
-        };
-    });
-
-    public chartOptions = computed<ChartOptions<'line'>>(() => {
-        return {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    display: true,
-                    position: 'bottom'
+            series: [
+                {
+                    name: 'Weight (kg)',
+                    type: 'area',
+                    data: weights,
                 },
-                tooltip: {
-                    enabled: true
-                }
+                {
+                    name: 'Target Weight (kg)',
+                    type: 'line',
+                    data: Array(weights.length).fill(data.targetWeight),
+                },
+            ],
+            chart: {
+                type: 'line',
+                height: '100%',
+                toolbar: { show: false },
+                zoom: { enabled: false },
             },
-            scales: {
-                x: {
-                    ticks: {
-                        display: true,
+            responsive: [
+                {
+                    breakpoint: 600,
+                    options: {
+                        chart: { height: 250 },
+                        legend: { position: 'bottom' },
                     },
-                    grid: {
-                        display: false
-                    }
                 },
-                y: {
-                    beginAtZero: false,
-                    ticks: {
-                        stepSize: 1
-                    }
-                }
-            }
+            ],
+            colors: ['#8B5CF6', '#22C55E'],
+            stroke: {
+                curve: 'smooth',
+                width: [3, 3],
+                dashArray: [0, 2],
+            },
+            fill: {
+                type: ['gradient', 'solid'],
+                gradient: {
+                    shadeIntensity: 0,
+                    opacityFrom: 0.35,
+                    opacityTo: 0.35,
+                    stops: [0, 100],
+                },
+            },
+            markers: {
+                size: [4, 0],
+                hover: { size: 5 },
+            },
+            dataLabels: { enabled: false },
+            legend: { show: true, position: 'bottom' },
+            tooltip: { shared: true, intersect: false },
+            grid: {
+                xaxis: { lines: { show: false } },
+            },
+            xaxis: {
+                categories: labels,
+                axisBorder: { show: false },
+                axisTicks: { show: false },
+            },
+            yaxis: {
+                labels: {
+                    formatter: (val: number) => `${val}`,
+                },
+            },
         };
     });
 }

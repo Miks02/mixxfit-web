@@ -66,13 +66,14 @@ export class WorkoutService {
         });
     }
 
-    getWorkoutChartDataQuery(year: Signal<number | null>) {
+    getWorkoutChartDataQuery(year: Signal<number | undefined>) {
         return injectQuery(() => ({
             queryKey: ['workout-chart', year()],
             queryFn: async () => {
                 const res = await lastValueFrom(this.getUserWorkoutCountsByMonth(year()));
                 return res;
             },
+            enabled: year !== undefined
         }));
     }
 

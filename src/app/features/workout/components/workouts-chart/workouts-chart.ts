@@ -1,34 +1,38 @@
-import { Component, computed, Input, signal, Signal } from '@angular/core';
-import {
-    Chart,
-    ChartConfiguration,
-    ChartOptions,
-    registerables
-} from 'chart.js';
-import { BaseChartDirective } from 'ng2-charts';
+import { Component, computed, input, output, signal, WritableSignal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { NgIcon } from '@ng-icons/core';
+import { ApexOptions } from 'apexcharts';
+import { NgApexchartsModule } from 'ng-apexcharts';
+import { NgxSkeletonLoaderComponent } from 'ngx-skeleton-loader';
 import { WorkoutsPerMonthDto } from '../../models/workouts-per-month-dto';
-Chart.register(...registerables)
 
 @Component({
     selector: 'app-workouts-chart',
-    imports: [BaseChartDirective],
+    imports: [NgApexchartsModule, NgIcon, NgxSkeletonLoaderComponent, FormsModule],
     templateUrl: './workouts-chart.html',
     styleUrl: './workouts-chart.css',
+    host: {
+        class: 'flex flex-col min-w-75',
+    },
 })
 export class WorkoutsChart {
-    public barChartType: 'bar' = "bar";
+    workoutCountsSource = input.required<WorkoutsPerMonthDto | undefined>();
+    availableYears = input.required<number[] | undefined>();
+    yearParam = output<number>();
+    selectedYear: WritableSignal<number | null> = signal(null);
 
-    @Input()
-    workoutCountsSource: Signal<WorkoutsPerMonthDto | undefined> = signal(undefined)
+    onYearChange(event: Event) {
+        const target = event.target as HTMLSelectElement;
+        this.selectedYear.set(Number(target.value));
+        this.yearParam.emit(Number(target.value));
+    }
 
-    public barChartData = computed<ChartConfiguration<'bar'>['data']>(() => {
+    chartOptions = computed<ApexOptions>(() => {
         const data = this.workoutCountsSource();
-
         return {
-            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-            datasets: [
+            series: [
                 {
-                    label: 'Workouts',
+                    name: 'Workouts',
                     data: [
                         data?.januaryWorkouts ?? 0,
                         data?.februaryWorkouts ?? 0,
@@ -41,44 +45,82 @@ export class WorkoutsChart {
                         data?.septemberWorkouts ?? 0,
                         data?.octoberWorkouts ?? 0,
                         data?.novemberWorkouts ?? 0,
-                        data?.decemberWorkouts ?? 0
+                        data?.decemberWorkouts ?? 0,
                     ],
-                    borderRadius: 6,
-                    barPercentage: 1,
-                    categoryPercentage: 0.8,
-                    backgroundColor: 'rgba(235, 170, 11, 1)'
-                }
-            ]
+                },
+            ],
+            chart: {
+                type: 'bar',
+                height: 250,
+                toolbar: {
+                    show: false,
+                },
+            },
+            plotOptions: {
+                bar: {
+                    horizontal: false,
+                    columnWidth: '85%',
+                    borderRadius: 5,
+                    borderRadiusApplication: 'end',
+                },
+            },
+            stroke: {
+                show: true,
+                width: 2,
+                colors: ['transparent'],
+            },
+            xaxis: {
+                categories: [
+                    'Jan',
+                    'Feb',
+                    'Mar',
+                    'Apr',
+                    'May',
+                    'Jun',
+                    'Jul',
+                    'Aug',
+                    'Sep',
+                    'Oct',
+                    'Nov',
+                    'Dec',
+                ],
+                labels: {
+                    style: {
+                        fontSize: '12px',
+                    },
+                },
+            },
+            yaxis: {
+                floating: false,
+            },
+            fill: {
+                opacity: 1,
+                colors: ['#eab308'],
+            },
+            responsive: [
+                {
+                    breakpoint: 600,
+                    options: {
+                        chart: {
+                            height: 250,
+                        },
+                        plotOptions: {
+                            bar: {
+                                columnWidth: '90%',
+                                borderRadius: 5,
+                            },
+                        },
+                        xaxis: {
+                            labels: {
+                                rotate: -45,
+                                style: {
+                                    fontSize: '10px',
+                                },
+                            },
+                        },
+                    },
+                },
+            ],
         };
     });
-
-    public barChartOptions: ChartOptions<'bar'> = {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-            legend: {
-                display: true,
-                position: 'bottom'
-            },
-            tooltip: {
-                enabled: true
-            }
-        },
-        scales: {
-            x: {
-                ticks: {
-                    display: true,
-                },
-                grid: {
-                    display: false
-                }
-            },
-            y: {
-                beginAtZero: true,
-                ticks: {
-                    stepSize: 2
-                }
-            }
-        }
-    };
 }

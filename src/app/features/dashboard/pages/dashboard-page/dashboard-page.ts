@@ -1,6 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { afterNextRender, Component, computed, effect, ElementRef, inject, signal, viewChildren, WritableSignal } from '@angular/core';
-import { rxResource } from '@angular/core/rxjs-interop';
+import { afterNextRender, Component, computed, ElementRef, inject, signal, viewChildren, WritableSignal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from "@angular/router";
 import { WeightChart, WeightEntryService } from '@features/weight';
@@ -34,9 +33,9 @@ export class Dashboard {
     private weightService = inject(WeightEntryService);
     private router = inject(Router)
     userDetails = this.userState.userDetails;
-    selectedYear: WritableSignal<number> = signal(new Date().getFullYear());
+    selectedYear: WritableSignal<number | undefined> = signal(undefined);
 
-    workoutChartResource = this.workoutService.getWorkoutChartDataQuery(this.selectedYear);
+    workoutChartResource = this.workoutService.getWorkoutChartDataQuery(this.selectedYear!);
 
     weightChartResource = this.weightService.weightChartQuery(signal(this.userDetails()?.targetWeight!));
 
@@ -48,23 +47,10 @@ export class Dashboard {
 
     years = computed(() => this.workoutChart()?.years)
 
-    private yearInitialized = false;
-
     typewriterElements = viewChildren<ElementRef>('typewriter');
 
     constructor() {
         this.layoutState.setTitle("Dashboard")
-
-        effect(() => {
-            const years = this.years();
-            if (years && years.length > 0 && !this.yearInitialized) {
-                this.selectedYear.set(years[0]);
-                this.yearInitialized = true;
-            }
-        });
-        effect(() => {
-            const selYear = this.selectedYear();
-        })
 
         afterNextRender(() => {
             this.typewriterElements().forEach((el: ElementRef) => {

@@ -1,10 +1,7 @@
 import { computed, inject, Injectable, signal, WritableSignal } from '@angular/core';
-import { ProblemDetails } from '../../../core/models/problem-details';
-import { UserState } from '../../../core/states/user-state';
-import { CreateWeightRequest } from '../models/weight-create-request';
-import { WeightEntryDetails } from '../models/weight-entry-details';
-import { WeightEntryService } from './weight-entry-service';
 import { MONTHS } from '../../../core/models/month';
+import { UserState } from '../../../core/states/user-state';
+import { WeightEntryService } from './weight-entry-service';
 
 @Injectable()
 export class WeightState {
@@ -13,7 +10,7 @@ export class WeightState {
     private userState = inject(UserState);
 
     user = this.userState.userDetails;
-    targetWeight = computed(() => this.user()?.targetWeight ?? null);
+    targetWeight = computed(() => this.user()?.targetWeight!);
 
     filterParams: WritableSignal<{ year: number | null; month: number | null }> = signal({
         year: null,
