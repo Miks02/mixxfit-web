@@ -1,38 +1,11 @@
-import { Component, Input, computed, signal, Signal } from '@angular/core';
-import {
-    NgApexchartsModule,
-    ApexAxisChartSeries,
-    ApexChart,
-    ApexXAxis,
-    ApexYAxis,
-    ApexStroke,
-    ApexFill,
-    ApexDataLabels,
-    ApexLegend,
-    ApexTooltip,
-    ApexMarkers,
-    ApexGrid,
-    ApexResponsive,
-} from 'ng-apexcharts';
-import { WeightChart as WeightChartModel } from '../../models/weight-chart';
-import { NgxSkeletonLoaderComponent } from 'ngx-skeleton-loader';
+import { Component, computed, Input, signal, Signal } from '@angular/core';
 import { NgIcon } from '@ng-icons/core';
-
-export type WeightChartOptions = Partial<{
-    series: ApexAxisChartSeries;
-    chart: ApexChart;
-    xaxis: ApexXAxis;
-    yaxis: ApexYAxis;
-    stroke: ApexStroke;
-    fill: ApexFill;
-    dataLabels: ApexDataLabels;
-    legend: ApexLegend;
-    tooltip: ApexTooltip;
-    markers: ApexMarkers;
-    grid: ApexGrid;
-    colors: string[];
-    responsive: ApexResponsive[];
-}>;
+import { ApexOptions } from 'apexcharts';
+import {
+    NgApexchartsModule
+} from 'ng-apexcharts';
+import { NgxSkeletonLoaderComponent } from 'ngx-skeleton-loader';
+import { WeightChart as WeightChartModel } from '../../models/weight-chart';
 
 @Component({
     selector: 'app-weight-chart',
@@ -45,7 +18,7 @@ export class WeightChart {
     @Input()
     weightDataSource: Signal<WeightChartModel | undefined> = signal(undefined);
 
-    public chartOptions = computed<WeightChartOptions>(() => {
+    public chartOptions = computed<ApexOptions>(() => {
         const data = this.weightDataSource();
 
         if (!data || !data.entries || data.entries.length === 0) {
@@ -120,11 +93,6 @@ export class WeightChart {
                 categories: labels,
                 axisBorder: { show: false },
                 axisTicks: { show: false },
-            },
-            yaxis: {
-                labels: {
-                    formatter: (val: number) => val.toFixed(1),
-                },
             },
         };
     });

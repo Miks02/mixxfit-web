@@ -53,6 +53,7 @@
             <app-workouts-chart
                 [workoutCountsSource]="workoutChart()"
                 [availableYears]="years()"
+                (yearParam)="selectedYear.set($event)"
                 class="flex-1 w-full grow"
             ></app-workouts-chart>
             <app-weight-chart
