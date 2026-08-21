@@ -1,6 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { afterNextRender, Component, computed, effect, ElementRef, inject, signal, viewChildren, WritableSignal } from '@angular/core';
-import { rxResource } from '@angular/core/rxjs-interop';
+import { afterNextRender, Component, computed, ElementRef, inject, signal, viewChildren, WritableSignal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from "@angular/router";
 import { WeightChart, WeightEntryService } from '@features/weight';
