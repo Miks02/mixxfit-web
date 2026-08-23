@@ -85,6 +85,7 @@ export class AuthService {
     }
 
     clearAuthData() {
+        this.setAccessToken(null);
         localStorage.clear();
     }
 }
