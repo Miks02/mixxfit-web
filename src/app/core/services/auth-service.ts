@@ -1,9 +1,11 @@
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable, Signal, signal, WritableSignal } from '@angular/core';
+import { computed, inject, Injectable, Signal, signal, WritableSignal } from '@angular/core';
 import { lastValueFrom, map, Observable, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { AuthResponse } from '../../features/auth/models/auth-response';
+import { ForgotPasswordRequest } from '../../features/auth/models/forgot-password-request';
 import { LoginRequest } from '../../features/auth/models/login-request';
+import { ResetPasswordRequest } from '../../features/auth/models/reset-password-request';
 import { RegisterRequest } from '../../features/auth/models/register-request';
 import { UserState } from '../states/user-state';
 import { injectMutation, injectQuery } from '@tanstack/angular-query-experimental';
@@ -50,6 +52,42 @@ export class AuthService {
             window.location.href = '/';
         },
     }));
+
+    private cooldownInterval: ReturnType<typeof setInterval> | null = null;
+    cooldownDuration = signal(0);
+    isOnCooldown = computed(() => this.cooldownDuration() > 0);
+
+    forgotPasswordMutation = injectMutation<void, ProblemDetails, ForgotPasswordRequest>(() => ({
+        mutationFn: async (model: ForgotPasswordRequest) => await lastValueFrom(this.forgotPassword(model)),
+        onMutate: () => this.beginCooldown(),
+    }));
+
+    resetPasswordMutation = injectMutation<void, ProblemDetails, ResetPasswordRequest>(() => ({
+        mutationFn: async (model: ResetPasswordRequest) => await lastValueFrom(this.resetPassword(model)),
+    }));
+
+    private beginCooldown() {
+        if (this.cooldownInterval) clearInterval(this.cooldownInterval);
+
+        this.cooldownDuration.set(60);
+
+        this.cooldownInterval = setInterval(() => {
+            this.cooldownDuration.update((duration) => duration - 1);
+
+            if (this.cooldownDuration() <= 0 && this.cooldownInterval) {
+                clearInterval(this.cooldownInterval);
+                this.cooldownInterval = null;
+            }
+        }, 1000);
+    }
+
+    private forgotPassword(model: ForgotPasswordRequest): Observable<void> {
+        return this.http.post<void>(`${this.api}/auth/forgot-password`, model);
+    }
+
+    private resetPassword(model: ResetPasswordRequest): Observable<void> {
+        return this.http.post<void>(`${this.api}/auth/reset-password`, model);
+    }
 
     private register(model: RegisterRequest): Observable<AuthResponse> {
         return this.http.post<AuthResponse>(`${this.api}/auth/register`, model, {
