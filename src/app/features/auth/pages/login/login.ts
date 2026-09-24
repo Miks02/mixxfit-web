@@ -17,22 +17,24 @@ import { LoginRequest } from '../../models/login-request';
         ReactiveFormsModule,
         FormsModule,
         MatProgressSpinnerModule,
-        Button
+        Button,
     ],
     templateUrl: './login.html',
     styleUrl: './login.css',
-    providers: [provideIcons({faSolidEnvelope, faSolidLock, faSolidCheck})]
+    providers: [provideIcons({ faSolidEnvelope, faSolidLock, faSolidCheck })],
 })
 export class Login {
     private readonly fb = inject(FormBuilder);
-    private readonly authService = inject(AuthService)
+    private readonly authService = inject(AuthService);
     private router = inject(Router);
     private activatedRoute = inject(ActivatedRoute);
     private notificationService = inject(NotificationService);
 
     ngOnInit() {
-        if (this.activatedRoute.snapshot.queryParamMap.get("expired") === 'true') {
-            this.notificationService.showInfo('Your session has expired or is no longer valid. Please sign in again.');
+        if (this.activatedRoute.snapshot.queryParamMap.get('expired') === 'true') {
+            this.notificationService.showInfo(
+                'Your session has expired or is no longer valid. Please sign in again.',
+            );
         }
     }
 
@@ -41,22 +43,37 @@ export class Login {
     form = this.fb.group({
         email: ['', Validators.required],
         password: ['', Validators.required],
-        rememberMe: [false]
+        rememberMe: [false],
     });
 
-    get email() {return this.form.get('email')}
-    get password() {return this.form.get('password')}
+    get email() {
+        return this.form.get('email');
+    }
+    get password() {
+        return this.form.get('password');
+    }
 
     onSubmit() {
-        if(this.form.invalid){
+        if (this.form.invalid) {
             this.form.markAllAsTouched();
             return;
         }
 
         this.authService.loginMutation.mutate(this.form.value as LoginRequest, {
-            onSuccess: () => this.router.navigate(['/dashboard'])
-        })
-
+            onSuccess: () => this.router.navigate(['/dashboard']),
+            onError: (err) => {
+                if (err.errorCode === 'Auth.LoginFailed') {
+                    this.notificationService.showError('Invalid email address or password.', 7000);
+                    return;
+                }
+                if (err.errorCode === 'Auth.AccountSuspended') {
+                    this.notificationService.showError(
+                        'Your account has been suspended. Contact support if you believe this is a mistake.',
+                        7000,
+                    );
+                    return;
+                }
+            },
+        });
     }
-
 }

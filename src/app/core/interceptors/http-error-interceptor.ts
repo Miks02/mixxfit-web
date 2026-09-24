@@ -28,11 +28,6 @@ function handleErrors(error: ProblemDetails, notificationService: NotificationSe
         }
         case 401: {
             let errorCode = error.errorCode;
-
-            if(errorCode === "Auth.LoginFailed") {
-                notificationService.showError("Invalid email address or password.");
-                return;
-            }
             if (errorCode !== "Auth.ExpiredToken")
                 notificationService.showError("An unexpected error occured during the authentication.")
 
