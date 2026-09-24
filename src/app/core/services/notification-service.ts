@@ -8,12 +8,12 @@ export class NotificationService {
 
     private snackBar = inject(MatSnackBar)
 
-    showSuccess(message: string) {
+    showSuccess(message: string, duration?: number) {
         this.snackBar.open(message, 'Close', {
             panelClass: ['success-snackbar'],
             horizontalPosition: 'right',
             verticalPosition: 'top',
-            duration: 4000
+            duration: duration ?? 4000
         });
     }
 
@@ -26,21 +26,21 @@ export class NotificationService {
         });
     }
 
-    showWarning(message: string) {
+    showWarning(message: string, duration?: number) {
         this.snackBar.open(message, 'Close', {
             panelClass: ['warning-snackbar'],
             horizontalPosition: 'right',
             verticalPosition: 'top',
-            duration: 4000
+            duration: duration ?? 4000
         });
     }
 
-    showInfo(message: string) {
+    showInfo(message: string, duration?: number) {
         this.snackBar.open(message, 'Close', {
             panelClass: ['info-snackbar'],
             horizontalPosition: 'right',
             verticalPosition: 'top',
-            duration: 4000
+            duration: duration ?? 4000
         });
     }
 
